@@ -1,0 +1,105 @@
+# ------------------------------
+# OS / Editor noise
+# ------------------------------
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.tmp
+.vscode/
+.idea/
+
+# ------------------------------
+# Python bytecode / caches
+# ------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+.python-version
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyre/
+.hypothesis/
+
+# ------------------------------
+# Virtual environments
+# ------------------------------
+.venv/
+venv/
+env/
+ENV/
+
+# ------------------------------
+# Build / packaging artifacts
+# ------------------------------
+build/
+dist/
+site/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# ------------------------------
+# Test / coverage outputs
+# ------------------------------
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+test-results/
+junit.xml
+*.cover
+*.py,cover
+
+# ------------------------------
+# Logs / runtime files
+# ------------------------------
+*.log
+*.pid
+*.out
+*.err
+
+# ------------------------------
+# Local environment / secrets
+# ------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# ------------------------------
+# Local databases / state
+# ------------------------------
+*.sqlite
+*.sqlite3
+*.db
+data/
+checkpoints/
+
+# ------------------------------
+# Project local temp / generated dirs
+# ------------------------------
+.tmp_e2e/
+.tmp_e2e_stress/
+tmp/
+temp/
+artifacts/
+renders/
+exports/
+
+# ------------------------------
+# Optional JS/Node tool output
+# (safe to keep for future Remotion/frontend tooling)
+# ------------------------------
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/
+.next/
+out/
+

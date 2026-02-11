@@ -1,0 +1,86 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jitmind"
+version = "0.1.0"
+description = "A general memory system for agents, powered by deep-research"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "JITMind Team", email = "zhengliu1026@gmail.com"},
+]
+keywords = ["ai", "memory", "agent", "llm", "nlp"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "tqdm",
+    "tiktoken",
+    "openai",
+    "cohere",
+    "neo4j",
+    "transformers",
+    "torch",
+    "numpy",
+    "pandas",
+    "scikit-learn",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "black>=22.0",
+    "flake8>=4.0",
+    "mypy>=0.900",
+]
+eval = [
+    "datasets>=2.18.0",
+    "ragas>=0.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/VectorSpaceLab/jitmind"
+Repository = "https://github.com/VectorSpaceLab/jitmind"
+Issues = "https://github.com/VectorSpaceLab/jitmind/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["jitmind*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
