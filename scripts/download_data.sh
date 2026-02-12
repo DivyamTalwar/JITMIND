@@ -7,9 +7,11 @@ cd ../..
 ## for hotpotqa
 mkdir -p data/hotpotqa
 cd data/hotpotqa
-wget https://huggingface.co/datasets/BytedTsinghua-SIA/hotpotqa/resolve/main/eval_400.json
-wget https://huggingface.co/datasets/BytedTsinghua-SIA/hotpotqa/resolve/main/eval_1600.json
-wget https://huggingface.co/datasets/BytedTsinghua-SIA/hotpotqa/resolve/main/eval_6400.json
+echo "HotpotQA dataset files are not hardcoded in this repo."
+echo "Set HOTPOTQA_EVAL_400_URL / HOTPOTQA_EVAL_1600_URL / HOTPOTQA_EVAL_6400_URL and re-run."
+[[ -n "${HOTPOTQA_EVAL_400_URL:-}" ]] && wget "$HOTPOTQA_EVAL_400_URL"
+[[ -n "${HOTPOTQA_EVAL_1600_URL:-}" ]] && wget "$HOTPOTQA_EVAL_1600_URL"
+[[ -n "${HOTPOTQA_EVAL_6400_URL:-}" ]] && wget "$HOTPOTQA_EVAL_6400_URL"
 cd ../..
 
 ## for ruler

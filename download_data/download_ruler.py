@@ -419,7 +419,7 @@ def main():
         "--dataset_name",
         type=str,
         default="lighteval/RULER-131072-Qwen2.5-Instruct",
-        help="Dataset name to load from HuggingFace",
+        help="Dataset name to load from a dataset hub (configurable by the caller)",
     )
     parser.add_argument(
         "--output_dir",

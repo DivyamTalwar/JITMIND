@@ -10,11 +10,8 @@
 </p>
 
 <p align="center">
-  <a href="https://arxiv.org/abs/2511.18423">
-    <img src="https://img.shields.io/badge/arXiv-2511.18423-b31b1b?style=for-the-badge&logo=arxiv&logoColor=white" alt="arXiv 2511.18423" />
-  </a>
-  <a href="https://huggingface.co/papers/2511.18423">
-    <img src="https://img.shields.io/badge/HuggingFace-Paper-ffcc4d?style=for-the-badge&logo=huggingface&logoColor=black" alt="HuggingFace paper page" />
+  <a href="https://github.com/DivyamTalwar">
+    <b>Author: Divyam Talwar</b>
   </a>
 </p>
 
@@ -1212,13 +1209,7 @@ No. Generation is OpenAI-compatible API based, with OpenRouter defaults and vLLM
 
 ---
 
-## Citation
+## Author
 
-```bibtex
-@article{li2025jitmind,
-  title={JITMind: A General Memory Framework with Just-in-Time Optimization for Real-Time LLM Agents},
-  author={Li, Zheng and Zhang, Lu and Luo, Haotian and Liu, Zheng and Wang, Yaqi and Du, Pan and Wang, Yanfeng and Yang, Peng and Lu, Wei and Liao, Bin and Yang, Min},
-  journal={arXiv preprint arXiv:2511.18423},
-  year={2025}
-}
-```
+Divyam Talwar  
+`github.com/DivyamTalwar`
