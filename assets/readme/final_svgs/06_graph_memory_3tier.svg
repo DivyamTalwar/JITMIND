@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Three-tier Graph Memory Architecture</title>
+  <desc id="desc">Episode, semantic, and community graph tiers with temporal and provenance semantics.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F8FCFF"/><stop offset="100%" stop-color="#EEF5FF"/></linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0EA5A0"/><stop offset="100%" stop-color="#F59E0B"/></linearGradient>
+    <style>
+      .title{font:800 38px Inter,Segoe UI,Arial,sans-serif;fill:#0B0F19}
+      .sub{font:600 20px Inter,Segoe UI,Arial,sans-serif;fill:#334155}
+      .h{font:800 19px Inter,Segoe UI,Arial,sans-serif;fill:#0B0F19}
+      .p{font:600 14px Inter,Segoe UI,Arial,sans-serif;fill:#1E293B}
+      .edge{stroke:url(#flow);stroke-width:4.5;fill:none;stroke-linecap:round;stroke-dasharray:9 8;animation:dash 7s linear infinite}
+      .panel-a,.panel-b,.panel-c{transform-box:fill-box;transform-origin:center}
+      .panel-a{animation:floatA 6.8s ease-in-out infinite}
+      .panel-b{animation:floatB 7.6s ease-in-out infinite}
+      .panel-c{animation:floatC 8.4s ease-in-out infinite}
+      .scan{opacity:.27;animation:scanX 8.7s linear infinite}
+      .pulse{animation:pulse 2.6s ease-in-out infinite}
+      @keyframes dash{to{stroke-dashoffset:-160}}
+      @keyframes floatA{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+      @keyframes floatB{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+      @keyframes floatC{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+      @keyframes scanX{0%{transform:translateX(-250px)}100%{transform:translateX(1700px)}}
+      @keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+    </style>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#0EA5A0"/></marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="30" y="30" width="1540" height="840" rx="24" fill="#FFFFFF" stroke="#DDE7F7"/>
+  <rect class="scan" x="-250" y="156" width="220" height="5" rx="3" fill="url(#flow)"/>
+
+  <text x="70" y="95" class="title">Graph Memory: Episode → Semantic → Community</text>
+  <text x="70" y="128" class="sub">A layered graph stack that preserves raw events, stable facts, and high-level thematic structure.</text>
+
+  <rect class="panel-a" x="70" y="180" width="1460" height="200" rx="18" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="95" y="215" class="h">Tier 1: Episode Nodes (What happened and when)</text>
+  <text x="95" y="240" class="p">• timestamped event records from memory writes • linked to source page and user context</text>
+  <text x="95" y="262" class="p">• captures local narrative fragments with high fidelity for replay and temporal debugging</text>
+  <text x="95" y="284" class="p">• edges: HAS_EPISODE, MENTIONS(entity), OCCURRED_AT(time), OBSERVED_IN(session)</text>
+
+  <rect class="panel-a" x="95" y="304" width="180" height="56" rx="12" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="117" y="337" class="p">episode: meeting</text>
+  <rect class="panel-b" x="295" y="304" width="180" height="56" rx="12" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="317" y="337" class="p">episode: decision</text>
+  <rect class="panel-c" x="495" y="304" width="180" height="56" rx="12" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="517" y="337" class="p">episode: follow-up</text>
+
+  <rect class="panel-b" x="70" y="410" width="1460" height="200" rx="18" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="95" y="445" class="h">Tier 2: Semantic Fact Nodes (What is true and under which temporal window)</text>
+  <text x="95" y="470" class="p">• normalized triples (head, relation, tail) with t_observed / t_valid / t_invalid annotations</text>
+  <text x="95" y="492" class="p">• supports contradiction handling: newer facts can supersede older edges via explicit relation semantics</text>
+  <text x="95" y="514" class="p">• edges: RELATION(type), UPDATES, EXTENDS, DERIVES plus source_memory_id provenance links</text>
+
+  <rect class="panel-a" x="95" y="534" width="280" height="56" rx="12" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="117" y="567" class="p">Alice LEADS Platform Team</text>
+  <rect class="panel-b" x="395" y="534" width="280" height="56" rx="12" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="417" y="567" class="p">Roadmap TARGETS Q4 launch</text>
+  <rect class="panel-c" x="695" y="534" width="280" height="56" rx="12" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="717" y="567" class="p">Budget EXCEEDS $2M cap</text>
+
+  <rect class="panel-c" x="70" y="640" width="1460" height="200" rx="18" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="95" y="675" class="h">Tier 3: Community Nodes (What the system should reason over at high level)</text>
+  <text x="95" y="700" class="p">• clusters semantically related facts/events into stable thematic communities for coarse retrieval and planning</text>
+  <text x="95" y="722" class="p">• supports compressed context packs and strategic recall when token budgets are constrained</text>
+  <text x="95" y="744" class="p">• edges: BELONGS_TO_COMMUNITY, SUMMARIZES, EVOLVES_INTO; each keeps lineage back to episode/fact nodes</text>
+
+  <rect class="panel-a" x="95" y="764" width="230" height="56" rx="12" fill="#EAF1FF" stroke="#BFD0EE"/>
+  <text x="117" y="797" class="p">community: leadership</text>
+  <rect class="panel-b" x="345" y="764" width="230" height="56" rx="12" fill="#EAF1FF" stroke="#BFD0EE"/>
+  <text x="367" y="797" class="p">community: roadmap</text>
+  <rect class="panel-c" x="595" y="764" width="230" height="56" rx="12" fill="#EAF1FF" stroke="#BFD0EE"/>
+  <text x="617" y="797" class="p">community: finance</text>
+
+  <path class="edge" marker-end="url(#arr)" d="M760 380 C760 395, 760 395, 760 410"/>
+  <path class="edge" marker-end="url(#arr)" d="M760 610 C760 625, 760 625, 760 640"/>
+  <path class="edge" marker-end="url(#arr)" d="M300 360 C340 390, 360 500, 420 534"/>
+  <path class="edge" marker-end="url(#arr)" d="M500 360 C520 390, 630 500, 720 534"/>
+  <path class="edge" marker-end="url(#arr)" d="M900 590 C860 640, 740 730, 700 764"/>
+  <circle class="pulse" r="5" fill="#0EA5A0" opacity="0.88">
+    <animateMotion dur="8.5s" repeatCount="indefinite" path="M760 380 C760 395, 760 395, 760 410 C760 625, 760 625, 760 640"/>
+  </circle>
+  <circle class="pulse" r="5" fill="#F59E0B" opacity="0.88">
+    <animateMotion dur="7.7s" repeatCount="indefinite" path="M300 360 C340 390, 360 500, 420 534 C860 640, 740 730, 700 764"/>
+  </circle>
+</svg>

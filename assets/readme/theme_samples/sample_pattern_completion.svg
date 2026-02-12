@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Pattern Completion Theme Sample</title>
+  <desc id="desc">Dark premium graph UI showing seed entities, spreading heat, and top connected memories tray.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#090F1F"/>
+      <stop offset="100%" stop-color="#141B31"/>
+    </linearGradient>
+    <linearGradient id="heat" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2ED3C6"/>
+      <stop offset="100%" stop-color="#FFB34D"/>
+    </linearGradient>
+    <radialGradient id="nodeTeal" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#53F3E6"/>
+      <stop offset="100%" stop-color="#1FA9A0"/>
+    </radialGradient>
+    <radialGradient id="nodeAmber" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#FFD399"/>
+      <stop offset="100%" stop-color="#FF9E2F"/>
+    </radialGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+  <rect x="72" y="72" width="936" height="936" rx="30" fill="#111935" stroke="#2A355C"/>
+
+  <text x="116" y="146" fill="#EAF1FF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="700">
+    Personalized PageRank Pattern Completion
+  </text>
+  <text x="116" y="186" fill="#94A3C4" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20">
+    Seed entities activate neighborhoods, then top-ranked memory nodes are surfaced.
+  </text>
+
+  <g stroke="url(#heat)" stroke-linecap="round" fill="none">
+    <path d="M280 430 C380 360, 520 320, 640 340" stroke-width="5" opacity="0.95"/>
+    <path d="M280 430 C420 470, 560 520, 700 560" stroke-width="4.5" opacity="0.9"/>
+    <path d="M340 620 C450 600, 590 570, 700 560" stroke-width="4" opacity="0.88"/>
+    <path d="M460 500 C560 480, 650 450, 760 420" stroke-width="4.5" opacity="0.93"/>
+    <path d="M640 340 C720 360, 760 390, 820 450" stroke-width="3.5" opacity="0.85"/>
+    <path d="M700 560 C760 600, 810 630, 860 690" stroke-width="3.5" opacity="0.84"/>
+  </g>
+
+  <g fill="url(#nodeTeal)" stroke="#7FF8EE" stroke-width="2.5">
+    <circle cx="280" cy="430" r="22" filter="url(#glow)"/>
+    <circle cx="340" cy="620" r="22" filter="url(#glow)"/>
+    <circle cx="460" cy="500" r="22" filter="url(#glow)"/>
+  </g>
+  <g fill="none" stroke="#2ED3C6" opacity="0.8">
+    <circle cx="280" cy="430" r="36" stroke-width="3"/>
+    <circle cx="340" cy="620" r="36" stroke-width="3"/>
+    <circle cx="460" cy="500" r="36" stroke-width="3"/>
+  </g>
+
+  <g fill="#243055" stroke="#4D5F93" stroke-width="2">
+    <circle cx="640" cy="340" r="18"/>
+    <circle cx="700" cy="560" r="20"/>
+    <circle cx="760" cy="420" r="18"/>
+    <circle cx="820" cy="450" r="18"/>
+    <circle cx="860" cy="690" r="18"/>
+  </g>
+
+  <g>
+    <circle cx="640" cy="340" r="12" fill="url(#nodeAmber)"/>
+    <circle cx="700" cy="560" r="14" fill="url(#nodeAmber)"/>
+    <circle cx="760" cy="420" r="12" fill="url(#nodeAmber)"/>
+  </g>
+
+  <rect x="640" y="760" width="300" height="170" rx="20" fill="#192446" stroke="#2ED3C6" stroke-width="2"/>
+  <text x="668" y="802" fill="#EAF1FF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="700">
+    Top connected memories
+  </text>
+  <rect x="668" y="826" width="244" height="30" rx="10" fill="#25335F"/>
+  <rect x="668" y="864" width="220" height="30" rx="10" fill="#25335F"/>
+  <rect x="668" y="902" width="196" height="30" rx="10" fill="#25335F"/>
+
+  <g stroke="#E8B46A" stroke-width="3.5" fill="none" stroke-linecap="round">
+    <path d="M760 420 C820 510, 850 620, 860 760"/>
+    <path d="M700 560 C760 640, 785 700, 800 760"/>
+  </g>
+
+  <text x="236" y="476" fill="#C4FFF9" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700">seed</text>
+  <text x="296" y="666" fill="#C4FFF9" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700">seed</text>
+  <text x="416" y="546" fill="#C4FFF9" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700">seed</text>
+</svg>

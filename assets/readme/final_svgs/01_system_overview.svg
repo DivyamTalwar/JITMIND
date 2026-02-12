@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">JITMind System Overview</title>
+  <desc id="desc">Light-theme architecture overview showing ingestion, memory, graph, retrieval fusion, and research orchestration.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8FCFF"/>
+      <stop offset="100%" stop-color="#EEF5FF"/>
+    </linearGradient>
+    <linearGradient id="tealAmber" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0EA5A0"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#0B0F19" flood-opacity="0.14"/>
+    </filter>
+    <style>
+      .title { font: 800 38px Inter,Segoe UI,Arial,sans-serif; fill: #0B0F19; }
+      .subtitle { font: 600 20px Inter,Segoe UI,Arial,sans-serif; fill: #334155; }
+      .h { font: 800 20px Inter,Segoe UI,Arial,sans-serif; fill: #0B0F19; }
+      .p { font: 600 15px Inter,Segoe UI,Arial,sans-serif; fill: #1E293B; }
+      .chip { font: 800 13px Inter,Segoe UI,Arial,sans-serif; fill: #0B0F19; }
+      .edge { stroke: url(#tealAmber); stroke-width: 4.5; fill: none; stroke-linecap: round; stroke-dasharray: 9 9; animation: dash 6s linear infinite; }
+      .panel-a, .panel-b, .panel-c { transform-box: fill-box; transform-origin: center; }
+      .panel-a { animation: floatA 6.2s ease-in-out infinite; }
+      .panel-b { animation: floatB 7.3s ease-in-out infinite; }
+      .panel-c { animation: floatC 8.1s ease-in-out infinite; }
+      .scan { opacity: 0.28; animation: scanX 8.6s linear infinite; }
+      .pulse { animation: pulse 2.4s ease-in-out infinite; }
+      @keyframes dash { to { stroke-dashoffset: -160; } }
+      @keyframes floatA { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-4px); } }
+      @keyframes floatB { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(4px); } }
+      @keyframes floatC { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-3px); } }
+      @keyframes scanX { 0% { transform: translateX(-260px); } 100% { transform: translateX(1700px); } }
+      @keyframes pulse { 0%,100% { opacity: 0.45; } 50% { opacity: 1; } }
+    </style>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#0EA5A0"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="30" y="30" width="1540" height="840" rx="24" fill="#FFFFFF" stroke="#DDE7F7" filter="url(#softShadow)"/>
+  <rect class="scan" x="-260" y="156" width="220" height="5" rx="3" fill="url(#tealAmber)"/>
+
+  <text x="70" y="95" class="title">JITMind End-to-End System Overview</text>
+  <text x="70" y="128" class="subtitle">Memory-first agent architecture with bi-temporal semantics, graph intelligence, and retrieval fusion.</text>
+
+  <rect class="panel-a" x="70" y="170" width="220" height="150" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="92" y="202" class="h">Input Sources</text>
+  <text x="92" y="228" class="p">• chat transcripts</text>
+  <text x="92" y="249" class="p">• docs / web notes</text>
+  <text x="92" y="270" class="p">• tool observations</text>
+  <text x="92" y="291" class="p">• user profile signals</text>
+
+  <rect class="panel-b" x="330" y="170" width="270" height="150" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="352" y="202" class="h">Ingestion Pipeline</text>
+  <text x="352" y="228" class="p">• loaders + chunking</text>
+  <text x="352" y="249" class="p">• extraction (entity/relation)</text>
+  <text x="352" y="270" class="p">• embeddings + indexing</text>
+  <text x="352" y="291" class="p">• page/memory persistence</text>
+
+  <rect class="panel-c" x="640" y="170" width="280" height="150" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="662" y="202" class="h">MemoryAgent</text>
+  <text x="662" y="228" class="p">• abstract generation</text>
+  <text x="662" y="249" class="p">• ADD/UPDATE/DELETE/NOOP</text>
+  <text x="662" y="270" class="p">• provenance + versioning</text>
+  <text x="662" y="291" class="p">• profile update hooks</text>
+
+  <rect class="panel-a" x="970" y="170" width="250" height="150" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="992" y="202" class="h">Advanced Memory</text>
+  <text x="992" y="228" class="p">• bi-temporal fields</text>
+  <text x="992" y="249" class="p">• tiering + decay</text>
+  <text x="992" y="270" class="p">• conflict lifecycle</text>
+  <text x="992" y="291" class="p">• cleanup + retention</text>
+
+  <rect class="panel-b" x="1260" y="170" width="260" height="150" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="1282" y="202" class="h">Graph Layer (Neo4j)</text>
+  <text x="1282" y="228" class="p">• Episode nodes</text>
+  <text x="1282" y="249" class="p">• Semantic facts</text>
+  <text x="1282" y="270" class="p">• Community summaries</text>
+  <text x="1282" y="291" class="p">• relation semantics</text>
+
+  <rect class="panel-c" x="180" y="400" width="360" height="170" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="205" y="434" class="h">Retriever Mesh</text>
+  <text x="205" y="460" class="p">• BM25 (keyword precision)</text>
+  <text x="205" y="481" class="p">• Dense/Cohere (semantic recall)</text>
+  <text x="205" y="502" class="p">• Index (direct page access)</text>
+  <text x="205" y="523" class="p">• GraphRetriever (PPR / traversal)</text>
+  <text x="205" y="544" class="p">• dynamic alpha + reranking</text>
+
+  <rect class="panel-a" x="590" y="400" width="420" height="170" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="615" y="434" class="h">ResearchAgent Orchestrator</text>
+  <text x="615" y="460" class="p">• Plan → Search → Integrate → Reflect loop</text>
+  <text x="615" y="481" class="p">• HyDE query expansion + Self-RAG critique</text>
+  <text x="615" y="502" class="p">• context pressure monitoring + eviction strategy</text>
+  <text x="615" y="523" class="p">• checkpointing + replay buffer capture</text>
+  <text x="615" y="544" class="p">• async pathways for multi-source retrieval</text>
+
+  <rect class="panel-b" x="1060" y="400" width="420" height="170" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="1085" y="434" class="h">Production Reliability Plane</text>
+  <text x="1085" y="460" class="p">• atomic writes + file locks</text>
+  <text x="1085" y="481" class="p">• retry/backoff wrappers</text>
+  <text x="1085" y="502" class="p">• optional dependency guards</text>
+  <text x="1085" y="523" class="p">• maintenance consolidation tasks</text>
+  <text x="1085" y="544" class="p">• e2e + stress test harnesses</text>
+
+  <rect class="panel-c" x="420" y="640" width="760" height="180" rx="16" fill="#FFFFFF" stroke="#BFD0EE"/>
+  <text x="450" y="674" class="h">Outputs and Feedback Loop</text>
+  <text x="450" y="700" class="p">• grounded answer + raw trace • per-iteration artifacts • optional reflection memory</text>
+  <text x="450" y="723" class="p">• telemetry-ready structures for faithfulness, relevancy, precision, and recall evaluation</text>
+  <text x="450" y="746" class="p">• replay feedback strengthens future retrieval and prioritization strategies</text>
+  <rect x="450" y="765" width="170" height="36" rx="12" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="470" y="788" class="chip">answer object</text>
+  <rect x="638" y="765" width="150" height="36" rx="12" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="658" y="788" class="chip">raw trace</text>
+  <rect x="806" y="765" width="170" height="36" rx="12" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="826" y="788" class="chip">feedback hooks</text>
+
+  <path class="edge" marker-end="url(#arr)" d="M290 245 C315 245, 315 245, 330 245"/>
+  <path class="edge" marker-end="url(#arr)" d="M600 245 C620 245, 620 245, 640 245"/>
+  <path class="edge" marker-end="url(#arr)" d="M920 245 C945 245, 945 245, 970 245"/>
+  <path class="edge" marker-end="url(#arr)" d="M1220 245 C1240 245, 1240 245, 1260 245"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M1095 320 C1095 360, 970 370, 860 400"/>
+  <path class="edge" marker-end="url(#arr)" d="M830 320 C820 360, 790 370, 770 400"/>
+  <path class="edge" marker-end="url(#arr)" d="M460 320 C430 350, 390 370, 360 400"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M540 485 C560 485, 565 485, 590 485"/>
+  <path class="edge" marker-end="url(#arr)" d="M1010 485 C1030 485, 1040 485, 1060 485"/>
+  <path class="edge" marker-end="url(#arr)" d="M800 570 C800 610, 800 610, 800 640"/>
+
+  <circle class="pulse" cx="280" cy="245" r="6" fill="#0EA5A0">
+    <animate attributeName="r" values="5;8;5" dur="2.4s" repeatCount="indefinite"/>
+  </circle>
+  <circle class="pulse" cx="700" cy="485" r="6" fill="#F59E0B">
+    <animate attributeName="r" values="5;8;5" dur="2.1s" repeatCount="indefinite"/>
+  </circle>
+  <circle class="pulse" cx="1160" cy="485" r="6" fill="#0EA5A0">
+    <animate attributeName="r" values="5;8;5" dur="2.7s" repeatCount="indefinite"/>
+  </circle>
+  <circle r="5" fill="#0EA5A0" opacity="0.85">
+    <animateMotion dur="7.2s" repeatCount="indefinite" path="M290 245 C315 245, 315 245, 330 245 C620 245, 620 245, 640 245 C945 245, 945 245, 970 245"/>
+  </circle>
+  <circle r="5" fill="#F59E0B" opacity="0.85">
+    <animateMotion dur="6.4s" repeatCount="indefinite" path="M540 485 C560 485, 565 485, 590 485 C1030 485, 1040 485, 1060 485"/>
+  </circle>
+</svg>

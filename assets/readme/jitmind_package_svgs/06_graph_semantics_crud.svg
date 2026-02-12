@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Graph Semantics and CRUD Surface</title>
+  <desc id="desc">Detailed view of JITMind graph node types, relation semantics, CRUD methods, and personalized pagerank retrieval path.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8FCFF"/>
+      <stop offset="100%" stop-color="#EEF5FF"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0EA5A0"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <style>
+      .title { font: 800 38px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .sub { font: 600 19px Inter, Segoe UI, Arial, sans-serif; fill: #334155; }
+      .h { font: 800 17px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .p { font: 600 13px Inter, Segoe UI, Arial, sans-serif; fill: #1E293B; }
+      .chip { font: 800 12px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .edge { stroke: url(#flow); stroke-width: 4.2; fill: none; stroke-linecap: round; stroke-dasharray: 10 8; animation: dash 7.2s linear infinite; }
+      .panel-a, .panel-b, .panel-c { transform-box: fill-box; transform-origin: center; }
+      .panel-a { animation: floatA 6.6s ease-in-out infinite; }
+      .panel-b { animation: floatB 7.3s ease-in-out infinite; }
+      .panel-c { animation: floatC 8.4s ease-in-out infinite; }
+      .scan { opacity: 0.24; animation: scanX 9.4s linear infinite; }
+      .pulse { animation: pulse 2.5s ease-in-out infinite; }
+      @keyframes dash { to { stroke-dashoffset: -175; } }
+      @keyframes floatA { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+      @keyframes floatB { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+      @keyframes floatC { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+      @keyframes scanX { 0% { transform: translateX(-260px); } 100% { transform: translateX(1700px); } }
+      @keyframes pulse { 0%,100% { opacity: 0.45; } 50% { opacity: 1; } }
+    </style>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#0EA5A0"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="30" y="30" width="1540" height="840" rx="24" fill="#FFFFFF" stroke="#DDE7F7"/>
+  <rect class="scan" x="-260" y="156" width="220" height="5" rx="3" fill="url(#flow)"/>
+
+  <text x="70" y="95" class="title">Neo4j Graph Layer: Semantics, CRUD, and Retrieval</text>
+  <text x="70" y="128" class="sub">How graph memory encodes episodes, facts, communities, provenance edges, and associative recall paths.</text>
+
+  <rect class="panel-a" x="70" y="170" width="330" height="190" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="96" y="202" class="h">Node Types</text>
+  <text x="96" y="226" class="p">• Memory(id, content, tier, status, temporal props)</text>
+  <text x="96" y="248" class="p">• Entity(key, name, type)</text>
+  <text x="96" y="270" class="p">• Episode(id, content, timestamp)</text>
+  <text x="96" y="292" class="p">• Semantic(id, fact, relation, temporal props)</text>
+  <text x="96" y="314" class="p">• Community(id, summary, level)</text>
+  <text x="96" y="336" class="p">• uniqueness constraints for stable upserts</text>
+
+  <rect class="panel-b" x="430" y="170" width="340" height="190" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="456" y="202" class="h">Relation Semantics</text>
+  <text x="456" y="226" class="p">• MENTIONS (Memory/Episode -> Entity)</text>
+  <text x="456" y="248" class="p">• RELATION(type=semantic_label) Entity -> Entity</text>
+  <text x="456" y="270" class="p">• HAS_EPISODE / HAS_SEMANTIC / HAS_COMMUNITY</text>
+  <text x="456" y="292" class="p">• HAS_MEMBER (Community -> Memory)</text>
+  <text x="456" y="314" class="p">• UPDATES / EXTENDS / DERIVES provenance edges</text>
+  <text x="456" y="336" class="p">• status flags for latest/superseded/deleted</text>
+
+  <rect class="panel-c" x="800" y="170" width="360" height="190" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="826" y="202" class="h">Write APIs (GraphMemoryStore)</text>
+  <text x="826" y="226" class="p">• upsert_memory, mark_memory_status, mark_memory_latest</text>
+  <text x="826" y="248" class="p">• add_entities_relations with temporal edge metadata</text>
+  <text x="826" y="270" class="p">• add_episode, add_semantic_fact, add_semantic_statement</text>
+  <text x="826" y="292" class="p">• add_community_summary with member linkage</text>
+  <text x="826" y="314" class="p">• ontology normalization for type consistency</text>
+  <text x="826" y="336" class="p">• safe depth bounds and session guards</text>
+
+  <rect class="panel-a" x="1190" y="170" width="340" height="190" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="1216" y="202" class="h">CRUD Surface</text>
+  <text x="1216" y="226" class="p">• upsert_entity / delete_entity</text>
+  <text x="1216" y="248" class="p">• upsert_relation / delete_relation</text>
+  <text x="1216" y="270" class="p">• delete_memory / delete_episode</text>
+  <text x="1216" y="292" class="p">• delete_semantic / delete_community</text>
+  <text x="1216" y="314" class="p">• run_cypher for operator diagnostics</text>
+  <text x="1216" y="336" class="p">• optional dependency fail-safe behavior</text>
+
+  <rect class="panel-b" x="90" y="400" width="470" height="190" rx="16" fill="#FFFFFF" stroke="#BFD0EE"/>
+  <text x="118" y="434" class="h">Conflict and Lifecycle Semantics</text>
+  <text x="118" y="458" class="p">• contradiction checks can supersede older memory nodes</text>
+  <text x="118" y="480" class="p">• old record stays queryable historically but excluded from active set</text>
+  <text x="118" y="502" class="p">• t_invalid alignment keeps graph and memory store temporally coherent</text>
+  <text x="118" y="524" class="p">• provenance edges preserve why and how a fact changed over time</text>
+  <text x="118" y="546" class="p">• this prevents graph-level fact drift in long-running sessions</text>
+
+  <rect class="panel-c" x="590" y="400" width="450" height="190" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="618" y="434" class="h">Retrieval APIs</text>
+  <text x="618" y="458" class="p">• query_memories(entity_names, depth, limit)</text>
+  <text x="618" y="480" class="p">• direct + related memory fetch with bounded traversal</text>
+  <text x="618" y="502" class="p">• personalized_pagerank(seed_entities, damping, depth, max_iter)</text>
+  <text x="618" y="524" class="p">• memory ranking from graph connectivity, not only lexical similarity</text>
+  <text x="618" y="546" class="p">• GraphRetriever exposes this as evidence hits for fusion pipeline</text>
+
+  <rect class="panel-a" x="1070" y="400" width="460" height="190" rx="16" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="1098" y="434" class="h">PPR Intuition (HippoRAG-style associative recall)</text>
+  <text x="1098" y="458" class="p">1) seed entities initialize probability mass</text>
+  <text x="1098" y="480" class="p">2) mass diffuses over typed graph edges with damping</text>
+  <text x="1098" y="502" class="p">3) memory nodes receiving high mass become top evidence</text>
+  <text x="1098" y="524" class="p">4) output list includes score and source_page_id for fusion</text>
+  <text x="1098" y="546" class="p">5) enables multi-hop recall where dense/sparse may miss latent relations</text>
+
+  <rect class="panel-b" x="260" y="640" width="1080" height="170" rx="16" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="292" y="674" class="h">Graph Layer Guarantee</text>
+  <text x="292" y="698" class="p">JITMIND graph memory is not just storage; it is a semantic runtime surface with temporal correctness, explicit provenance, controlled traversal costs, and operational CRUD boundaries.</text>
+  <text x="292" y="721" class="p">This design keeps graph answers explainable, maintains lifecycle consistency with memory store state, and improves associative retrieval robustness in production workloads.</text>
+  <text x="292" y="744" class="p">Combined with temporal filtering and self-editing writes, the graph remains useful instead of accumulating contradictory dead facts.</text>
+
+  <rect x="292" y="763" width="220" height="34" rx="10" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="314" y="785" class="chip">typed graph semantics</text>
+  <rect x="532" y="763" width="220" height="34" rx="10" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="554" y="785" class="chip">bounded traversal safety</text>
+  <rect x="772" y="763" width="230" height="34" rx="10" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="794" y="785" class="chip">provenance preservation</text>
+  <rect x="1022" y="763" width="290" height="34" rx="10" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="1044" y="785" class="chip">associative retrieval power via PPR</text>
+
+  <path class="edge" marker-end="url(#arr)" d="M400 250 C415 250, 420 250, 430 250"/>
+  <path class="edge" marker-end="url(#arr)" d="M770 250 C785 250, 790 250, 800 250"/>
+  <path class="edge" marker-end="url(#arr)" d="M1160 250 C1175 250, 1180 250, 1190 250"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M260 360 C260 385, 260 390, 260 400"/>
+  <path class="edge" marker-end="url(#arr)" d="M980 360 C980 385, 920 390, 820 400"/>
+  <path class="edge" marker-end="url(#arr)" d="M1360 360 C1360 385, 1360 390, 1360 400"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M560 500 C570 500, 575 500, 590 500"/>
+  <path class="edge" marker-end="url(#arr)" d="M1040 500 C1050 500, 1055 500, 1070 500"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M820 590 C820 620, 820 630, 820 640"/>
+  <path class="edge" marker-end="url(#arr)" d="M1280 590 C1260 620, 1200 630, 1120 640"/>
+
+  <circle class="pulse" cx="965" cy="250" r="6" fill="#0EA5A0"><animate attributeName="r" values="5;8;5" dur="2.3s" repeatCount="indefinite"/></circle>
+  <circle class="pulse" cx="820" cy="500" r="6" fill="#F59E0B"><animate attributeName="r" values="5;8;5" dur="2.8s" repeatCount="indefinite"/></circle>
+
+  <circle r="5" fill="#0EA5A0" opacity="0.86">
+    <animateMotion dur="7.5s" repeatCount="indefinite" path="M400 250 C415 250, 420 250, 430 250 C785 250, 790 250, 800 250 C1175 250, 1180 250, 1190 250"/>
+  </circle>
+  <circle r="5" fill="#F59E0B" opacity="0.86">
+    <animateMotion dur="6.8s" repeatCount="indefinite" path="M560 500 C570 500, 575 500, 590 500 C1050 500, 1055 500, 1070 500 C820 620, 820 630, 820 640"/>
+  </circle>
+</svg>

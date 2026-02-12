@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Repository Capabilities Map</title>
+  <desc id="desc">Text-heavy map of package modules, scripts, examples, evaluation, and tests.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F8FCFF"/><stop offset="100%" stop-color="#EEF5FF"/></linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0EA5A0"/><stop offset="100%" stop-color="#F59E0B"/></linearGradient>
+    <style>
+      .title{font:800 38px Inter,Segoe UI,Arial,sans-serif;fill:#0B0F19}
+      .sub{font:600 20px Inter,Segoe UI,Arial,sans-serif;fill:#334155}
+      .h{font:800 18px Inter,Segoe UI,Arial,sans-serif;fill:#0B0F19}
+      .p{font:600 13px Inter,Segoe UI,Arial,sans-serif;fill:#1E293B}
+      .edge{stroke:url(#flow);stroke-width:4.2;fill:none;stroke-linecap:round;stroke-dasharray:9 8;animation:dash 7s linear infinite}
+      .panel-a, .panel-b, .panel-c { transform-box: fill-box; transform-origin: center; }
+      .panel-a { animation: floatA 6.9s ease-in-out infinite; }
+      .panel-b { animation: floatB 7.4s ease-in-out infinite; }
+      .panel-c { animation: floatC 8.5s ease-in-out infinite; }
+      .scan { opacity: 0.25; animation: scanX 9.3s linear infinite; }
+      .pulse { animation: pulse 2.7s ease-in-out infinite; }
+      @keyframes dash{to{stroke-dashoffset:-150}}
+      @keyframes floatA{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+      @keyframes floatB{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+      @keyframes floatC{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+      @keyframes scanX{0%{transform:translateX(-260px)}100%{transform:translateX(1700px)}}
+      @keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+    </style>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#0EA5A0"/></marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="30" y="30" width="1540" height="840" rx="24" fill="#FFFFFF" stroke="#DDE7F7"/>
+  <rect class="scan" x="-260" y="156" width="220" height="5" rx="3" fill="url(#flow)"/>
+
+  <text x="70" y="95" class="title">Repository Capabilities Map</text>
+  <text x="70" y="128" class="sub">How source packages, scripts, examples, evaluations, and tests fit together operationally.</text>
+
+  <rect class="panel-a" x="70" y="180" width="420" height="300" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="95" y="214" class="h">jitmind/ (core package)</text>
+  <text x="95" y="238" class="p">• agents: MemoryAgent + ResearchAgent orchestration</text>
+  <text x="95" y="260" class="p">• schemas: memory/page/search/result protocols</text>
+  <text x="95" y="282" class="p">• retriever: sparse/dense/index/graph adapters</text>
+  <text x="95" y="304" class="p">• graph: Neo4j store + ontology + traversal helpers</text>
+  <text x="95" y="326" class="p">• prompts: planning, memory-ops, reflection templates</text>
+  <text x="95" y="348" class="p">• profile + learning + maintenance utilities</text>
+  <text x="95" y="370" class="p">• ingestion + generator + config abstractions</text>
+  <text x="95" y="392" class="p">• utils: retry, locks, atomic IO, checkpoints</text>
+
+  <rect class="panel-b" x="530" y="180" width="300" height="140" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="555" y="214" class="h">examples/quickstart</text>
+  <text x="555" y="238" class="p">• basic_usage.py</text>
+  <text x="555" y="260" class="p">• model_usage.py</text>
+  <text x="555" y="282" class="p">• ttl_usage.py</text>
+
+  <rect class="panel-c" x="860" y="180" width="320" height="140" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="885" y="214" class="h">download_data/</text>
+  <text x="885" y="238" class="p">• NarrativeQA downloader</text>
+  <text x="885" y="260" class="p">• RULER downloader</text>
+  <text x="885" y="282" class="p">• benchmark setup utilities</text>
+
+  <rect class="panel-a" x="1210" y="180" width="320" height="140" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="1235" y="214" class="h">eval/</text>
+  <text x="1235" y="238" class="p">• hotpotqa_test.py</text>
+  <text x="1235" y="260" class="p">• locomo/narrativeqa/ruler tests</text>
+  <text x="1235" y="282" class="p">• ragas_eval.py + run.py</text>
+
+  <rect class="panel-b" x="530" y="350" width="500" height="200" rx="16" fill="#FFFFFF" stroke="#BFD0EE"/>
+  <text x="555" y="384" class="h">scripts/ (operational interface)</text>
+  <text x="555" y="408" class="p">• test_all.sh: combined smoke + regression flow</text>
+  <text x="555" y="430" class="p">• eval_*.sh: benchmark-specific run wrappers</text>
+  <text x="555" y="452" class="p">• e2e_live_test.py / e2e_stress_live_test.py: real API integration harnesses</text>
+  <text x="555" y="474" class="p">• neo4j_local_up/down.sh: local graph dependency controls</text>
+  <text x="555" y="496" class="p">• run_maintenance.py: consolidation/cleanup operations</text>
+  <text x="555" y="518" class="p">• download_data.sh: benchmark data setup convenience</text>
+
+  <rect class="panel-c" x="1060" y="350" width="470" height="200" rx="16" fill="#FFFFFF" stroke="#BFD0EE"/>
+  <text x="1085" y="384" class="h">tests/ (quality safety net)</text>
+  <text x="1085" y="408" class="p">• ttl memory/page tests + before/after temporal assertions</text>
+  <text x="1085" y="430" class="p">• threaded file-store concurrency regression</text>
+  <text x="1085" y="452" class="p">• ingestion dedup correctness checks</text>
+  <text x="1085" y="474" class="p">• retry wrapper behavior tests</text>
+  <text x="1085" y="496" class="p">• run_ttl_tests.py as a focused quality gate</text>
+
+  <rect class="panel-a" x="70" y="520" width="1460" height="300" rx="18" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="95" y="556" class="h">Repository-level Build and Runtime Contracts</text>
+  <text x="95" y="582" class="p">• setup.py + requirements/pyproject define packaging and dependency topology for local and CI environments.</text>
+  <text x="95" y="604" class="p">• .env.example + docker-compose.neo4j.yml establish reproducible local integration prerequisites.</text>
+  <text x="95" y="626" class="p">• README and deep-dive docs are intended to map architecture to actual implementation files.</text>
+  <text x="95" y="648" class="p">• generated .tmp artifacts are intentionally ignored and should never be pushed.</text>
+
+  <rect class="panel-b" x="95" y="680" width="250" height="100" rx="12" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="118" y="712" class="h">Primary Entry</text>
+  <text x="118" y="734" class="p">jitmind/__init__.py</text>
+  <text x="118" y="756" class="p">public API exports</text>
+
+  <rect class="panel-c" x="375" y="680" width="300" height="100" rx="12" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="398" y="712" class="h">Execution Paths</text>
+  <text x="398" y="734" class="p">scripts/* + eval/* + tests/*</text>
+  <text x="398" y="756" class="p">local + integration validation</text>
+
+  <rect class="panel-a" x="705" y="680" width="300" height="100" rx="12" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="728" y="712" class="h">Data/State Paths</text>
+  <text x="728" y="734" class="p">pages + memory + graph + index</text>
+  <text x="728" y="756" class="p">checkpoint + replay artifacts</text>
+
+  <rect class="panel-b" x="1035" y="680" width="470" height="100" rx="12" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="1058" y="712" class="h">Quality Goal</text>
+  <text x="1058" y="734" class="p">production-grade memory reliability with auditable retrieval and evaluation alignment</text>
+
+  <path class="edge" marker-end="url(#arr)" d="M490 250 C510 250, 510 250, 530 250"/>
+  <path class="edge" marker-end="url(#arr)" d="M830 250 C845 250, 845 250, 860 250"/>
+  <path class="edge" marker-end="url(#arr)" d="M1180 250 C1195 250, 1195 250, 1210 250"/>
+  <path class="edge" marker-end="url(#arr)" d="M680 320 C700 335, 740 345, 780 350"/>
+  <path class="edge" marker-end="url(#arr)" d="M1180 320 C1160 335, 1130 345, 1090 350"/>
+  <path class="edge" marker-end="url(#arr)" d="M1030 550 C1030 580, 1030 610, 1030 680"/>
+  <path class="edge" marker-end="url(#arr)" d="M300 480 C300 500, 300 510, 300 520"/>
+  <circle class="pulse" r="5" fill="#0EA5A0" opacity="0.86">
+    <animateMotion dur="8.3s" repeatCount="indefinite" path="M490 250 C510 250, 510 250, 530 250 C845 250, 845 250, 860 250 C1195 250, 1195 250, 1210 250"/>
+  </circle>
+  <circle class="pulse" r="5" fill="#F59E0B" opacity="0.86">
+    <animateMotion dur="7.4s" repeatCount="indefinite" path="M1030 550 C1030 580, 1030 610, 1030 680 C300 500, 300 510, 300 520"/>
+  </circle>
+</svg>

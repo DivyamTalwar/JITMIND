@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">JITMind Package Architecture Map</title>
+  <desc id="desc">Text-heavy animated map of jitmind package modules, responsibilities, and runtime interactions.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8FCFF"/>
+      <stop offset="100%" stop-color="#EEF5FF"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0EA5A0"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#0B0F19" flood-opacity="0.14"/>
+    </filter>
+    <style>
+      .title { font: 800 38px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .sub { font: 600 19px Inter, Segoe UI, Arial, sans-serif; fill: #334155; }
+      .h { font: 800 18px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .p { font: 600 13px Inter, Segoe UI, Arial, sans-serif; fill: #1E293B; }
+      .chip { font: 800 12px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .edge { stroke: url(#flow); stroke-width: 4.2; fill: none; stroke-linecap: round; stroke-dasharray: 10 8; animation: dash 7s linear infinite; }
+      .panel-a, .panel-b, .panel-c { transform-box: fill-box; transform-origin: center; }
+      .panel-a { animation: floatA 6.4s ease-in-out infinite; }
+      .panel-b { animation: floatB 7.1s ease-in-out infinite; }
+      .panel-c { animation: floatC 8.2s ease-in-out infinite; }
+      .scan { opacity: 0.26; animation: scanX 9.6s linear infinite; }
+      .pulse { animation: pulse 2.4s ease-in-out infinite; }
+      @keyframes dash { to { stroke-dashoffset: -170; } }
+      @keyframes floatA { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+      @keyframes floatB { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+      @keyframes floatC { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+      @keyframes scanX { 0% { transform: translateX(-280px); } 100% { transform: translateX(1700px); } }
+      @keyframes pulse { 0%,100% { opacity: 0.45; } 50% { opacity: 1; } }
+    </style>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#0EA5A0"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="30" y="30" width="1540" height="840" rx="24" fill="#FFFFFF" stroke="#DDE7F7" filter="url(#shadow)"/>
+  <rect class="scan" x="-280" y="158" width="240" height="5" rx="3" fill="url(#flow)"/>
+
+  <text x="70" y="95" class="title">jitmind Package Architecture (Developer Map)</text>
+  <text x="70" y="128" class="sub">Module-level blueprint for memory write path, research read path, graph semantics, and reliability utilities.</text>
+
+  <rect class="panel-a" x="70" y="170" width="250" height="180" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="92" y="202" class="h">agents/</text>
+  <text x="92" y="226" class="p">• memory_agent.py</text>
+  <text x="92" y="246" class="p">• research_agent.py</text>
+  <text x="92" y="266" class="p">• lifecycle orchestration</text>
+  <text x="92" y="286" class="p">• iterative loop control</text>
+  <text x="92" y="306" class="p">• tool routing and integration</text>
+
+  <rect class="panel-b" x="350" y="170" width="260" height="180" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="372" y="202" class="h">schemas/</text>
+  <text x="372" y="226" class="p">• advanced_memory.py</text>
+  <text x="372" y="246" class="p">• ttl_memory.py / ttl_page.py</text>
+  <text x="372" y="266" class="p">• search/result contracts</text>
+  <text x="372" y="286" class="p">• page and memory structures</text>
+  <text x="372" y="306" class="p">• temporal + lifecycle fields</text>
+
+  <rect class="panel-c" x="640" y="170" width="280" height="180" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="662" y="202" class="h">retriever/</text>
+  <text x="662" y="226" class="p">• bm25.py</text>
+  <text x="662" y="246" class="p">• cohere_dense.py</text>
+  <text x="662" y="266" class="p">• cohere_rerank.py</text>
+  <text x="662" y="286" class="p">• index_retriever.py</text>
+  <text x="662" y="306" class="p">• graph_retriever.py</text>
+
+  <rect class="panel-a" x="950" y="170" width="260" height="180" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="972" y="202" class="h">graph/</text>
+  <text x="972" y="226" class="p">• graph_store.py</text>
+  <text x="972" y="246" class="p">• ontology.py</text>
+  <text x="972" y="266" class="p">• entity/relation CRUD</text>
+  <text x="972" y="286" class="p">• 3-tier graph nodes</text>
+  <text x="972" y="306" class="p">• personalized pagerank</text>
+
+  <rect class="panel-b" x="1240" y="170" width="280" height="180" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="1262" y="202" class="h">generator/ + prompts/</text>
+  <text x="1262" y="226" class="p">• openai_generator.py</text>
+  <text x="1262" y="246" class="p">• vllm_generator.py</text>
+  <text x="1262" y="266" class="p">• prompt templates</text>
+  <text x="1262" y="286" class="p">• schema-constrained outputs</text>
+  <text x="1262" y="306" class="p">• retries and timeout control</text>
+
+  <rect class="panel-c" x="120" y="410" width="330" height="170" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="145" y="442" class="h">ingestion/</text>
+  <text x="145" y="466" class="p">• loaders + chunking</text>
+  <text x="145" y="486" class="p">• hash deduplication</text>
+  <text x="145" y="506" class="p">• metadata propagation</text>
+  <text x="145" y="526" class="p">• MemoryAgent handoff</text>
+  <text x="145" y="546" class="p">• source traceability</text>
+
+  <rect class="panel-a" x="490" y="410" width="360" height="170" rx="16" fill="#FFFFFF" stroke="#BFD0EE"/>
+  <text x="515" y="442" class="h">profile/ + learning/</text>
+  <text x="515" y="466" class="p">• profile_agent/profile_store</text>
+  <text x="515" y="486" class="p">• static/dynamic/traits state</text>
+  <text x="515" y="506" class="p">• replay_buffer for experience</text>
+  <text x="515" y="526" class="p">• user_id-aware research context</text>
+  <text x="515" y="546" class="p">• personalization hooks</text>
+
+  <rect class="panel-b" x="890" y="410" width="300" height="170" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="915" y="442" class="h">maintenance/ + summarization/</text>
+  <text x="915" y="466" class="p">• consolidation.py</text>
+  <text x="915" y="486" class="p">• raptor.py hierarchy</text>
+  <text x="915" y="506" class="p">• short→mid memory merge</text>
+  <text x="915" y="526" class="p">• summary-level promotion</text>
+  <text x="915" y="546" class="p">• context compaction</text>
+
+  <rect class="panel-c" x="1230" y="410" width="300" height="170" rx="16" fill="#FFFFFF" stroke="#BFD0EE"/>
+  <text x="1255" y="442" class="h">utils/ + config/</text>
+  <text x="1255" y="466" class="p">• checkpoint manager</text>
+  <text x="1255" y="486" class="p">• file lock + atomic io</text>
+  <text x="1255" y="506" class="p">• retry/backoff wrappers</text>
+  <text x="1255" y="526" class="p">• generator/retriever configs</text>
+  <text x="1255" y="546" class="p">• env-based toggles</text>
+
+  <rect class="panel-a" x="250" y="640" width="1100" height="170" rx="16" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="280" y="674" class="h">Runtime Contract Layer</text>
+  <text x="280" y="698" class="p">MemoryAgent writes normalized memory + provenance pages + graph semantics; ResearchAgent reads across four retrieval channels and fuses evidence.</text>
+  <text x="280" y="721" class="p">Temporal validity gates stale facts, tier boosts prioritize durable knowledge, reranking polishes relevance, and reflection drives iterative completeness.</text>
+  <text x="280" y="744" class="p">Checkpointing and replay artifacts make runs inspectable and resumable for long-horizon production workflows.</text>
+
+  <rect x="280" y="763" width="170" height="34" rx="10" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="300" y="785" class="chip">write reliability</text>
+  <rect x="470" y="763" width="170" height="34" rx="10" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="490" y="785" class="chip">read quality</text>
+  <rect x="660" y="763" width="190" height="34" rx="10" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="680" y="785" class="chip">temporal correctness</text>
+  <rect x="870" y="763" width="190" height="34" rx="10" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="890" y="785" class="chip">graph reasoning</text>
+  <rect x="1080" y="763" width="220" height="34" rx="10" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="1100" y="785" class="chip">resumable execution</text>
+
+  <path class="edge" marker-end="url(#arr)" d="M320 260 C335 260, 340 260, 350 260"/>
+  <path class="edge" marker-end="url(#arr)" d="M610 260 C625 260, 630 260, 640 260"/>
+  <path class="edge" marker-end="url(#arr)" d="M920 260 C935 260, 940 260, 950 260"/>
+  <path class="edge" marker-end="url(#arr)" d="M1210 260 C1225 260, 1230 260, 1240 260"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M250 350 C230 390, 220 400, 220 410"/>
+  <path class="edge" marker-end="url(#arr)" d="M760 350 C760 375, 760 390, 760 410"/>
+  <path class="edge" marker-end="url(#arr)" d="M1360 350 C1360 380, 1360 390, 1360 410"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M285 580 C305 620, 340 635, 400 640"/>
+  <path class="edge" marker-end="url(#arr)" d="M670 580 C680 620, 710 635, 760 640"/>
+  <path class="edge" marker-end="url(#arr)" d="M1040 580 C1030 620, 1000 635, 930 640"/>
+  <path class="edge" marker-end="url(#arr)" d="M1380 580 C1360 620, 1330 635, 1200 640"/>
+
+  <circle class="pulse" cx="600" cy="260" r="6" fill="#0EA5A0">
+    <animate attributeName="r" values="5;8;5" dur="2.4s" repeatCount="indefinite"/>
+  </circle>
+  <circle class="pulse" cx="1050" cy="495" r="6" fill="#F59E0B">
+    <animate attributeName="r" values="5;8;5" dur="2.0s" repeatCount="indefinite"/>
+  </circle>
+  <circle r="5" fill="#0EA5A0" opacity="0.86">
+    <animateMotion dur="7.8s" repeatCount="indefinite" path="M320 260 C335 260, 340 260, 350 260 C625 260, 630 260, 640 260 C935 260, 940 260, 950 260"/>
+  </circle>
+  <circle r="5" fill="#F59E0B" opacity="0.86">
+    <animateMotion dur="6.9s" repeatCount="indefinite" path="M670 580 C680 620, 710 635, 760 640 C1030 620, 1000 635, 930 640"/>
+  </circle>
+</svg>

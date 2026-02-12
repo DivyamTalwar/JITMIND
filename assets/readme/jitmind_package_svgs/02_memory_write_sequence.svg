@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Memory Write Sequence</title>
+  <desc id="desc">Detailed sequence of how MemoryAgent transforms raw input into versioned temporal memory plus graph semantics.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8FCFF"/>
+      <stop offset="100%" stop-color="#EEF5FF"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0EA5A0"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <style>
+      .title { font: 800 38px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .sub { font: 600 19px Inter, Segoe UI, Arial, sans-serif; fill: #334155; }
+      .h { font: 800 17px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .p { font: 600 13px Inter, Segoe UI, Arial, sans-serif; fill: #1E293B; }
+      .chip { font: 800 12px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .edge { stroke: url(#flow); stroke-width: 4.4; fill: none; stroke-linecap: round; stroke-dasharray: 10 8; animation: dash 6.8s linear infinite; }
+      .panel-a, .panel-b, .panel-c { transform-box: fill-box; transform-origin: center; }
+      .panel-a { animation: floatA 6.0s ease-in-out infinite; }
+      .panel-b { animation: floatB 7.0s ease-in-out infinite; }
+      .panel-c { animation: floatC 8.1s ease-in-out infinite; }
+      .scan { opacity: 0.25; animation: scanX 8.8s linear infinite; }
+      .pulse { animation: pulse 2.4s ease-in-out infinite; }
+      @keyframes dash { to { stroke-dashoffset: -175; } }
+      @keyframes floatA { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+      @keyframes floatB { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+      @keyframes floatC { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+      @keyframes scanX { 0% { transform: translateX(-260px); } 100% { transform: translateX(1700px); } }
+      @keyframes pulse { 0%,100% { opacity: 0.45; } 50% { opacity: 1; } }
+    </style>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#0EA5A0"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="30" y="30" width="1540" height="840" rx="24" fill="#FFFFFF" stroke="#DDE7F7"/>
+  <rect class="scan" x="-260" y="156" width="220" height="5" rx="3" fill="url(#flow)"/>
+
+  <text x="70" y="95" class="title">MemoryAgent Write Sequence (Full Lifecycle)</text>
+  <text x="70" y="128" class="sub">From raw message to temporal memory entry, provenance page, graph nodes, and contradiction handling.</text>
+
+  <rect class="panel-a" x="70" y="170" width="250" height="155" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="92" y="202" class="h">Step 0: Input Event</text>
+  <text x="92" y="226" class="p">• raw message/chunk arrives</text>
+  <text x="92" y="246" class="p">• optional user_id + metadata</text>
+  <text x="92" y="266" class="p">• page_id pre-allocation</text>
+  <text x="92" y="286" class="p">• current memory state loaded</text>
+
+  <rect class="panel-b" x="350" y="170" width="250" height="155" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="372" y="202" class="h">Step 1: Decorate</text>
+  <text x="372" y="226" class="p">• _decorate() prompt build</text>
+  <text x="372" y="246" class="p">• abstract generation</text>
+  <text x="372" y="266" class="p">• header + decorated page text</text>
+  <text x="372" y="286" class="p">• graceful fallback on failure</text>
+
+  <rect class="panel-c" x="630" y="170" width="300" height="155" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="652" y="202" class="h">Step 2: Self-Edit Decision</text>
+  <text x="652" y="226" class="p">• _decide_operation() LLM call</text>
+  <text x="652" y="246" class="p">• ADD/UPDATE/DELETE/NOOP</text>
+  <text x="652" y="266" class="p">• temporal extraction (t_observed, t_valid, t_invalid)</text>
+  <text x="652" y="286" class="p">• entities/relations + tier intent</text>
+
+  <rect class="panel-a" x="960" y="170" width="300" height="155" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="982" y="202" class="h">Step 3: Apply Operation</text>
+  <text x="982" y="226" class="p">• add_entry / update_entry / delete_entry</text>
+  <text x="982" y="246" class="p">• version_of links for updates</text>
+  <text x="982" y="266" class="p">• lifecycle status transitions</text>
+  <text x="982" y="286" class="p">• memory_id emitted for provenance</text>
+
+  <rect class="panel-b" x="1290" y="170" width="240" height="155" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="1312" y="202" class="h">Step 4: Persist Page</text>
+  <text x="1312" y="226" class="p">• Page(header, content, meta)</text>
+  <text x="1312" y="246" class="p">• page_id + memory_id linkage</text>
+  <text x="1312" y="266" class="p">• temporal metadata mirrored</text>
+  <text x="1312" y="286" class="p">• user-scoped add-ons</text>
+
+  <rect class="panel-c" x="90" y="390" width="450" height="180" rx="16" fill="#FFFFFF" stroke="#BFD0EE"/>
+  <text x="118" y="424" class="h">Step 5: Graph Sync (Neo4j)</text>
+  <text x="118" y="448" class="p">• upsert Memory node with temporal/status props</text>
+  <text x="118" y="470" class="p">• add entities and semantic relations</text>
+  <text x="118" y="492" class="p">• create Episode node (event projection)</text>
+  <text x="118" y="514" class="p">• create Semantic fact nodes; fallback statement when relations absent</text>
+  <text x="118" y="536" class="p">• provenance links: UPDATES / EXTENDS / DERIVES</text>
+
+  <rect class="panel-a" x="570" y="390" width="460" height="180" rx="16" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="598" y="424" class="h">Step 6: Conflict Resolution</text>
+  <text x="598" y="448" class="p">• query_memories(entity neighborhood) for candidate contradictions</text>
+  <text x="598" y="470" class="p">• contradiction check prompt on existing vs new fact</text>
+  <text x="598" y="492" class="p">• supersede conflicting old memory with t_invalid = new t_observed</text>
+  <text x="598" y="514" class="p">• mark graph status as superseded to keep historical trace, avoid active pollution</text>
+  <text x="598" y="536" class="p">• deterministic lifecycle transition instead of silent overwrite</text>
+
+  <rect class="panel-b" x="1060" y="390" width="470" height="180" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="1088" y="424" class="h">Step 7: Profile + Return</text>
+  <text x="1088" y="448" class="p">• optional profile_agent.update_profile(user_id, message)</text>
+  <text x="1088" y="470" class="p">• refresh memory state snapshot for caller</text>
+  <text x="1088" y="492" class="p">• return MemoryUpdate(new_state, new_page, debug)</text>
+  <text x="1088" y="514" class="p">• write path finishes with both semantic and provenance consistency</text>
+  <text x="1088" y="536" class="p">• downstream retrieval sees updated lifecycle immediately</text>
+
+  <rect class="panel-c" x="260" y="640" width="1080" height="170" rx="16" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="292" y="674" class="h">Write-Path Guarantees</text>
+  <text x="292" y="698" class="p">1) every accepted write creates traceable provenance (page + memory + graph edges), 2) updates preserve lineage, 3) stale contradictions are actively demoted from active state.</text>
+  <text x="292" y="721" class="p">Bi-temporal fields provide historical auditability while retrieval-time filters preserve present-time correctness for agent responses.</text>
+  <text x="292" y="744" class="p">This is the core reason JITMIND avoids append-only memory rot in long-running production conversations.</text>
+
+  <rect x="292" y="763" width="220" height="34" rx="10" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="314" y="785" class="chip">provenance-complete writes</text>
+  <rect x="532" y="763" width="230" height="34" rx="10" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="554" y="785" class="chip">temporal + lifecycle safety</text>
+  <rect x="782" y="763" width="210" height="34" rx="10" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="804" y="785" class="chip">graph semantic richness</text>
+  <rect x="1012" y="763" width="250" height="34" rx="10" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="1034" y="785" class="chip">conflict-aware durability</text>
+
+  <path class="edge" marker-end="url(#arr)" d="M320 248 C335 248, 340 248, 350 248"/>
+  <path class="edge" marker-end="url(#arr)" d="M600 248 C615 248, 620 248, 630 248"/>
+  <path class="edge" marker-end="url(#arr)" d="M930 248 C945 248, 950 248, 960 248"/>
+  <path class="edge" marker-end="url(#arr)" d="M1260 248 C1275 248, 1280 248, 1290 248"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M1410 325 C1410 355, 1360 380, 1260 390"/>
+  <path class="edge" marker-end="url(#arr)" d="M1110 325 C1110 355, 1090 375, 980 390"/>
+  <path class="edge" marker-end="url(#arr)" d="M780 325 C780 355, 760 375, 730 390"/>
+  <path class="edge" marker-end="url(#arr)" d="M460 325 C430 355, 390 375, 330 390"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M540 480 C560 480, 560 480, 570 480"/>
+  <path class="edge" marker-end="url(#arr)" d="M1030 480 C1045 480, 1050 480, 1060 480"/>
+  <path class="edge" marker-end="url(#arr)" d="M800 570 C800 610, 800 625, 800 640"/>
+
+  <circle class="pulse" cx="790" cy="248" r="6" fill="#0EA5A0"><animate attributeName="r" values="5;8;5" dur="2.2s" repeatCount="indefinite"/></circle>
+  <circle class="pulse" cx="1250" cy="480" r="6" fill="#F59E0B"><animate attributeName="r" values="5;8;5" dur="2.6s" repeatCount="indefinite"/></circle>
+
+  <circle r="5" fill="#0EA5A0" opacity="0.86">
+    <animateMotion dur="7.2s" repeatCount="indefinite" path="M320 248 C335 248, 340 248, 350 248 C615 248, 620 248, 630 248 C945 248, 950 248, 960 248"/>
+  </circle>
+  <circle r="5" fill="#F59E0B" opacity="0.86">
+    <animateMotion dur="6.6s" repeatCount="indefinite" path="M540 480 C560 480, 560 480, 570 480 C1045 480, 1050 480, 1060 480 C800 610, 800 625, 800 640"/>
+  </circle>
+</svg>

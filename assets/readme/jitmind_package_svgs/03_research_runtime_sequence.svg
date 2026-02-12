@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Research Runtime Sequence</title>
+  <desc id="desc">Detailed animated flow of ResearchAgent iterative runtime with planning, retrieval fusion, self-rag criticism, and reflection loops.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8FCFF"/>
+      <stop offset="100%" stop-color="#EEF5FF"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0EA5A0"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <style>
+      .title { font: 800 38px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .sub { font: 600 19px Inter, Segoe UI, Arial, sans-serif; fill: #334155; }
+      .h { font: 800 17px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .p { font: 600 13px Inter, Segoe UI, Arial, sans-serif; fill: #1E293B; }
+      .chip { font: 800 12px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .edge { stroke: url(#flow); stroke-width: 4.5; fill: none; stroke-linecap: round; stroke-dasharray: 10 8; animation: dash 6.9s linear infinite; }
+      .panel-a, .panel-b, .panel-c { transform-box: fill-box; transform-origin: center; }
+      .panel-a { animation: floatA 6.3s ease-in-out infinite; }
+      .panel-b { animation: floatB 7.2s ease-in-out infinite; }
+      .panel-c { animation: floatC 8.0s ease-in-out infinite; }
+      .scan { opacity: 0.25; animation: scanX 9.1s linear infinite; }
+      .pulse { animation: pulse 2.5s ease-in-out infinite; }
+      @keyframes dash { to { stroke-dashoffset: -170; } }
+      @keyframes floatA { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+      @keyframes floatB { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+      @keyframes floatC { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+      @keyframes scanX { 0% { transform: translateX(-260px); } 100% { transform: translateX(1700px); } }
+      @keyframes pulse { 0%,100% { opacity: 0.45; } 50% { opacity: 1; } }
+    </style>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#0EA5A0"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="30" y="30" width="1540" height="840" rx="24" fill="#FFFFFF" stroke="#DDE7F7"/>
+  <rect class="scan" x="-260" y="156" width="220" height="5" rx="3" fill="url(#flow)"/>
+
+  <text x="70" y="95" class="title">ResearchAgent Runtime Loop (Operational Detail)</text>
+  <text x="70" y="128" class="sub">How question answering is iteratively planned, evidence-grounded, quality-checked, and refined before final output.</text>
+
+  <rect class="panel-a" x="70" y="170" width="230" height="150" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="92" y="202" class="h">Step 0: Input</text>
+  <text x="92" y="226" class="p">• request text</text>
+  <text x="92" y="246" class="p">• optional user_id</text>
+  <text x="92" y="266" class="p">• optional checkpoint_id</text>
+  <text x="92" y="286" class="p">• optional feedback score</text>
+
+  <rect class="panel-b" x="330" y="170" width="290" height="150" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="352" y="202" class="h">Step 1: Planning</text>
+  <text x="352" y="226" class="p">• build memory context (ranked + trimmed)</text>
+  <text x="352" y="246" class="p">• inject profile context when available</text>
+  <text x="352" y="266" class="p">• produce SearchPlan with tool routes</text>
+  <text x="352" y="286" class="p">• define keyword/vector/page/graph queries</text>
+
+  <rect class="panel-c" x="650" y="170" width="310" height="150" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="672" y="202" class="h">Step 2: Query Augmentation</text>
+  <text x="672" y="226" class="p">• HyDE optional hypothetical answer</text>
+  <text x="672" y="246" class="p">• append expanded semantic query</text>
+  <text x="672" y="266" class="p">• dynamic alpha pre-heuristics</text>
+  <text x="672" y="286" class="p">• token-pressure awareness starts</text>
+
+  <rect class="panel-a" x="990" y="170" width="260" height="150" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="1012" y="202" class="h">Step 3: Retrieval Mesh</text>
+  <text x="1012" y="226" class="p">• keyword channel</text>
+  <text x="1012" y="246" class="p">• vector channel</text>
+  <text x="1012" y="266" class="p">• page_index channel</text>
+  <text x="1012" y="286" class="p">• graph channel</text>
+
+  <rect class="panel-b" x="1280" y="170" width="250" height="150" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="1302" y="202" class="h">Step 4: Fusion</text>
+  <text x="1302" y="226" class="p">• deduplicate candidates</text>
+  <text x="1302" y="246" class="p">• compute RRF scores</text>
+  <text x="1302" y="266" class="p">• dynamic hybrid score</text>
+  <text x="1302" y="286" class="p">• tier boost application</text>
+
+  <rect class="panel-c" x="110" y="380" width="350" height="180" rx="16" fill="#FFFFFF" stroke="#BFD0EE"/>
+  <text x="136" y="414" class="h">Step 5: Quality Filters</text>
+  <text x="136" y="438" class="p">• temporal validity filter</text>
+  <text x="136" y="460" class="p">• stale/invalid evidence removed</text>
+  <text x="136" y="482" class="p">• optional rerank on top-N</text>
+  <text x="136" y="504" class="p">• final evidence ordering</text>
+  <text x="136" y="526" class="p">• track hit trace for replay</text>
+
+  <rect class="panel-a" x="490" y="380" width="360" height="180" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="516" y="414" class="h">Step 6: Integration</text>
+  <text x="516" y="438" class="p">• build evidence context block</text>
+  <text x="516" y="460" class="p">• integrate with prompt schema</text>
+  <text x="516" y="482" class="p">• generate grounded content</text>
+  <text x="516" y="504" class="p">• capture source references</text>
+  <text x="516" y="526" class="p">• update memory touch strength</text>
+
+  <rect class="panel-b" x="880" y="380" width="300" height="180" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="906" y="414" class="h">Step 7: Self-RAG Critic</text>
+  <text x="906" y="438" class="p">• ISREL: relevance check</text>
+  <text x="906" y="460" class="p">• ISSUP: support evidence check</text>
+  <text x="906" y="482" class="p">• ISUSE: usefulness check</text>
+  <text x="906" y="504" class="p">• force additional loop if failed</text>
+  <text x="906" y="526" class="p">• quality gate before stop</text>
+
+  <rect class="panel-c" x="1210" y="380" width="320" height="180" rx="16" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="1236" y="414" class="h">Step 8: Reflection Decision</text>
+  <text x="1236" y="438" class="p">• enough? stop condition</text>
+  <text x="1236" y="460" class="p">• generate new_request if gaps remain</text>
+  <text x="1236" y="482" class="p">• checkpoint state every N steps</text>
+  <text x="1236" y="504" class="p">• resume support for long runs</text>
+  <text x="1236" y="526" class="p">• iterate until enough or max_iters</text>
+
+  <rect class="panel-a" x="260" y="620" width="1080" height="190" rx="16" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="292" y="654" class="h">Completion Path and Learning Hooks</text>
+  <text x="292" y="678" class="p">• output: ResearchOutput(integrated_memory, raw_memory with iteration trace, self-rag decisions, and optional reflection artifact)</text>
+  <text x="292" y="701" class="p">• optional post_reflection writes long-tier procedural memory when enabled</text>
+  <text x="292" y="724" class="p">• replay buffer stores query, retrieved snippets, answer, feedback for future offline tuning and regression diagnostics</text>
+  <text x="292" y="747" class="p">• async variant mirrors logic while parallelizing retrieval tasks for lower wall-clock latency</text>
+
+  <rect x="292" y="766" width="220" height="34" rx="10" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="314" y="788" class="chip">iterative completeness</text>
+  <rect x="532" y="766" width="220" height="34" rx="10" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="554" y="788" class="chip">evidence groundedness</text>
+  <rect x="772" y="766" width="220" height="34" rx="10" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="794" y="788" class="chip">temporal correctness</text>
+  <rect x="1012" y="766" width="300" height="34" rx="10" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="1034" y="788" class="chip">resumable and analyzable execution</text>
+
+  <path class="edge" marker-end="url(#arr)" d="M300 246 C315 246, 320 246, 330 246"/>
+  <path class="edge" marker-end="url(#arr)" d="M620 246 C635 246, 640 246, 650 246"/>
+  <path class="edge" marker-end="url(#arr)" d="M960 246 C975 246, 980 246, 990 246"/>
+  <path class="edge" marker-end="url(#arr)" d="M1250 246 C1265 246, 1270 246, 1280 246"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M1405 320 C1405 350, 1320 365, 1210 410"/>
+  <path class="edge" marker-end="url(#arr)" d="M1120 320 C1120 350, 1080 365, 1030 380"/>
+  <path class="edge" marker-end="url(#arr)" d="M780 320 C780 350, 730 365, 670 380"/>
+  <path class="edge" marker-end="url(#arr)" d="M450 320 C430 350, 360 365, 290 380"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M460 470 C470 470, 475 470, 490 470"/>
+  <path class="edge" marker-end="url(#arr)" d="M850 470 C865 470, 870 470, 880 470"/>
+  <path class="edge" marker-end="url(#arr)" d="M1180 470 C1195 470, 1200 470, 1210 470"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M1370 560 C1370 590, 1320 605, 1240 620"/>
+  <path class="edge" marker-end="url(#arr)" d="M1210 430 C1080 340, 860 330, 620 246"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M800 560 C800 590, 800 605, 800 620"/>
+
+  <circle class="pulse" cx="1115" cy="246" r="6" fill="#0EA5A0"><animate attributeName="r" values="5;8;5" dur="2.2s" repeatCount="indefinite"/></circle>
+  <circle class="pulse" cx="1030" cy="470" r="6" fill="#F59E0B"><animate attributeName="r" values="5;8;5" dur="2.7s" repeatCount="indefinite"/></circle>
+
+  <circle r="5" fill="#0EA5A0" opacity="0.86">
+    <animateMotion dur="7.4s" repeatCount="indefinite" path="M300 246 C315 246, 320 246, 330 246 C635 246, 640 246, 650 246 C975 246, 980 246, 990 246 C1265 246, 1270 246, 1280 246"/>
+  </circle>
+  <circle r="5" fill="#F59E0B" opacity="0.86">
+    <animateMotion dur="6.8s" repeatCount="indefinite" path="M460 470 C470 470, 475 470, 490 470 C865 470, 870 470, 880 470 C1195 470, 1200 470, 1210 470 C800 590, 800 605, 800 620"/>
+  </circle>
+</svg>

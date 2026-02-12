@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">Tests Quality Flow</title>
+  <desc id="desc">Simple test workflow for TTL unit tests, integration tests, and expected quality gates.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8FCFF"/>
+      <stop offset="100%" stop-color="#EEF5FF"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0EA5A0"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <style>
+      .title { font: 800 34px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .sub { font: 600 18px Inter, Segoe UI, Arial, sans-serif; fill: #334155; }
+      .h { font: 800 17px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .p { font: 600 13px Inter, Segoe UI, Arial, sans-serif; fill: #1E293B; }
+      .edge { stroke: url(#flow); stroke-width: 4; fill: none; stroke-linecap: round; stroke-dasharray: 10 8; animation: dash 7s linear infinite; }
+      .panel { transform-box: fill-box; transform-origin: center; animation: float 7s ease-in-out infinite; }
+      @keyframes dash { to { stroke-dashoffset: -150; } }
+      @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+    </style>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#0EA5A0"/>
+    </marker>
+  </defs>
+
+  <rect width="1400" height="760" fill="url(#bg)"/>
+  <rect x="28" y="28" width="1344" height="704" rx="22" fill="#FFFFFF" stroke="#DDE7F7"/>
+
+  <text x="70" y="92" class="title">Test Quality Flow (TTL + Regression Safety)</text>
+  <text x="70" y="122" class="sub">Simple visual map for unit tests, integration checks, and expected outcomes.</text>
+
+  <rect class="panel" x="90" y="180" width="280" height="170" rx="14" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="114" y="214" class="h">1) Unit Tests</text>
+  <text x="114" y="238" class="p">• test_ttl_memory.py</text>
+  <text x="114" y="260" class="p">• test_ttl_page.py</text>
+  <text x="114" y="282" class="p">• core behavior assertions</text>
+  <text x="114" y="304" class="p">• backward compatibility checks</text>
+
+  <rect class="panel" x="420" y="180" width="280" height="170" rx="14" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="444" y="214" class="h">2) Integration Tests</text>
+  <text x="444" y="238" class="p">• test_ttl_before_after.py</text>
+  <text x="444" y="260" class="p">• test_ttl_standalone.py</text>
+  <text x="444" y="282" class="p">• growth-control validation</text>
+  <text x="444" y="304" class="p">• end-to-end TTL sanity</text>
+
+  <rect class="panel" x="750" y="180" width="280" height="170" rx="14" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="774" y="214" class="h">3) Runner</text>
+  <text x="774" y="238" class="p">• run_ttl_tests.py</text>
+  <text x="774" y="260" class="p">• grouped execution path</text>
+  <text x="774" y="282" class="p">• quick local quality gate</text>
+  <text x="774" y="304" class="p">• report-friendly output</text>
+
+  <rect class="panel" x="1080" y="180" width="240" height="170" rx="14" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="1104" y="214" class="h">4) Outcome</text>
+  <text x="1104" y="238" class="p">• stable TTL behavior</text>
+  <text x="1104" y="260" class="p">• safe cleanup logic</text>
+  <text x="1104" y="282" class="p">• persistence confidence</text>
+  <text x="1104" y="304" class="p">• regression protection</text>
+
+  <rect x="200" y="430" width="1000" height="220" rx="16" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="230" y="468" class="h">Command Sequence</text>
+  <text x="230" y="494" class="p">python3 -m pytest tests/test_ttl_memory.py -v</text>
+  <text x="230" y="518" class="p">python3 -m pytest tests/test_ttl_page.py -v</text>
+  <text x="230" y="542" class="p">python3 -m pytest tests/test_ttl_before_after.py -v</text>
+  <text x="230" y="566" class="p">python3 -m pytest tests/test_ttl_standalone.py -v</text>
+  <text x="230" y="590" class="p">python3 -m pytest tests -v</text>
+
+  <path class="edge" marker-end="url(#arr)" d="M370 265 C390 265, 400 265, 420 265"/>
+  <path class="edge" marker-end="url(#arr)" d="M700 265 C720 265, 730 265, 750 265"/>
+  <path class="edge" marker-end="url(#arr)" d="M1030 265 C1050 265, 1060 265, 1080 265"/>
+  <path class="edge" marker-end="url(#arr)" d="M1200 350 C1200 390, 1070 410, 900 430"/>
+</svg>
