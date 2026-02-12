@@ -5,17 +5,20 @@
 </p>
 
 <p align="center">
-  <b>Just-In-Time Memory Infrastructure for Agentic Systems</b><br/>
-  Bi-temporal memory, self-editing lifecycle, graph semantics, hybrid retrieval fusion, and iterative research loops.
+  <b>Just-in-time memory system for AI agents</b><br/>
+  Self-editing bi-temporal memory + temporal graph reasoning + an iterative Plan -> Search -> Integrate -> Reflect loop for evidence-grounded answers.
 </p>
 
 <p align="center">
-  <a href="https://github.com/DivyamTalwar">
-    <b>Author: Divyam Talwar</b>
-  </a>
+  It fuses BM25 + dense + graph retrieval with robust ranking + provenance so long-running agents stay accurate as facts change.
 </p>
 
-## Executive Summary
+<p align="center">
+  <a href="https://github.com/DivyamTalwar"><b>Author: Divyam Talwar</b></a>
+</p>
+
+<a id="features"></a>
+## 🚀 Features
 
 JITMIND is a memory-first runtime for AI agents that need durable knowledge, temporal correctness, and retrieval that works under real context pressure.
 
@@ -37,7 +40,7 @@ This README is intentionally long and deep. It is meant to make a new contributo
 
 ---
 
-## Who This Repo Is For
+### Who This Repo Is For
 
 - Agent framework developers who need long-horizon memory that does not rot.
 - Applied AI engineers shipping production assistants with dynamic context limits.
@@ -46,7 +49,7 @@ This README is intentionally long and deep. It is meant to make a new contributo
 
 ---
 
-## What Exists Today
+### What's Included
 
 This repository currently includes:
 
@@ -59,42 +62,155 @@ This repository currently includes:
 
 Notes on current state:
 
-- Root `requirements.txt` is not present in this snapshot, so dependencies are installed explicitly.
+- Dependencies are declared in `requirements.txt` and `pyproject.toml`.
 - Test coverage is strongest for TTL/persistence behavior; broader end-to-end benchmark automation is present as evaluation entrypoints and should be extended per deployment needs.
 
 ---
 
-## Table of Contents
+### 📑 Table of Contents
 
-1. [Visual Identity and Embedded Assets](#visual-identity-and-embedded-assets)
-2. [System Thesis and Design Principles](#system-thesis-and-design-principles)
-3. [High-Level Architecture](#high-level-architecture)
-4. [End-to-End Lifecycle](#end-to-end-lifecycle)
-5. [Data Contracts and Schemas](#data-contracts-and-schemas)
-6. [Memory Write Path Deep Dive](#memory-write-path-deep-dive)
-7. [Research Path Deep Dive](#research-path-deep-dive)
-8. [Bi-Temporal Semantics and Temporal Filtering](#bi-temporal-semantics-and-temporal-filtering)
-9. [Self-Editing Memory and Conflict Resolution](#self-editing-memory-and-conflict-resolution)
-10. [Hierarchical Tiers and Decay Mechanics](#hierarchical-tiers-and-decay-mechanics)
-11. [Retrieval, Fusion, and Ranking Math](#retrieval-fusion-and-ranking-math)
-12. [Graph Memory and Knowledge Semantics](#graph-memory-and-knowledge-semantics)
-13. [Ingestion Pipeline and Document Processing](#ingestion-pipeline-and-document-processing)
-14. [User Profile Modeling](#user-profile-modeling)
-15. [Maintenance Jobs: Consolidation and Summarization](#maintenance-jobs-consolidation-and-summarization)
-16. [Reliability: Async, Checkpointing, Replay](#reliability-async-checkpointing-replay)
-17. [Evaluation and Testing](#evaluation-and-testing)
-18. [Configuration Reference](#configuration-reference)
-19. [Repository Structure](#repository-structure)
-20. [Quickstart](#quickstart)
-21. [Operational Playbook for Production](#operational-playbook-for-production)
-22. [Performance Tuning Guide](#performance-tuning-guide)
-23. [Known Gaps and Recommended Next Steps](#known-gaps-and-recommended-next-steps)
-24. [FAQ](#faq)
-25. [Citation](#citation)
+1. [Features](#features)
+2. [Installation & Usage](#installation-and-usage)
+3. [Configuration](#configuration)
+4. [Usage](#usage)
+5. [Visual Identity and Embedded Assets](#visual-identity-and-embedded-assets)
+6. [System Thesis and Design Principles](#system-thesis-and-design-principles)
+7. [High-Level Architecture](#high-level-architecture)
+8. [End-to-End Lifecycle](#end-to-end-lifecycle)
+9. [Data Contracts and Schemas](#data-contracts-and-schemas)
+10. [Memory Write Path Deep Dive](#memory-write-path-deep-dive)
+11. [Research Path Deep Dive](#research-path-deep-dive)
+12. [Bi-Temporal Semantics and Temporal Filtering](#bi-temporal-semantics-and-temporal-filtering)
+13. [Self-Editing Memory and Conflict Resolution](#self-editing-memory-and-conflict-resolution)
+14. [Hierarchical Tiers and Decay Mechanics](#hierarchical-tiers-and-decay-mechanics)
+15. [Retrieval, Fusion, and Ranking Math](#retrieval-fusion-and-ranking-math)
+16. [Graph Memory and Knowledge Semantics](#graph-memory-and-knowledge-semantics)
+17. [Ingestion Pipeline and Document Processing](#ingestion-pipeline-and-document-processing)
+18. [User Profile Modeling](#user-profile-modeling)
+19. [Maintenance Jobs: Consolidation and Summarization](#maintenance-jobs-consolidation-and-summarization)
+20. [Reliability: Async, Checkpointing, Replay](#reliability-async-checkpointing-replay)
+21. [Evaluation and Testing](#evaluation-and-testing)
+22. [Configuration Reference](#configuration-reference)
+23. [Repository Structure](#repository-structure)
+24. [Quickstart](#quickstart)
+25. [Operational Playbook for Production](#operational-playbook-for-production)
+26. [Performance Tuning Guide](#performance-tuning-guide)
+27. [Known Gaps and Recommended Next Steps](#known-gaps-and-recommended-next-steps)
+28. [FAQ](#faq)
+29. [Additional Documentation in This Repo](#additional-documentation-in-this-repo)
+30. [License](#license)
+31. [Acknowledgments](#acknowledgments)
+32. [Support](#support)
 
 ---
 
-## Visual Identity and Embedded Assets
+<a id="installation-and-usage"></a>
+## 📦 Installation & Usage
+
+### 🎯 For End Users (Quick Start)
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install --upgrade pip
+
+# install JITMIND (editable for local dev)
+pip install -e .
+
+# explicit dependency install (keeps environments reproducible)
+pip install -r requirements.txt
+```
+
+Optional sparse retriever dependency:
+
+```bash
+pip install pyserini
+```
+
+Export required environment variables:
+
+```bash
+export OPENROUTER_API_KEY="..."
+export OPENROUTER_BASE_URL="https://openrouter.ai/api/v1"
+
+export COHERE_API_KEY="..."
+export COHERE_BASE_URL="https://api.cohere.com"
+```
+
+Optional: local Neo4j (recommended for development)
+
+```bash
+./scripts/neo4j_local_up.sh
+
+export NEO4J_URI="bolt://localhost:7687"
+export NEO4J_USERNAME="neo4j"
+export NEO4J_PASSWORD="jitmind_local_password"
+export NEO4J_DATABASE="neo4j"
+```
+
+Run included examples:
+
+```bash
+python3 examples/quickstart/basic_usage.py
+python3 examples/quickstart/model_usage.py
+python3 examples/quickstart/ttl_usage.py
+```
+
+Run tests (unit + optional live E2E):
+
+```bash
+./scripts/test_all.sh
+```
+
+Optional heavier live stress harness:
+
+```bash
+python3 scripts/e2e_stress_live_test.py
+```
+
+### 🛠️ For Developers (Build From Source)
+
+```bash
+# dev tools + evaluation extras
+pip install -e ".[dev,eval]"
+
+# run unit tests
+python3 -m pytest -q
+```
+
+---
+
+<a id="configuration"></a>
+## ⚙️ Configuration
+
+JITMIND is environment-first.
+
+Minimum setup:
+
+- Generation: `OPENROUTER_API_KEY` (+ optional `OPENROUTER_BASE_URL`)
+- Embeddings/rerank: `COHERE_API_KEY`
+- Graph memory (optional): `NEO4J_URI`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`, `NEO4J_DATABASE`
+
+For the full configuration surface (including model knobs, retrieval fusion weights, temporal windows, tiering/decay, and graph traversal limits), see:
+
+- [Configuration Reference](#configuration-reference)
+- `jitmind/config/`
+
+---
+
+<a id="usage"></a>
+## 🚀 Usage
+
+Everything below this point is the deep technical walkthrough: architecture, lifecycle, ranking math, graph semantics, ingestion, reliability, and operational guidance.
+
+If you only want to run it quickly, start with:
+
+- [Installation & Usage](#installation-and-usage)
+- [Quickstart](#quickstart)
+
+---
+
+### Visual Identity and Embedded Assets
 
 ### Storyboard Frames
 
@@ -140,7 +256,7 @@ All frames below use the same visual language: light background, controlled acce
 
 ---
 
-## System Thesis and Design Principles
+### System Thesis and Design Principles
 
 ### Thesis
 
@@ -172,7 +288,7 @@ That means every new fact can impact old facts, retrieval must be time-aware, an
 
 ---
 
-## High-Level Architecture
+### High-Level Architecture
 
 JITMIND has two core actors:
 
@@ -208,7 +324,7 @@ flowchart LR
 
 ---
 
-## End-to-End Lifecycle
+### End-to-End Lifecycle
 
 ### Write lifecycle
 
@@ -260,7 +376,7 @@ sequenceDiagram
 
 ---
 
-## Data Contracts and Schemas
+### Data Contracts and Schemas
 
 ### Memory contracts
 
@@ -297,7 +413,7 @@ sequenceDiagram
 
 ---
 
-## Memory Write Path Deep Dive
+### Memory Write Path Deep Dive
 
 File: `jitmind/agents/memory_agent.py`
 
@@ -361,7 +477,7 @@ If profile agent is enabled and `user_id` is provided, profile dimensions are up
 
 ---
 
-## Research Path Deep Dive
+### Research Path Deep Dive
 
 File: `jitmind/agents/research_agent.py`
 
@@ -421,7 +537,7 @@ When enabled:
 
 ---
 
-## Bi-Temporal Semantics and Temporal Filtering
+### Bi-Temporal Semantics and Temporal Filtering
 
 ### Why bi-temporal
 
@@ -456,7 +572,7 @@ Result:
 
 ---
 
-## Self-Editing Memory and Conflict Resolution
+### Self-Editing Memory and Conflict Resolution
 
 ### Why append-only fails
 
@@ -481,7 +597,7 @@ This yields deterministic state transitions even when input stream is noisy.
 
 ---
 
-## Hierarchical Tiers and Decay Mechanics
+### Hierarchical Tiers and Decay Mechanics
 
 File: `jitmind/schemas/advanced_memory.py`
 
@@ -522,7 +638,7 @@ This keeps repeatedly useful memories alive and naturally fades cold ones.
 
 ---
 
-## Retrieval, Fusion, and Ranking Math
+### Retrieval, Fusion, and Ranking Math
 
 ### Retrieval channels
 
@@ -574,7 +690,7 @@ Cohere reranker score is merged with fused score:
 
 ---
 
-## Graph Memory and Knowledge Semantics
+### Graph Memory and Knowledge Semantics
 
 Files:
 
@@ -633,7 +749,7 @@ This is especially useful for multi-hop association where keyword/dense retrieva
 
 ---
 
-## Ingestion Pipeline and Document Processing
+### Ingestion Pipeline and Document Processing
 
 File: `jitmind/ingestion/pipeline.py`
 
@@ -670,7 +786,7 @@ If this layer is weak, downstream retrieval quality collapses regardless of mode
 
 ---
 
-## User Profile Modeling
+### User Profile Modeling
 
 Files:
 
@@ -695,7 +811,7 @@ This enables better personalization without polluting global memory graph semant
 
 ---
 
-## Maintenance Jobs: Consolidation and Summarization
+### Maintenance Jobs: Consolidation and Summarization
 
 ### Memory consolidation
 
@@ -734,7 +850,7 @@ Purpose:
 
 ---
 
-## Reliability: Async, Checkpointing, Replay
+### Reliability: Async, Checkpointing, Replay
 
 ### Async execution
 
@@ -762,7 +878,7 @@ Capabilities:
 
 ---
 
-## Evaluation and Testing
+### Evaluation and Testing
 
 ### Evaluation entrypoints
 
@@ -808,7 +924,7 @@ Recommended additional test layers:
 
 ---
 
-## Configuration Reference
+### Configuration Reference
 
 Environment variables discovered from implementation:
 
@@ -856,7 +972,7 @@ Environment variables discovered from implementation:
 
 ---
 
-## Repository Structure
+### Repository Structure
 
 ```text
 .
@@ -893,7 +1009,7 @@ Environment variables discovered from implementation:
 
 ---
 
-## Quickstart
+### Quickstart
 
 ### 1) Create virtual environment
 
@@ -905,11 +1021,11 @@ python3 -m pip install --upgrade pip
 
 ### 2) Install package and dependencies
 
-Because `requirements.txt` is not present in this snapshot, install runtime dependencies explicitly:
+Install the package and dependencies:
 
 ```bash
 pip install -e .
-pip install openai cohere neo4j faiss-cpu numpy pydantic tqdm scikit-learn pytest
+pip install -r requirements.txt
 ```
 
 Optional sparse retriever dependency:
@@ -1073,7 +1189,7 @@ python3 scripts/e2e_stress_live_test.py
 
 ---
 
-## Operational Playbook for Production
+### Operational Playbook for Production
 
 ### Deployment profiles
 
@@ -1125,7 +1241,7 @@ Runtime:
 
 ---
 
-## Performance Tuning Guide
+### Performance Tuning Guide
 
 ### If latency is too high
 
@@ -1159,11 +1275,11 @@ Runtime:
 
 ---
 
-## Known Gaps and Recommended Next Steps
+### Known Gaps and Recommended Next Steps
 
 Current implementation is strong in architecture depth, but the following improvements would make it even more production-complete:
 
-1. Add a formal root dependency manifest (`requirements.txt` or `pyproject.toml`) for one-command install parity.
+1. Keep dependency manifests aligned (and consider adding a pinned lockfile for fully reproducible installs).
 2. Expand automated tests beyond TTL:
    - memory op contracts
    - retrieval fusion regression
@@ -1175,7 +1291,7 @@ Current implementation is strong in architecture depth, but the following improv
 
 ---
 
-## FAQ
+### FAQ
 
 ### Is JITMIND only a graph memory system?
 
@@ -1199,7 +1315,7 @@ No. Generation is OpenAI-compatible API based, with OpenRouter defaults and vLLM
 
 ---
 
-## Additional Documentation in This Repo
+### Additional Documentation in This Repo
 
 - `IMPLEMENTATION_DEEP_DIVE.md`
 - `IMPLEMENTATION_DEEP_DIVE_V2.md`
@@ -1209,7 +1325,23 @@ No. Generation is OpenAI-compatible API based, with OpenRouter defaults and vLLM
 
 ---
 
-## Author
+<a id="license"></a>
+## 📄 License
 
-Divyam Talwar  
-`github.com/DivyamTalwar`
+MIT License. See `LICENSE`.
+
+---
+
+<a id="acknowledgments"></a>
+## 🙏 Acknowledgments
+
+Thanks to the open-source ecosystem that makes modern Python + LLM tooling possible.
+
+---
+
+<a id="support"></a>
+## 📞 Support
+
+- Repo: `github.com/DivyamTalwar/JITMIND`
+- Author: Divyam Talwar (`github.com/DivyamTalwar`)
+- Bugs/requests: open a GitHub issue with repro steps, logs, and your config (redact secrets)

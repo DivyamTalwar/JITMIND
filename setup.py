@@ -9,12 +9,14 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 setup(
     name="jitmind",
     version="0.1.0",
-    author="JITMind Team",
-    author_email="zhengliu1026@gmail.com",
-    description="A general memory system for agents, powered by deep-research",
+    author="Divyam Talwar",
+    description=(
+        "Just-in-time memory system for AI agents with self-editing bi-temporal memory, "
+        "temporal graph reasoning, and an iterative Plan->Search->Integrate->Reflect loop."
+    ),
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/VectorSpaceLab/jitmind",
+    url="https://github.com/DivyamTalwar/JITMIND",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",

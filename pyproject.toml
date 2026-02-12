@@ -5,12 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "jitmind"
 version = "0.1.0"
-description = "A general memory system for agents, powered by deep-research"
+description = "Just-in-time memory system for AI agents with self-editing bi-temporal memory and temporal graph reasoning."
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
-    {name = "JITMind Team", email = "zhengliu1026@gmail.com"},
+    {name = "Divyam Talwar"},
 ]
 keywords = ["ai", "memory", "agent", "llm", "nlp"]
 classifiers = [
@@ -53,9 +53,9 @@ eval = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/VectorSpaceLab/jitmind"
-Repository = "https://github.com/VectorSpaceLab/jitmind"
-Issues = "https://github.com/VectorSpaceLab/jitmind/issues"
+Homepage = "https://github.com/DivyamTalwar/JITMIND"
+Repository = "https://github.com/DivyamTalwar/JITMIND"
+Issues = "https://github.com/DivyamTalwar/JITMIND/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]
