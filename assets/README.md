@@ -18,7 +18,6 @@ Keeping these assets centralized prevents drift in visual language and keeps doc
 ```text
 assets/
 |-- logo.png
-|-- jitmind_system_architecture.png
 `-- readme/
     |-- root_readme_images/               # root README generated image set
     |-- final_svgs/                       # root README animated SVG set
@@ -33,7 +32,6 @@ assets/
 
 ### Root README
 
-- Uses `assets/logo.png`
 - Uses `assets/readme/root_readme_images/*`
 - Uses `assets/readme/final_svgs/*`
 

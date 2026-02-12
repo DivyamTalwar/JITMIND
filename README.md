@@ -1,21 +1,17 @@
+<div align="center">
+
 # JITMIND
 
-<p align="center">
-  <img src="assets/logo.png" alt="JITMIND logo" width="180" />
-</p>
+### Just-in-time memory system for AI agents
 
-<p align="center">
-  <b>Just-in-time memory system for AI agents</b><br/>
-  Self-editing bi-temporal memory + temporal graph reasoning + an iterative Plan -> Search -> Integrate -> Reflect loop for evidence-grounded answers.
-</p>
+Self-editing bi-temporal memory + temporal graph reasoning + an iterative Plan -> Search -> Integrate -> Reflect loop for evidence-grounded answers.  
+It fuses BM25 + dense + graph retrieval with robust ranking + provenance so long-running agents stay accurate as facts change.
 
-<p align="center">
-  It fuses BM25 + dense + graph retrieval with robust ranking + provenance so long-running agents stay accurate as facts change.
-</p>
+<b>Author:</b> <a href="https://github.com/DivyamTalwar">Divyam Talwar</a>
 
-<p align="center">
-  <a href="https://github.com/DivyamTalwar"><b>Author: Divyam Talwar</b></a>
-</p>
+<br/>
+
+</div>
 
 <a id="features"></a>
 ## 🚀 Features

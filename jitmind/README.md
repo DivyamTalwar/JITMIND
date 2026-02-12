@@ -1,13 +1,14 @@
+<div align="center">
+
 # JITMIND Package Handbook
 
-<p align="center">
-  <img src="../assets/logo.png" alt="JITMIND logo" width="170" />
-</p>
+### Deep technical documentation for the Python package at `jitmind/`
 
-<p align="center">
-  <b>Deep technical documentation for the Python package at <code>jitmind/</code></b><br/>
-  Memory lifecycle control, temporal validity, graph semantics, and retrieval fusion for production-grade agent memory systems.
-</p>
+Memory lifecycle control, temporal validity, graph semantics, and retrieval fusion for production-grade agent memory systems.
+
+<br/>
+
+</div>
 
 ---
 
