@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Retrieval Scoring Engine</title>
+  <desc id="desc">Formula-level explanation of RRF, dynamic alpha hybrid, tier boost, reranking, and temporal gating in JITMind.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8FCFF"/>
+      <stop offset="100%" stop-color="#EEF5FF"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0EA5A0"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <style>
+      .title { font: 800 38px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .sub { font: 600 19px Inter, Segoe UI, Arial, sans-serif; fill: #334155; }
+      .h { font: 800 17px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .p { font: 600 13px Inter, Segoe UI, Arial, sans-serif; fill: #1E293B; }
+      .f { font: 700 15px Menlo, Consolas, Monaco, monospace; fill: #0B0F19; }
+      .chip { font: 800 12px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .edge { stroke: url(#flow); stroke-width: 4.2; fill: none; stroke-linecap: round; stroke-dasharray: 10 8; animation: dash 7s linear infinite; }
+      .panel-a, .panel-b, .panel-c { transform-box: fill-box; transform-origin: center; }
+      .panel-a { animation: floatA 6.2s ease-in-out infinite; }
+      .panel-b { animation: floatB 7.0s ease-in-out infinite; }
+      .panel-c { animation: floatC 8.2s ease-in-out infinite; }
+      .scan { opacity: 0.24; animation: scanX 9.2s linear infinite; }
+      .pulse { animation: pulse 2.5s ease-in-out infinite; }
+      @keyframes dash { to { stroke-dashoffset: -170; } }
+      @keyframes floatA { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+      @keyframes floatB { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+      @keyframes floatC { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+      @keyframes scanX { 0% { transform: translateX(-260px); } 100% { transform: translateX(1700px); } }
+      @keyframes pulse { 0%,100% { opacity: 0.45; } 50% { opacity: 1; } }
+    </style>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#0EA5A0"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="30" y="30" width="1540" height="840" rx="24" fill="#FFFFFF" stroke="#DDE7F7"/>
+  <rect class="scan" x="-260" y="156" width="220" height="5" rx="3" fill="url(#flow)"/>
+
+  <text x="70" y="95" class="title">Retrieval Scoring Engine (Math + Flow)</text>
+  <text x="70" y="128" class="sub">Detailed score composition pipeline used by ResearchAgent before answer integration.</text>
+
+  <rect class="panel-a" x="70" y="170" width="300" height="190" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="94" y="202" class="h">Inputs</text>
+  <text x="94" y="226" class="p">• hits from keyword/vector/page_index/graph</text>
+  <text x="94" y="248" class="p">• per-tool rank and native score</text>
+  <text x="94" y="270" class="p">• page_id linkage to memory_id</text>
+  <text x="94" y="292" class="p">• query text for intent heuristics</text>
+  <text x="94" y="314" class="p">• tier + temporal metadata from stores</text>
+
+  <rect class="panel-b" x="400" y="170" width="360" height="190" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="424" y="202" class="h">Stage 1: RRF Fusion</text>
+  <text x="424" y="226" class="p">per-item aggregate over tool rankings:</text>
+  <text x="424" y="250" class="f">RRF(item) = SUM_i 1 / (k + rank_i + 1)</text>
+  <text x="424" y="274" class="p">• robust cross-channel merge even if raw score scales differ</text>
+  <text x="424" y="296" class="p">• dedup by page_id with best candidate retained</text>
+  <text x="424" y="318" class="p">• produces stable baseline ranking surface</text>
+
+  <rect class="panel-c" x="790" y="170" width="340" height="190" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="814" y="202" class="h">Stage 2: Dynamic Hybrid</text>
+  <text x="814" y="226" class="p">dense/sparse balancing by query type:</text>
+  <text x="814" y="250" class="f">Hybrid = alpha*dense + (1-alpha)*sparse</text>
+  <text x="814" y="274" class="p">• keyword-heavy short query -> lower alpha</text>
+  <text x="814" y="296" class="p">• semantic long query -> higher alpha</text>
+  <text x="814" y="318" class="p">• fallback balanced alpha for mixed intent</text>
+
+  <rect class="panel-a" x="1160" y="170" width="370" height="190" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="1184" y="202" class="h">Stage 3: Tier + Retention Boost</text>
+  <text x="1184" y="226" class="p">score amplification from memory quality:</text>
+  <text x="1184" y="250" class="f">Boosted = BaseScore * TierWeight * Retention</text>
+  <text x="1184" y="274" class="p">• tier weights: long 1.5, mid 1.2, short 1.0</text>
+  <text x="1184" y="296" class="p">• retention from exp(-t/S) decay model</text>
+  <text x="1184" y="318" class="p">• rewards durable, repeatedly useful memory</text>
+
+  <rect class="panel-b" x="90" y="410" width="470" height="180" rx="16" fill="#FFFFFF" stroke="#BFD0EE"/>
+  <text x="118" y="444" class="h">Stage 4: Temporal Validity Gate</text>
+  <text x="118" y="468" class="p">• reject evidence with t_valid in future</text>
+  <text x="118" y="490" class="p">• reject evidence with t_invalid &lt;= now</text>
+  <text x="118" y="512" class="p">• keeps historical records stored, but excludes stale facts from current reasoning</text>
+  <text x="118" y="534" class="p">• operationally prevents answer pollution from superseded facts</text>
+
+  <rect class="panel-c" x="590" y="410" width="440" height="180" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="618" y="444" class="h">Stage 5: Optional Reranking</text>
+  <text x="618" y="468" class="p">cross-encoder reranker on top-N candidates:</text>
+  <text x="618" y="492" class="f">Final = Boosted + rerank_weight * rerank_score</text>
+  <text x="618" y="516" class="p">• higher precision at additional latency cost</text>
+  <text x="618" y="538" class="p">• enabled per deployment profile and p95 budget</text>
+
+  <rect class="panel-a" x="1060" y="410" width="470" height="180" rx="16" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="1088" y="444" class="h">Stage 6: Context Assembly</text>
+  <text x="1088" y="468" class="p">• final sorted hits become evidence_context for integration prompt</text>
+  <text x="1088" y="490" class="p">• source IDs preserved for answer explainability and traceability</text>
+  <text x="1088" y="512" class="p">• top evidence touch() updates memory strength reinforcement</text>
+  <text x="1088" y="534" class="p">• hit trace captured for replay and diagnostics</text>
+
+  <rect class="panel-b" x="240" y="640" width="1120" height="170" rx="16" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="272" y="674" class="h">Why This Composition Matters</text>
+  <text x="272" y="698" class="p">RRF solves score-scale incompatibility, dynamic alpha adapts to query intent, tier boost prioritizes durable knowledge, temporal gating enforces present-time correctness,</text>
+  <text x="272" y="721" class="p">and optional reranking improves precision. Combined, these stages make retrieval robust across lexical, semantic, relational, and temporal question classes.</text>
+  <text x="272" y="744" class="p">This stack is intentionally modular so quality and latency can be tuned independently for research, internal tools, or production assistant workloads.</text>
+
+  <rect x="272" y="763" width="210" height="34" rx="10" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="294" y="785" class="chip">score-scale robustness</text>
+  <rect x="502" y="763" width="210" height="34" rx="10" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="524" y="785" class="chip">intent adaptivity</text>
+  <rect x="732" y="763" width="220" height="34" rx="10" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="754" y="785" class="chip">temporal trustworthiness</text>
+  <rect x="972" y="763" width="360" height="34" rx="10" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="994" y="785" class="chip">precision-latency control for production profiles</text>
+
+  <path class="edge" marker-end="url(#arr)" d="M370 250 C385 250, 390 250, 400 250"/>
+  <path class="edge" marker-end="url(#arr)" d="M760 250 C775 250, 780 250, 790 250"/>
+  <path class="edge" marker-end="url(#arr)" d="M1130 250 C1145 250, 1150 250, 1160 250"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M1345 360 C1345 390, 1270 405, 1180 410"/>
+  <path class="edge" marker-end="url(#arr)" d="M960 360 C960 390, 960 405, 920 410"/>
+  <path class="edge" marker-end="url(#arr)" d="M580 360 C580 390, 520 405, 430 410"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M560 500 C570 500, 575 500, 590 500"/>
+  <path class="edge" marker-end="url(#arr)" d="M1030 500 C1040 500, 1045 500, 1060 500"/>
+  <path class="edge" marker-end="url(#arr)" d="M1295 590 C1295 620, 1230 635, 1120 640"/>
+  <path class="edge" marker-end="url(#arr)" d="M820 590 C820 620, 820 630, 820 640"/>
+
+  <circle class="pulse" cx="950" cy="250" r="6" fill="#0EA5A0"><animate attributeName="r" values="5;8;5" dur="2.4s" repeatCount="indefinite"/></circle>
+  <circle class="pulse" cx="810" cy="500" r="6" fill="#F59E0B"><animate attributeName="r" values="5;8;5" dur="2.2s" repeatCount="indefinite"/></circle>
+
+  <circle r="5" fill="#0EA5A0" opacity="0.86">
+    <animateMotion dur="7.2s" repeatCount="indefinite" path="M370 250 C385 250, 390 250, 400 250 C775 250, 780 250, 790 250 C1145 250, 1150 250, 1160 250"/>
+  </circle>
+  <circle r="5" fill="#F59E0B" opacity="0.86">
+    <animateMotion dur="6.5s" repeatCount="indefinite" path="M560 500 C570 500, 575 500, 590 500 C1040 500, 1045 500, 1060 500 C1295 620, 1230 635, 1120 640"/>
+  </circle>
+</svg>

@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Hybrid Retrieval Fusion</title>
+  <desc id="desc">Text-heavy fusion diagram covering sparse, dense, graph, RRF, rerank, and final context assembly.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F8FCFF"/><stop offset="100%" stop-color="#EEF5FF"/></linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0EA5A0"/><stop offset="100%" stop-color="#F59E0B"/></linearGradient>
+    <style>
+      .title{font:800 38px Inter,Segoe UI,Arial,sans-serif;fill:#0B0F19}
+      .sub{font:600 20px Inter,Segoe UI,Arial,sans-serif;fill:#334155}
+      .h{font:800 19px Inter,Segoe UI,Arial,sans-serif;fill:#0B0F19}
+      .p{font:600 14px Inter,Segoe UI,Arial,sans-serif;fill:#1E293B}
+      .edge{stroke:url(#flow);stroke-width:5;fill:none;stroke-linecap:round;stroke-dasharray:10 8;animation:dash 7s linear infinite}
+      .panel-a, .panel-b, .panel-c { transform-box: fill-box; transform-origin: center; }
+      .panel-a { animation: floatA 6.6s ease-in-out infinite; }
+      .panel-b { animation: floatB 7.4s ease-in-out infinite; }
+      .panel-c { animation: floatC 8.3s ease-in-out infinite; }
+      .scan { opacity: 0.27; animation: scanX 9.2s linear infinite; }
+      .pulse { animation: pulse 2.5s ease-in-out infinite; }
+      @keyframes dash{to{stroke-dashoffset:-180}}
+      @keyframes floatA{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+      @keyframes floatB{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+      @keyframes floatC{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+      @keyframes scanX{0%{transform:translateX(-260px)}100%{transform:translateX(1700px)}}
+      @keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+    </style>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#0EA5A0"/></marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="30" y="30" width="1540" height="840" rx="24" fill="#FFFFFF" stroke="#DDE7F7"/>
+  <rect class="scan" x="-260" y="156" width="220" height="5" rx="3" fill="url(#flow)"/>
+
+  <text x="70" y="95" class="title">Hybrid Retrieval and Ranking Pipeline</text>
+  <text x="70" y="128" class="sub">JITMind combines complementary retrieval channels and resolves ranking with fusion + reranking.</text>
+
+  <rect class="panel-a" x="70" y="190" width="250" height="170" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="94" y="224" class="h">Query Prep</text>
+  <text x="94" y="248" class="p">• normalize request</text>
+  <text x="94" y="268" class="p">• optional HyDE rewrite</text>
+  <text x="94" y="288" class="p">• optional intent typing</text>
+  <text x="94" y="308" class="p">• request fan-out plan</text>
+
+  <rect class="panel-b" x="360" y="150" width="270" height="130" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="384" y="182" class="h">Sparse: BM25</text>
+  <text x="384" y="206" class="p">• lexical precision</text>
+  <text x="384" y="226" class="p">• exact term control</text>
+  <text x="384" y="246" class="p">• rank + snippet output</text>
+
+  <rect class="panel-c" x="360" y="300" width="270" height="130" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="384" y="332" class="h">Dense: Embeddings</text>
+  <text x="384" y="356" class="p">• semantic recall</text>
+  <text x="384" y="376" class="p">• multilingual support</text>
+  <text x="384" y="396" class="p">• similarity + snippet</text>
+
+  <rect class="panel-a" x="360" y="450" width="270" height="130" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="384" y="482" class="h">Graph Retriever</text>
+  <text x="384" y="506" class="p">• entity-neighborhood fetch</text>
+  <text x="384" y="526" class="p">• personalized pagerank</text>
+  <text x="384" y="546" class="p">• relation-aware evidence</text>
+
+  <rect class="panel-b" x="360" y="600" width="270" height="130" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="384" y="632" class="h">Index Retriever</text>
+  <text x="384" y="656" class="p">• direct page lookup</text>
+  <text x="384" y="676" class="p">• deterministic retrieval</text>
+  <text x="384" y="696" class="p">• low-latency fallback</text>
+
+  <rect class="panel-c" x="700" y="270" width="340" height="220" rx="16" fill="#FFFFFF" stroke="#BFD0EE"/>
+  <text x="724" y="304" class="h">Fusion Layer</text>
+  <text x="724" y="328" class="p">• deduplicate by page/memory id</text>
+  <text x="724" y="351" class="p">• reciprocal rank fusion baseline</text>
+  <text x="724" y="374" class="p">• dynamic alpha weighting (intent-aware)</text>
+  <text x="724" y="397" class="p">• optional tier boosts from memory store</text>
+  <text x="724" y="420" class="p">• candidate trimming for latency budget</text>
+  <text x="724" y="443" class="p">• preserve provenance in merged hit metadata</text>
+
+  <rect class="panel-a" x="1080" y="240" width="430" height="280" rx="16" fill="#FFFFFF" stroke="#BFD0EE"/>
+  <text x="1104" y="274" class="h">Reranking + Quality Gates</text>
+  <text x="1104" y="298" class="p">• optional Cohere reranker on top-N pairs</text>
+  <text x="1104" y="321" class="p">• combine rerank score with fusion score</text>
+  <text x="1104" y="344" class="p">• temporal validity filtering before final sort</text>
+  <text x="1104" y="367" class="p">• stale/superseded/deleted memory exclusion</text>
+  <text x="1104" y="390" class="p">• context pressure-aware truncation policy</text>
+  <text x="1104" y="413" class="p">• emit top-K evidence blocks with trace ids</text>
+
+  <rect class="panel-b" x="700" y="560" width="810" height="190" rx="16" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="724" y="594" class="h">Final Context Pack for Generation</text>
+  <text x="724" y="620" class="p">• ranked evidence snippets • source ids • temporal flags • relation context • score diagnostics</text>
+  <text x="724" y="643" class="p">• this pack feeds integration prompts and supports post-answer explainability + debugging</text>
+  <text x="724" y="666" class="p">• raw hit traces are retained for replay learning and evaluation pipelines</text>
+
+  <path class="edge" marker-end="url(#arr)" d="M320 275 C340 275, 345 215, 360 215"/>
+  <path class="edge" marker-end="url(#arr)" d="M320 275 C340 275, 345 365, 360 365"/>
+  <path class="edge" marker-end="url(#arr)" d="M320 275 C340 275, 345 515, 360 515"/>
+  <path class="edge" marker-end="url(#arr)" d="M320 275 C340 275, 345 665, 360 665"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M630 215 C660 215, 665 290, 700 320"/>
+  <path class="edge" marker-end="url(#arr)" d="M630 365 C660 365, 665 350, 700 360"/>
+  <path class="edge" marker-end="url(#arr)" d="M630 515 C660 515, 665 420, 700 420"/>
+  <path class="edge" marker-end="url(#arr)" d="M630 665 C660 665, 665 470, 700 450"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M1040 380 C1060 380, 1060 380, 1080 380"/>
+  <path class="edge" marker-end="url(#arr)" d="M1295 520 C1295 545, 1295 545, 1295 560"/>
+  <circle class="pulse" r="5" fill="#0EA5A0" opacity="0.86">
+    <animateMotion dur="8.1s" repeatCount="indefinite" path="M320 275 C340 275, 345 215, 360 215 C660 215, 665 290, 700 320 C1060 380, 1060 380, 1080 380"/>
+  </circle>
+  <circle class="pulse" r="5" fill="#F59E0B" opacity="0.86">
+    <animateMotion dur="7.3s" repeatCount="indefinite" path="M320 275 C340 275, 345 665, 360 665 C660 665, 665 470, 700 450 C1295 520, 1295 545, 1295 560"/>
+  </circle>
+</svg>

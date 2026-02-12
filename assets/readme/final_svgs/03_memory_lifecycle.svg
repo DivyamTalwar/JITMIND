@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Memory Lifecycle and Self-Editing</title>
+  <desc id="desc">Detailed memory lifecycle with ADD, UPDATE, DELETE, NOOP and version/provenance behavior.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F8FCFF"/><stop offset="100%" stop-color="#EEF5FF"/></linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0EA5A0"/><stop offset="100%" stop-color="#F59E0B"/></linearGradient>
+    <style>
+      .title{font:800 38px Inter,Segoe UI,Arial,sans-serif;fill:#0B0F19}
+      .sub{font:600 20px Inter,Segoe UI,Arial,sans-serif;fill:#334155}
+      .h{font:800 19px Inter,Segoe UI,Arial,sans-serif;fill:#0B0F19}
+      .p{font:600 14px Inter,Segoe UI,Arial,sans-serif;fill:#1E293B}
+      .edge{stroke:url(#flow);stroke-width:5;fill:none;stroke-linecap:round;stroke-dasharray:10 8;animation:dash 7s linear infinite}
+      .panel-a, .panel-b, .panel-c { transform-box: fill-box; transform-origin: center; }
+      .panel-a { animation: floatA 6.4s ease-in-out infinite; }
+      .panel-b { animation: floatB 7.1s ease-in-out infinite; }
+      .panel-c { animation: floatC 8.2s ease-in-out infinite; }
+      .scan { opacity: 0.24; animation: scanX 9s linear infinite; }
+      @keyframes dash{to{stroke-dashoffset:-180}}
+      @keyframes floatA{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+      @keyframes floatB{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+      @keyframes floatC{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+      @keyframes scanX{0%{transform:translateX(-260px)}100%{transform:translateX(1700px)}}
+    </style>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#0EA5A0"/></marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="30" y="30" width="1540" height="840" rx="24" fill="#FFFFFF" stroke="#DDE7F7"/>
+  <rect class="scan" x="-260" y="156" width="220" height="5" rx="3" fill="url(#flow)"/>
+
+  <text x="70" y="95" class="title">Advanced Memory Lifecycle (Self-Editing + Temporal Integrity)</text>
+  <text x="70" y="128" class="sub">Each incoming abstract is operation-classified, versioned, timestamped, and linked to graph provenance.</text>
+
+  <rect class="panel-a" x="70" y="180" width="290" height="180" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="95" y="214" class="h">Incoming Message</text>
+  <text x="95" y="240" class="p">• normalize input</text>
+  <text x="95" y="261" class="p">• generate abstract/header</text>
+  <text x="95" y="282" class="p">• build memory context window</text>
+  <text x="95" y="303" class="p">• parse entities + relations</text>
+  <text x="95" y="324" class="p">• attach page provenance</text>
+
+  <rect class="panel-b" x="400" y="180" width="330" height="180" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="425" y="214" class="h">Operation Decision</text>
+  <text x="425" y="240" class="p">• prompt decides ADD / UPDATE / DELETE / NOOP</text>
+  <text x="425" y="261" class="p">• emits target_id + updated_content</text>
+  <text x="425" y="282" class="p">• emits t_observed / t_valid / t_invalid</text>
+  <text x="425" y="303" class="p">• emits tier hint (short/mid/long)</text>
+  <text x="425" y="324" class="p">• includes confidence + rationale fields</text>
+
+  <rect class="panel-c" x="770" y="130" width="320" height="120" rx="16" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="795" y="162" class="h">ADD</text>
+  <text x="795" y="186" class="p">new entry id, active status,</text>
+  <text x="795" y="206" class="p">temporal fields initialized</text>
+
+  <rect class="panel-a" x="770" y="270" width="320" height="120" rx="16" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="795" y="302" class="h">UPDATE</text>
+  <text x="795" y="326" class="p">old entry -> superseded,</text>
+  <text x="795" y="346" class="p">new version linked by version_of</text>
+
+  <rect class="panel-b" x="1130" y="130" width="320" height="120" rx="16" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="1155" y="162" class="h">DELETE</text>
+  <text x="1155" y="186" class="p">mark status deleted,</text>
+  <text x="1155" y="206" class="p">set t_invalid + t_expired</text>
+
+  <rect class="panel-c" x="1130" y="270" width="320" height="120" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="1155" y="302" class="h">NOOP</text>
+  <text x="1155" y="326" class="p">ignore duplicate/noise,</text>
+  <text x="1155" y="346" class="p">preserve existing memory graph</text>
+
+  <rect class="panel-a" x="70" y="450" width="690" height="330" rx="18" fill="#FFFFFF" stroke="#BFD0EE"/>
+  <text x="95" y="486" class="h">State Persistence + Temporal Semantics</text>
+  <text x="95" y="514" class="p">• status lifecycle: active -> superseded/deleted/expired</text>
+  <text x="95" y="537" class="p">• timestamps: t_created, t_observed, t_valid, t_invalid, t_expired</text>
+  <text x="95" y="560" class="p">• strength-based decay: retention R = exp(-t/S) with touch() reinforcement</text>
+  <text x="95" y="583" class="p">• tiering engine: short -> mid -> long promotion on age/strength thresholds</text>
+  <text x="95" y="606" class="p">• optional demotion when retention drops below configured thresholds</text>
+  <text x="95" y="629" class="p">• cleanup pass physically removes inactive rows to avoid memory leak growth</text>
+
+  <rect x="95" y="658" width="190" height="40" rx="12" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="118" y="683" class="p">atomic write + lock</text>
+  <rect x="300" y="658" width="220" height="40" rx="12" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="323" y="683" class="p">version lineage preserved</text>
+  <rect x="535" y="658" width="200" height="40" rx="12" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="558" y="683" class="p">temporal filters ready</text>
+
+  <rect class="panel-b" x="800" y="450" width="650" height="330" rx="18" fill="#FFFFFF" stroke="#BFD0EE"/>
+  <text x="825" y="486" class="h">Graph and Retrieval Effects</text>
+  <text x="825" y="514" class="p">• add_entities_relations writes MENTIONS + RELATION edges per memory event</text>
+  <text x="825" y="537" class="p">• UPDATE marks prior node !is_latest and links UPDATES edge to replacement memory</text>
+  <text x="825" y="560" class="p">• DELETE marks memory as deleted and keeps provenance for audit replay</text>
+  <text x="825" y="583" class="p">• graph retriever respects status + temporal windows during traversal</text>
+  <text x="825" y="606" class="p">• retrieval stack can boost long-term tier memories while still honoring recency</text>
+  <text x="825" y="629" class="p">• downstream answer trace includes memory/page ids for explainability</text>
+
+  <rect x="825" y="658" width="220" height="40" rx="12" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="848" y="683" class="p">graph sync on write</text>
+  <rect x="1060" y="658" width="190" height="40" rx="12" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="1083" y="683" class="p">provenance edges</text>
+  <rect x="1265" y="658" width="170" height="40" rx="12" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="1288" y="683" class="p">auditability</text>
+
+  <path class="edge" marker-end="url(#arr)" d="M360 270 C380 270, 380 270, 400 270"/>
+  <path class="edge" marker-end="url(#arr)" d="M730 270 C750 270, 750 190, 770 190"/>
+  <path class="edge" marker-end="url(#arr)" d="M730 270 C750 270, 750 330, 770 330"/>
+  <path class="edge" marker-end="url(#arr)" d="M1090 190 C1110 190, 1110 190, 1130 190"/>
+  <path class="edge" marker-end="url(#arr)" d="M1090 330 C1110 330, 1110 330, 1130 330"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M930 390 C930 430, 480 440, 480 450"/>
+  <path class="edge" marker-end="url(#arr)" d="M1290 390 C1290 430, 1120 440, 1120 450"/>
+  <circle r="5" fill="#0EA5A0" opacity="0.86">
+    <animateMotion dur="7.6s" repeatCount="indefinite" path="M360 270 C380 270, 380 270, 400 270 C750 270, 750 190, 770 190 C1110 190, 1110 190, 1130 190"/>
+  </circle>
+  <circle r="5" fill="#F59E0B" opacity="0.86">
+    <animateMotion dur="8.1s" repeatCount="indefinite" path="M730 270 C750 270, 750 330, 770 330 C1110 330, 1110 330, 1130 330 C1290 430, 1120 440, 1120 450"/>
+  </circle>
+</svg>

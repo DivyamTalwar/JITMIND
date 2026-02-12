@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Schema Relations Map</title>
+  <desc id="desc">Detailed schema relationship map between memory, page, search, result, profile, and reliability artifacts.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8FCFF"/>
+      <stop offset="100%" stop-color="#EEF5FF"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0EA5A0"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <style>
+      .title { font: 800 38px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .sub { font: 600 19px Inter, Segoe UI, Arial, sans-serif; fill: #334155; }
+      .h { font: 800 16px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .p { font: 600 12px Inter, Segoe UI, Arial, sans-serif; fill: #1E293B; }
+      .chip { font: 800 12px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .edge { stroke: url(#flow); stroke-width: 3.8; fill: none; stroke-linecap: round; stroke-dasharray: 9 8; animation: dash 6.7s linear infinite; }
+      .panel-a, .panel-b, .panel-c { transform-box: fill-box; transform-origin: center; }
+      .panel-a { animation: floatA 6.5s ease-in-out infinite; }
+      .panel-b { animation: floatB 7.2s ease-in-out infinite; }
+      .panel-c { animation: floatC 8.1s ease-in-out infinite; }
+      .scan { opacity: 0.24; animation: scanX 9.0s linear infinite; }
+      .pulse { animation: pulse 2.6s ease-in-out infinite; }
+      @keyframes dash { to { stroke-dashoffset: -160; } }
+      @keyframes floatA { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+      @keyframes floatB { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+      @keyframes floatC { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+      @keyframes scanX { 0% { transform: translateX(-260px); } 100% { transform: translateX(1700px); } }
+      @keyframes pulse { 0%,100% { opacity: 0.45; } 50% { opacity: 1; } }
+    </style>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#0EA5A0"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="30" y="30" width="1540" height="840" rx="24" fill="#FFFFFF" stroke="#DDE7F7"/>
+  <rect class="scan" x="-260" y="156" width="220" height="5" rx="3" fill="url(#flow)"/>
+
+  <text x="70" y="95" class="title">jitmind Schema Relations (Contract-Level View)</text>
+  <text x="70" y="128" class="sub">How write artifacts, retrieval artifacts, and runtime state objects connect across the system.</text>
+
+  <rect class="panel-a" x="80" y="170" width="280" height="220" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="104" y="202" class="h">MemoryEntry (advanced_memory.py)</text>
+  <text x="104" y="224" class="p">id, content, status, tier</text>
+  <text x="104" y="244" class="p">t_created, t_observed, t_valid, t_invalid, t_expired</text>
+  <text x="104" y="264" class="p">last_accessed, strength</text>
+  <text x="104" y="284" class="p">source_page_id, version_of, meta</text>
+  <text x="104" y="304" class="p">status: active/deleted/superseded/expired</text>
+  <text x="104" y="324" class="p">tier: short/mid/long</text>
+  <text x="104" y="344" class="p">retention + promotion/demotion inputs</text>
+
+  <rect class="panel-b" x="390" y="170" width="260" height="220" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="414" y="202" class="h">Page (page.py)</text>
+  <text x="414" y="224" class="p">header, content, meta</text>
+  <text x="414" y="244" class="p">meta.page_id</text>
+  <text x="414" y="264" class="p">meta.memory_id</text>
+  <text x="414" y="284" class="p">meta.t_observed/t_valid/t_invalid</text>
+  <text x="414" y="304" class="p">meta.source/chunk lineage</text>
+  <text x="414" y="324" class="p">retrieval snippet source backing</text>
+  <text x="414" y="344" class="p">provenance anchor for final answer</text>
+
+  <rect class="panel-c" x="680" y="170" width="280" height="220" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="704" y="202" class="h">SearchPlan (search.py)</text>
+  <text x="704" y="224" class="p">info_needs</text>
+  <text x="704" y="244" class="p">tools[]</text>
+  <text x="704" y="264" class="p">keyword_collection[]</text>
+  <text x="704" y="284" class="p">vector_queries[]</text>
+  <text x="704" y="304" class="p">page_index[]</text>
+  <text x="704" y="324" class="p">graph_queries[]</text>
+  <text x="704" y="344" class="p">planner-to-tool contract object</text>
+
+  <rect class="panel-a" x="990" y="170" width="250" height="220" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="1014" y="202" class="h">Hit (search.py)</text>
+  <text x="1014" y="224" class="p">page_id, snippet, source</text>
+  <text x="1014" y="244" class="p">meta.score</text>
+  <text x="1014" y="264" class="p">meta.rrf_score</text>
+  <text x="1014" y="284" class="p">meta.hybrid_score</text>
+  <text x="1014" y="304" class="p">meta.tier_boosted_score</text>
+  <text x="1014" y="324" class="p">meta.rerank_score</text>
+  <text x="1014" y="344" class="p">ranking provenance payload</text>
+
+  <rect class="panel-b" x="1270" y="170" width="260" height="220" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="1294" y="202" class="h">Result and ResearchOutput</text>
+  <text x="1294" y="224" class="p">Result.content</text>
+  <text x="1294" y="244" class="p">Result.sources[]</text>
+  <text x="1294" y="264" class="p">ResearchOutput.integrated_memory</text>
+  <text x="1294" y="284" class="p">ResearchOutput.raw_memory</text>
+  <text x="1294" y="304" class="p">iterations + decisions + critic traces</text>
+  <text x="1294" y="324" class="p">auditable final object for caller</text>
+  <text x="1294" y="344" class="p">explainability-first response package</text>
+
+  <rect class="panel-c" x="150" y="430" width="340" height="180" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="176" y="464" class="h">MemoryUpdate (memory.py)</text>
+  <text x="176" y="488" class="p">new_state</text>
+  <text x="176" y="510" class="p">new_page</text>
+  <text x="176" y="532" class="p">debug payload</text>
+  <text x="176" y="554" class="p">write API return contract</text>
+  <text x="176" y="576" class="p">consumer-friendly update object</text>
+
+  <rect class="panel-a" x="520" y="430" width="360" height="180" rx="16" fill="#FFFFFF" stroke="#BFD0EE"/>
+  <text x="546" y="464" class="h">UserProfile (profile_store.py)</text>
+  <text x="546" y="488" class="p">user_id</text>
+  <text x="546" y="510" class="p">static, dynamic, traits</text>
+  <text x="546" y="532" class="p">updated_at</text>
+  <text x="546" y="554" class="p">planning context augmentation source</text>
+  <text x="546" y="576" class="p">personalization without global contamination</text>
+
+  <rect class="panel-b" x="910" y="430" width="320" height="180" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="936" y="464" class="h">Checkpoint State</text>
+  <text x="936" y="488" class="p">iterations[]</text>
+  <text x="936" y="510" class="p">temp_memory</text>
+  <text x="936" y="532" class="p">next_request</text>
+  <text x="936" y="554" class="p">step</text>
+  <text x="936" y="576" class="p">resumable long-running loop state</text>
+
+  <rect class="panel-c" x="1260" y="430" width="270" height="180" rx="16" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="1286" y="464" class="h">Replay Experience</text>
+  <text x="1286" y="488" class="p">query</text>
+  <text x="1286" y="510" class="p">retrieved[]</text>
+  <text x="1286" y="532" class="p">response</text>
+  <text x="1286" y="554" class="p">feedback</text>
+  <text x="1286" y="576" class="p">meta</text>
+
+  <rect class="panel-a" x="260" y="650" width="1080" height="160" rx="16" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="292" y="684" class="h">Schema Contract Principle</text>
+  <text x="292" y="708" class="p">Every runtime phase emits structured artifacts that can be traced, replayed, and validated. Memory consistency is enforced through lifecycle state, temporal fields, and provenance links.</text>
+  <text x="292" y="731" class="p">This contract-first design enables reliable debugging, benchmark reproducibility, and safe iteration for production hardening.</text>
+
+  <rect x="292" y="750" width="210" height="34" rx="10" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="314" y="772" class="chip">typed runtime artifacts</text>
+  <rect x="522" y="750" width="210" height="34" rx="10" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="544" y="772" class="chip">auditable decisions</text>
+  <rect x="752" y="750" width="220" height="34" rx="10" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="774" y="772" class="chip">temporal correctness</text>
+  <rect x="992" y="750" width="320" height="34" rx="10" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="1014" y="772" class="chip">replayable and resumable execution traces</text>
+
+  <path class="edge" marker-end="url(#arr)" d="M360 250 C370 250, 380 250, 390 250"/>
+  <path class="edge" marker-end="url(#arr)" d="M650 250 C660 250, 670 250, 680 250"/>
+  <path class="edge" marker-end="url(#arr)" d="M960 250 C970 250, 980 250, 990 250"/>
+  <path class="edge" marker-end="url(#arr)" d="M1240 250 C1250 250, 1260 250, 1270 250"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M220 390 C220 410, 240 420, 260 430"/>
+  <path class="edge" marker-end="url(#arr)" d="M520 390 C520 410, 600 420, 650 430"/>
+  <path class="edge" marker-end="url(#arr)" d="M820 390 C820 410, 980 420, 1030 430"/>
+  <path class="edge" marker-end="url(#arr)" d="M1120 390 C1120 410, 1310 420, 1360 430"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M320 610 C340 630, 400 640, 520 650"/>
+  <path class="edge" marker-end="url(#arr)" d="M700 610 C700 630, 700 640, 700 650"/>
+  <path class="edge" marker-end="url(#arr)" d="M1070 610 C1050 630, 980 640, 900 650"/>
+  <path class="edge" marker-end="url(#arr)" d="M1390 610 C1370 630, 1290 640, 1200 650"/>
+
+  <circle class="pulse" cx="820" cy="250" r="6" fill="#0EA5A0"><animate attributeName="r" values="5;8;5" dur="2.3s" repeatCount="indefinite"/></circle>
+  <circle class="pulse" cx="1030" cy="520" r="6" fill="#F59E0B"><animate attributeName="r" values="5;8;5" dur="2.8s" repeatCount="indefinite"/></circle>
+
+  <circle r="5" fill="#0EA5A0" opacity="0.86">
+    <animateMotion dur="7.0s" repeatCount="indefinite" path="M360 250 C370 250, 380 250, 390 250 C660 250, 670 250, 680 250 C970 250, 980 250, 990 250"/>
+  </circle>
+  <circle r="5" fill="#F59E0B" opacity="0.86">
+    <animateMotion dur="6.4s" repeatCount="indefinite" path="M700 610 C700 630, 700 640, 700 650 C1050 630, 980 640, 900 650"/>
+  </circle>
+</svg>

@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Request Lifecycle</title>
+  <desc id="desc">Text-heavy lifecycle diagram for Plan, Search, Integrate, Reflect, and convergence logic.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8FCFF"/>
+      <stop offset="100%" stop-color="#EEF5FF"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0EA5A0"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <style>
+      .title{font:800 38px Inter,Segoe UI,Arial,sans-serif;fill:#0B0F19}
+      .sub{font:600 20px Inter,Segoe UI,Arial,sans-serif;fill:#334155}
+      .h{font:800 19px Inter,Segoe UI,Arial,sans-serif;fill:#0B0F19}
+      .p{font:600 14px Inter,Segoe UI,Arial,sans-serif;fill:#1E293B}
+      .edge{stroke:url(#flow);stroke-width:5;fill:none;stroke-linecap:round;stroke-dasharray:10 9;animation:dash 7s linear infinite}
+      .panel-a, .panel-b, .panel-c { transform-box: fill-box; transform-origin: center; }
+      .panel-a { animation: floatA 6.1s ease-in-out infinite; }
+      .panel-b { animation: floatB 7.2s ease-in-out infinite; }
+      .panel-c { animation: floatC 8.0s ease-in-out infinite; }
+      .scan { opacity: 0.26; animation: scanX 8.8s linear infinite; }
+      .pulse { animation: pulse 2.3s ease-in-out infinite; }
+      @keyframes dash{to{stroke-dashoffset:-170}}
+      @keyframes floatA{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+      @keyframes floatB{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+      @keyframes floatC{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+      @keyframes scanX{0%{transform:translateX(-250px)}100%{transform:translateX(1700px)}}
+      @keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+    </style>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#0EA5A0"/></marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="30" y="30" width="1540" height="840" rx="24" fill="#FFFFFF" stroke="#DDE7F7"/>
+  <rect class="scan" x="-250" y="156" width="220" height="5" rx="3" fill="url(#flow)"/>
+
+  <text x="70" y="95" class="title">ResearchAgent Request Lifecycle (Iterative)</text>
+  <text x="70" y="128" class="sub">Plan → Search → Integrate → Reflect loop with Self-RAG gates, context pressure controls, and convergence checks.</text>
+
+  <rect class="panel-a" x="70" y="190" width="210" height="210" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="92" y="224" class="h">1) Request Intake</text>
+  <text x="92" y="248" class="p">• normalize question</text>
+  <text x="92" y="268" class="p">• restore checkpoint</text>
+  <text x="92" y="288" class="p">• set iteration budget</text>
+  <text x="92" y="308" class="p">• load memory state</text>
+  <text x="92" y="328" class="p">• bind user profile</text>
+  <text x="92" y="348" class="p">• initialize temp result</text>
+
+  <rect class="panel-b" x="320" y="190" width="230" height="210" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="342" y="224" class="h">2) Planning</text>
+  <text x="342" y="248" class="p">• query decomposition</text>
+  <text x="342" y="268" class="p">• request generation</text>
+  <text x="342" y="288" class="p">• tool routing hints</text>
+  <text x="342" y="308" class="p">• memory-aware prompts</text>
+  <text x="342" y="328" class="p">• HyDE expansion path</text>
+  <text x="342" y="348" class="p">• retrieval priorities</text>
+
+  <rect class="panel-c" x="590" y="190" width="250" height="210" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="612" y="224" class="h">3) Retrieval Mesh</text>
+  <text x="612" y="248" class="p">• BM25 sparse hits</text>
+  <text x="612" y="268" class="p">• dense semantic hits</text>
+  <text x="612" y="288" class="p">• graph traversal / PPR</text>
+  <text x="612" y="308" class="p">• index direct lookups</text>
+  <text x="612" y="328" class="p">• dynamic alpha fusion</text>
+  <text x="612" y="348" class="p">• rerank + deduplicate</text>
+
+  <rect class="panel-a" x="880" y="190" width="250" height="210" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="902" y="224" class="h">4) Integration</text>
+  <text x="902" y="248" class="p">• evidence stitching</text>
+  <text x="902" y="268" class="p">• contradiction checks</text>
+  <text x="902" y="288" class="p">• temporal filtering</text>
+  <text x="902" y="308" class="p">• citation-rich summary</text>
+  <text x="902" y="328" class="p">• context pressure guard</text>
+  <text x="902" y="348" class="p">• budget-aware trimming</text>
+
+  <rect class="panel-b" x="1170" y="190" width="330" height="210" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="1192" y="224" class="h">5) Reflection + Stop Decision</text>
+  <text x="1192" y="248" class="p">• info sufficiency decision</text>
+  <text x="1192" y="268" class="p">• Self-RAG: ISREL / ISSUP / ISUSE</text>
+  <text x="1192" y="288" class="p">• if weak: craft next request</text>
+  <text x="1192" y="308" class="p">• if enough: finalize output</text>
+  <text x="1192" y="328" class="p">• optional reflection learning</text>
+  <text x="1192" y="348" class="p">• replay buffer writeback</text>
+
+  <rect class="panel-c" x="230" y="500" width="1140" height="300" rx="20" fill="#FFFFFF" stroke="#BFD0EE"/>
+  <text x="260" y="540" class="h">Convergence and Reliability Layer</text>
+  <text x="260" y="570" class="p">• checkpoint manager persists iteration state every N steps for resumable workflows.</text>
+  <text x="260" y="594" class="p">• retry wrappers stabilize provider calls (LLM, embeddings, rerank, graph) under transient failures.</text>
+  <text x="260" y="618" class="p">• context pressure monitor enforces token budget thresholds and triggers controlled eviction/compaction.</text>
+  <text x="260" y="642" class="p">• final output emits both integrated answer and raw trace to support observability and offline scoring.</text>
+  <text x="260" y="666" class="p">• loop ends on (enough == true) OR max iteration cap reached; fallback still returns structured evidence.</text>
+
+  <rect x="260" y="700" width="210" height="64" rx="12" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="282" y="730" class="h">Output Contract</text>
+  <text x="282" y="750" class="p">integrated_memory + raw_memory</text>
+
+  <rect x="500" y="700" width="220" height="64" rx="12" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="522" y="730" class="h">Resumability</text>
+  <text x="522" y="750" class="p">checkpoint_id + step cursor</text>
+
+  <rect x="750" y="700" width="210" height="64" rx="12" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="772" y="730" class="h">Learning Hooks</text>
+  <text x="772" y="750" class="p">reflection + replay writes</text>
+
+  <rect x="990" y="700" width="350" height="64" rx="12" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="1012" y="730" class="h">Quality Gates</text>
+  <text x="1012" y="750" class="p">sufficiency + Self-RAG + temporal consistency</text>
+
+  <path class="edge" marker-end="url(#arr)" d="M280 295 C300 295, 300 295, 320 295"/>
+  <path class="edge" marker-end="url(#arr)" d="M550 295 C570 295, 570 295, 590 295"/>
+  <path class="edge" marker-end="url(#arr)" d="M840 295 C860 295, 860 295, 880 295"/>
+  <path class="edge" marker-end="url(#arr)" d="M1130 295 C1150 295, 1150 295, 1170 295"/>
+
+  <path class="edge" marker-end="url(#arr)" d="M1330 400 C1330 440, 1060 470, 720 500"/>
+  <path class="edge" marker-end="url(#arr)" d="M420 500 C360 460, 360 420, 420 400"/>
+
+  <circle class="pulse" cx="725" cy="295" r="6" fill="#0EA5A0"><animate attributeName="r" values="5;8;5" dur="2.2s" repeatCount="indefinite"/></circle>
+  <circle class="pulse" cx="1020" cy="295" r="6" fill="#F59E0B"><animate attributeName="r" values="5;8;5" dur="2.5s" repeatCount="indefinite"/></circle>
+  <circle r="5" fill="#0EA5A0" opacity="0.86">
+    <animateMotion dur="8s" repeatCount="indefinite" path="M280 295 C300 295, 300 295, 320 295 C570 295, 570 295, 590 295 C860 295, 860 295, 880 295"/>
+  </circle>
+  <circle r="5" fill="#F59E0B" opacity="0.86">
+    <animateMotion dur="7.4s" repeatCount="indefinite" path="M1130 295 C1150 295, 1150 295, 1170 295 M1330 400 C1330 440, 1060 470, 720 500"/>
+  </circle>
+</svg>

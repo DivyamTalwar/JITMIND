@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Bi-temporal Memory Model</title>
+  <desc id="desc">Detailed timeline model for created, observed, valid, invalid, and expired semantics.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F8FCFF"/><stop offset="100%" stop-color="#EEF5FF"/></linearGradient>
+    <linearGradient id="active" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0EA5A0"/><stop offset="100%" stop-color="#5FD2CC"/></linearGradient>
+    <linearGradient id="stale" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#BDC6D7"/></linearGradient>
+    <style>
+      .title{font:800 38px Inter,Segoe UI,Arial,sans-serif;fill:#0B0F19}
+      .sub{font:600 20px Inter,Segoe UI,Arial,sans-serif;fill:#334155}
+      .h{font:800 19px Inter,Segoe UI,Arial,sans-serif;fill:#0B0F19}
+      .p{font:600 14px Inter,Segoe UI,Arial,sans-serif;fill:#1E293B}
+      .mono{font:700 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;fill:#0B0F19}
+      .panel-a, .panel-b { transform-box: fill-box; transform-origin: center; }
+      .panel-a { animation: floatA 7s ease-in-out infinite; }
+      .panel-b { animation: floatB 8.1s ease-in-out infinite; }
+      .scan { opacity: 0.25; animation: scanX 9.1s linear infinite; }
+      .pulse { animation: pulse 2.5s ease-in-out infinite; }
+      @keyframes floatA{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+      @keyframes floatB{0%,100%{transform:translateY(0)}50%{transform:translateY(3px)}}
+      @keyframes scanX{0%{transform:translateX(-280px)}100%{transform:translateX(1700px)}}
+      @keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="30" y="30" width="1540" height="840" rx="24" fill="#FFFFFF" stroke="#DDE7F7"/>
+  <rect class="scan" x="-280" y="156" width="230" height="5" rx="3" fill="url(#active)"/>
+
+  <text x="70" y="95" class="title">Bi-temporal Validity and Filtering Logic</text>
+  <text x="70" y="128" class="sub">JITMind keeps historical truth for audit while filtering stale facts from active reasoning context.</text>
+
+  <rect class="panel-a" x="70" y="180" width="1460" height="280" rx="18" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="96" y="216" class="h">Temporal Axis: Fact Lifecycle</text>
+
+  <line x1="160" y1="320" x2="1410" y2="320" stroke="#CBD5E1" stroke-width="8" stroke-linecap="round"/>
+  <line x1="220" y1="320" x2="820" y2="320" stroke="url(#active)" stroke-width="12" stroke-linecap="round"/>
+  <line x1="820" y1="320" x2="1280" y2="320" stroke="url(#stale)" stroke-width="12" stroke-linecap="round"/>
+
+  <circle class="pulse" cx="220" cy="320" r="14" fill="#0EA5A0"/>
+  <circle class="pulse" cx="360" cy="320" r="14" fill="#0EA5A0"/>
+  <circle class="pulse" cx="820" cy="320" r="14" fill="#F59E0B"/>
+  <circle class="pulse" cx="1040" cy="320" r="14" fill="#F59E0B"/>
+  <circle class="pulse" cx="1280" cy="320" r="14" fill="#AEB8CC"/>
+
+  <line x1="220" y1="250" x2="220" y2="390" stroke="#0EA5A0" stroke-width="3" stroke-dasharray="8 7"/>
+  <line x1="360" y1="250" x2="360" y2="390" stroke="#0EA5A0" stroke-width="3" stroke-dasharray="8 7"/>
+  <line x1="820" y1="250" x2="820" y2="390" stroke="#F59E0B" stroke-width="3" stroke-dasharray="8 7"/>
+  <line x1="1040" y1="250" x2="1040" y2="390" stroke="#0B0F19" stroke-width="3"/>
+  <line x1="1280" y1="250" x2="1280" y2="390" stroke="#94A3B8" stroke-width="3" stroke-dasharray="6 8"/>
+
+  <text x="175" y="238" class="p">t_created</text>
+  <text x="316" y="238" class="p">t_observed</text>
+  <text x="784" y="238" class="p">t_invalid</text>
+  <text x="1008" y="238" class="p">now</text>
+  <text x="1234" y="238" class="p">t_expired</text>
+
+  <text x="170" y="420" class="p">active retrieval window</text>
+  <text x="850" y="420" class="p">historical but stale window</text>
+
+  <rect class="panel-b" x="70" y="500" width="730" height="320" rx="18" fill="#FFFFFF" stroke="#BFD0EE"/>
+  <text x="96" y="536" class="h">Filtering Rules in Retrieval</text>
+  <text x="96" y="564" class="mono">if status != "active"      -> exclude</text>
+  <text x="96" y="588" class="mono">if t_invalid and now &gt; t_invalid -> exclude from active context</text>
+  <text x="96" y="612" class="mono">if t_valid and now &lt; t_valid     -> not yet valid</text>
+  <text x="96" y="636" class="mono">if t_expired and now &gt; t_expired -> remove during cleanup</text>
+  <text x="96" y="665" class="p">• Observed vs valid are separated so ingestion delay does not corrupt timeline truth.</text>
+  <text x="96" y="688" class="p">• Superseded/deleted entries remain queryable for audit trails and explanation.</text>
+  <text x="96" y="711" class="p">• Runtime context includes only currently valid and active records.</text>
+  <text x="96" y="734" class="p">• History remains in store to support provenance and conflict analysis.</text>
+
+  <rect class="panel-a" x="830" y="500" width="700" height="320" rx="18" fill="#FFFFFF" stroke="#BFD0EE"/>
+  <text x="856" y="536" class="h">Practical Outcomes</text>
+  <text x="856" y="564" class="p">1) Correctness: outdated facts stop influencing answers after invalidation.</text>
+  <text x="856" y="587" class="p">2) Explainability: prior states remain visible for "why changed" traces.</text>
+  <text x="856" y="610" class="p">3) Stability: retrieval quality improves on evolving real-world data.</text>
+  <text x="856" y="633" class="p">4) Safety: delete/supersede operations do not erase audit history.</text>
+  <text x="856" y="656" class="p">5) Operations: cleanup_expired physically prunes inactive rows.</text>
+
+  <rect class="panel-b" x="856" y="688" width="640" height="110" rx="12" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="880" y="720" class="mono">Temporal fields used by code:</text>
+  <text x="880" y="746" class="mono">t_created, t_observed, t_valid, t_invalid, t_expired, status</text>
+  <text x="880" y="772" class="mono">plus last_accessed + strength for decay and tier transitions</text>
+  <circle r="5" fill="#0EA5A0" opacity="0.86">
+    <animateMotion dur="8s" repeatCount="indefinite" path="M220 320 C360 320, 520 320, 820 320"/>
+  </circle>
+  <circle r="5" fill="#F59E0B" opacity="0.86">
+    <animateMotion dur="7s" repeatCount="indefinite" path="M820 320 C980 320, 1120 320, 1280 320"/>
+  </circle>
+</svg>

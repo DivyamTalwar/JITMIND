@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Ingestion Pipeline</title>
+  <desc id="desc">Detailed ingestion flow from loaders to chunking, extraction, indexing, and memory/graph persistence.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F8FCFF"/><stop offset="100%" stop-color="#EEF5FF"/></linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0EA5A0"/><stop offset="100%" stop-color="#F59E0B"/></linearGradient>
+    <style>
+      .title{font:800 38px Inter,Segoe UI,Arial,sans-serif;fill:#0B0F19}
+      .sub{font:600 20px Inter,Segoe UI,Arial,sans-serif;fill:#334155}
+      .h{font:800 19px Inter,Segoe UI,Arial,sans-serif;fill:#0B0F19}
+      .p{font:600 14px Inter,Segoe UI,Arial,sans-serif;fill:#1E293B}
+      .edge{stroke:url(#flow);stroke-width:4.8;fill:none;stroke-linecap:round;stroke-dasharray:10 8;animation:dash 7s linear infinite}
+      .panel-a, .panel-b, .panel-c { transform-box: fill-box; transform-origin: center; }
+      .panel-a { animation: floatA 6.7s ease-in-out infinite; }
+      .panel-b { animation: floatB 7.5s ease-in-out infinite; }
+      .panel-c { animation: floatC 8.2s ease-in-out infinite; }
+      .scan { opacity: 0.26; animation: scanX 8.9s linear infinite; }
+      .pulse { animation: pulse 2.5s ease-in-out infinite; }
+      @keyframes dash{to{stroke-dashoffset:-170}}
+      @keyframes floatA{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+      @keyframes floatB{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+      @keyframes floatC{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+      @keyframes scanX{0%{transform:translateX(-260px)}100%{transform:translateX(1700px)}}
+      @keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+    </style>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#0EA5A0"/></marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="30" y="30" width="1540" height="840" rx="24" fill="#FFFFFF" stroke="#DDE7F7"/>
+  <rect class="scan" x="-260" y="156" width="220" height="5" rx="3" fill="url(#flow)"/>
+
+  <text x="70" y="95" class="title">Ingestion Pipeline (Loader → Chunk → Extract → Persist)</text>
+  <text x="70" y="128" class="sub">Unified pipeline for structured memory and graph enrichment from heterogeneous document sources.</text>
+
+  <rect class="panel-a" x="70" y="180" width="260" height="220" rx="16" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="94" y="214" class="h">Source Loaders</text>
+  <text x="94" y="238" class="p">• text files / directories</text>
+  <text x="94" y="259" class="p">• URLs + HTML extraction</text>
+  <text x="94" y="280" class="p">• JSONL datasets</text>
+  <text x="94" y="301" class="p">• S3 / Notion / GDrive</text>
+  <text x="94" y="322" class="p">• metadata normalization</text>
+  <text x="94" y="343" class="p">• source id assignment</text>
+  <text x="94" y="364" class="p">• loader-level retries</text>
+
+  <rect class="panel-b" x="370" y="180" width="260" height="220" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="394" y="214" class="h">Chunking Stage</text>
+  <text x="394" y="238" class="p">• sentence/paragraph splits</text>
+  <text x="394" y="259" class="p">• overlap management</text>
+  <text x="394" y="280" class="p">• length budget controls</text>
+  <text x="394" y="301" class="p">• chunk id derivation</text>
+  <text x="394" y="322" class="p">• dedup pre-check hooks</text>
+  <text x="394" y="343" class="p">• stable ordering guarantees</text>
+  <text x="394" y="364" class="p">• chunk metadata export</text>
+
+  <rect class="panel-c" x="670" y="180" width="280" height="220" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="694" y="214" class="h">Extraction Stage</text>
+  <text x="694" y="238" class="p">• abstract proposal</text>
+  <text x="694" y="259" class="p">• entities + relations</text>
+  <text x="694" y="280" class="p">• confidence thresholds</text>
+  <text x="694" y="301" class="p">• operation classification</text>
+  <text x="694" y="322" class="p">• temporal signal capture</text>
+  <text x="694" y="343" class="p">• conflict hint generation</text>
+  <text x="694" y="364" class="p">• provenance id threading</text>
+
+  <rect class="panel-a" x="990" y="180" width="250" height="220" rx="16" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="1014" y="214" class="h">Indexing</text>
+  <text x="1014" y="238" class="p">• dense embedding vectors</text>
+  <text x="1014" y="259" class="p">• sparse BM25 docs</text>
+  <text x="1014" y="280" class="p">• index retriever maps</text>
+  <text x="1014" y="301" class="p">• graph retriever cache</text>
+  <text x="1014" y="322" class="p">• incremental rebuild hooks</text>
+  <text x="1014" y="343" class="p">• latency-aware shard paths</text>
+
+  <rect class="panel-b" x="1270" y="180" width="260" height="220" rx="16" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="1294" y="214" class="h">Persistence Targets</text>
+  <text x="1294" y="238" class="p">• pages.json (raw page)</text>
+  <text x="1294" y="259" class="p">• advanced_memory_state</text>
+  <text x="1294" y="280" class="p">• graph nodes + edges</text>
+  <text x="1294" y="301" class="p">• profile store updates</text>
+  <text x="1294" y="322" class="p">• checkpoint side outputs</text>
+  <text x="1294" y="343" class="p">• atomic write + lock</text>
+
+  <rect class="panel-c" x="140" y="470" width="1320" height="310" rx="18" fill="#FFFFFF" stroke="#BFD0EE"/>
+  <text x="170" y="506" class="h">Operational Guarantees and Validation</text>
+  <text x="170" y="534" class="p">• end-to-end id propagation (source -> chunk -> page -> memory -> graph) for full traceability.</text>
+  <text x="170" y="557" class="p">• optional retries and circuit breaking around provider calls to protect throughput under load.</text>
+  <text x="170" y="580" class="p">• deterministic chunk ordering + stable serialization to minimize noisy diffs and simplify debugging.</text>
+  <text x="170" y="603" class="p">• compatibility with local development (Neo4j local scripts) and cloud graph backends.</text>
+  <text x="170" y="626" class="p">• outputs designed for downstream evaluation suites (HotpotQA, LoCoMo, NarrativeQA, RULER).</text>
+
+  <rect class="panel-a" x="170" y="660" width="250" height="92" rx="12" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="194" y="690" class="h">Input Contract</text>
+  <text x="194" y="712" class="p">document + metadata</text>
+  <text x="194" y="734" class="p">loader-selected source</text>
+
+  <rect class="panel-b" x="450" y="660" width="250" height="92" rx="12" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="474" y="690" class="h">Processing Contract</text>
+  <text x="474" y="712" class="p">chunk + extraction + op</text>
+  <text x="474" y="734" class="p">temporal/provenance fields</text>
+
+  <rect class="panel-c" x="730" y="660" width="250" height="92" rx="12" fill="#E8F6F5" stroke="#0EA5A0"/>
+  <text x="754" y="690" class="h">Storage Contract</text>
+  <text x="754" y="712" class="p">page + memory + graph</text>
+  <text x="754" y="734" class="p">index synchronization</text>
+
+  <rect class="panel-a" x="1010" y="660" width="420" height="92" rx="12" fill="#FFF1DA" stroke="#F59E0B"/>
+  <text x="1034" y="690" class="h">Observability Contract</text>
+  <text x="1034" y="712" class="p">retry stats, extraction confidence, indexing health, and eval-ready artifacts</text>
+
+  <path class="edge" marker-end="url(#arr)" d="M330 290 C350 290, 350 290, 370 290"/>
+  <path class="edge" marker-end="url(#arr)" d="M630 290 C650 290, 650 290, 670 290"/>
+  <path class="edge" marker-end="url(#arr)" d="M950 290 C970 290, 970 290, 990 290"/>
+  <path class="edge" marker-end="url(#arr)" d="M1240 290 C1260 290, 1260 290, 1270 290"/>
+  <path class="edge" marker-end="url(#arr)" d="M1400 400 C1400 435, 800 450, 800 470"/>
+  <circle class="pulse" r="5" fill="#0EA5A0" opacity="0.86">
+    <animateMotion dur="8s" repeatCount="indefinite" path="M330 290 C350 290, 350 290, 370 290 C650 290, 650 290, 670 290 C970 290, 970 290, 990 290"/>
+  </circle>
+  <circle class="pulse" r="5" fill="#F59E0B" opacity="0.86">
+    <animateMotion dur="7.2s" repeatCount="indefinite" path="M1240 290 C1260 290, 1260 290, 1270 290 C1400 435, 800 450, 800 470"/>
+  </circle>
+</svg>
