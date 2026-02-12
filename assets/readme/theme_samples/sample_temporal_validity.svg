@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Temporal Validity Theme Sample</title>
+  <desc id="desc">Dark premium infographic showing t_valid, t_invalid, now line, and stale fact fading.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#090F1F"/>
+      <stop offset="100%" stop-color="#141B31"/>
+    </linearGradient>
+    <linearGradient id="validEdge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2ED3C6"/>
+      <stop offset="100%" stop-color="#8EF3EA"/>
+    </linearGradient>
+    <linearGradient id="invalidEdge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFB34D"/>
+      <stop offset="100%" stop-color="#8E95AE"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+  <rect x="72" y="72" width="936" height="936" rx="30" fill="#111935" stroke="#2A355C"/>
+
+  <text x="116" y="146" fill="#EAF1FF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="700">
+    Bi-temporal Validity in Graph Memory
+  </text>
+  <text x="116" y="186" fill="#94A3C4" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20">
+    History stays, stale facts are filtered.
+  </text>
+
+  <line x1="180" y1="520" x2="620" y2="520" stroke="url(#validEdge)" stroke-width="10" stroke-linecap="round"/>
+  <line x1="620" y1="520" x2="860" y2="520" stroke="url(#invalidEdge)" stroke-width="10" stroke-linecap="round"/>
+
+  <circle cx="320" cy="520" r="16" fill="#2ED3C6"/>
+  <circle cx="620" cy="520" r="16" fill="#FFB34D"/>
+  <circle cx="860" cy="520" r="16" fill="#6B728F"/>
+
+  <line x1="320" y1="420" x2="320" y2="640" stroke="#2ED3C6" stroke-width="3" stroke-dasharray="10 8"/>
+  <line x1="620" y1="420" x2="620" y2="640" stroke="#FFB34D" stroke-width="3" stroke-dasharray="10 8"/>
+  <line x1="780" y1="360" x2="780" y2="700" stroke="#EAF1FF" stroke-width="4"/>
+
+  <text x="280" y="402" fill="#9FFAF2" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700">t_valid</text>
+  <text x="570" y="402" fill="#FFD7A1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700">t_invalid</text>
+  <text x="746" y="334" fill="#EAF1FF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700">now</text>
+
+  <rect x="150" y="742" width="780" height="180" rx="18" fill="#192446" stroke="#32467A"/>
+  <text x="186" y="792" fill="#EAF1FF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700">
+    Fact Edge Semantics
+  </text>
+  <text x="186" y="834" fill="#B8C4E0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20">
+    - Before t_invalid: edge is active and retrieval-eligible.
+  </text>
+  <text x="186" y="868" fill="#B8C4E0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20">
+    - After t_invalid: edge remains for audit/history but is filtered from active context.
+  </text>
+
+  <rect x="130" y="470" width="44" height="100" rx="12" fill="#25335F"/>
+  <rect x="866" y="470" width="44" height="100" rx="12" fill="#25335F"/>
+  <text x="118" y="452" fill="#C7D3EF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16">Entity A</text>
+  <text x="847" y="452" fill="#C7D3EF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16">Entity B</text>
+</svg>

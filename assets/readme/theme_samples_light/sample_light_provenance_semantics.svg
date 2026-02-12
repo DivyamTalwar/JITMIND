@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Light Theme Provenance Semantics Sample</title>
+  <desc id="desc">Minimal premium provenance graph with explicit relationship semantics.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8FCFF"/>
+      <stop offset="100%" stop-color="#EEF5FF"/>
+    </linearGradient>
+    <linearGradient id="tealEdge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0EA5A0"/>
+      <stop offset="100%" stop-color="#67D8D2"/>
+    </linearGradient>
+    <linearGradient id="amberEdge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#F8C772"/>
+    </linearGradient>
+    <marker id="arrowTeal" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#0EA5A0"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#F59E0B"/>
+    </marker>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0B0F19" flood-opacity="0.14"/>
+    </filter>
+  </defs>
+
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+  <rect x="64" y="64" width="952" height="952" rx="28" fill="#FFFFFF" stroke="#DDE7F7" filter="url(#softShadow)"/>
+
+  <text x="112" y="144" fill="#0B0F19" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="36" font-weight="800">
+    Provenance Relationship Semantics
+  </text>
+  <text x="112" y="184" fill="#334155" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="600">
+    Explicit edge types preserve lineage and make memory updates auditable.
+  </text>
+
+  <g font-family="Inter,Segoe UI,Arial,sans-serif">
+    <rect x="150" y="420" width="230" height="108" rx="18" fill="#F5FAFF" stroke="#BED0EE"/>
+    <text x="188" y="485" fill="#0B0F19" font-size="24" font-weight="800">old memory</text>
+
+    <rect x="470" y="278" width="230" height="108" rx="18" fill="#ECFDFA" stroke="#0EA5A0"/>
+    <text x="506" y="343" fill="#0B0F19" font-size="24" font-weight="800">new memory</text>
+
+    <rect x="470" y="560" width="230" height="108" rx="18" fill="#FFF7EB" stroke="#F59E0B"/>
+    <text x="486" y="625" fill="#0B0F19" font-size="24" font-weight="800">summary memory</text>
+
+    <rect x="824" y="370" width="162" height="78" rx="14" fill="#F5FAFF" stroke="#BED0EE"/>
+    <text x="842" y="418" fill="#0B0F19" font-size="20" font-weight="800">source A</text>
+
+    <rect x="824" y="500" width="162" height="78" rx="14" fill="#F5FAFF" stroke="#BED0EE"/>
+    <text x="842" y="548" fill="#0B0F19" font-size="20" font-weight="800">source B</text>
+  </g>
+
+  <path d="M380 474 C430 472, 440 406, 470 334" stroke="url(#tealEdge)" stroke-width="5.5" fill="none" marker-end="url(#arrowTeal)"/>
+  <text x="394" y="402" fill="#0B0F19" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19" font-weight="800">UPDATES</text>
+
+  <path d="M380 474 C430 506, 435 560, 470 614" stroke="url(#amberEdge)" stroke-width="5.5" fill="none" marker-end="url(#arrowAmber)"/>
+  <text x="390" y="556" fill="#0B0F19" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19" font-weight="800">EXTENDS</text>
+
+  <path d="M700 334 C770 352, 790 376, 824 408" stroke="url(#tealEdge)" stroke-width="4.8" fill="none" marker-end="url(#arrowTeal)"/>
+  <path d="M700 614 C770 586, 792 560, 824 538" stroke="url(#amberEdge)" stroke-width="4.8" fill="none" marker-end="url(#arrowAmber)"/>
+  <text x="714" y="474" fill="#0B0F19" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="800">DERIVES</text>
+
+  <rect x="150" y="760" width="836" height="176" rx="20" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="186" y="808" fill="#0B0F19" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="25" font-weight="800">
+    Encoded memory semantics
+  </text>
+  <text x="186" y="846" fill="#1E293B" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="600">
+    UPDATES: replaces superseded fact.
+  </text>
+  <text x="186" y="880" fill="#1E293B" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="600">
+    EXTENDS: adds context without invalidating prior fact. DERIVES: summary lineage from sources.
+  </text>
+</svg>

@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">Evaluation Runner Flow</title>
+  <desc id="desc">Simple flow for eval runner dispatch and task execution paths.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8FCFF"/>
+      <stop offset="100%" stop-color="#EEF5FF"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0EA5A0"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <style>
+      .title { font: 800 34px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .sub { font: 600 18px Inter, Segoe UI, Arial, sans-serif; fill: #334155; }
+      .h { font: 800 17px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .p { font: 600 13px Inter, Segoe UI, Arial, sans-serif; fill: #1E293B; }
+      .edge { stroke: url(#flow); stroke-width: 4; fill: none; stroke-linecap: round; stroke-dasharray: 10 8; animation: dash 7s linear infinite; }
+      .panel { transform-box: fill-box; transform-origin: center; animation: float 7s ease-in-out infinite; }
+      @keyframes dash { to { stroke-dashoffset: -150; } }
+      @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+    </style>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#0EA5A0"/>
+    </marker>
+  </defs>
+
+  <rect width="1400" height="760" fill="url(#bg)"/>
+  <rect x="28" y="28" width="1344" height="704" rx="22" fill="#FFFFFF" stroke="#DDE7F7"/>
+
+  <text x="70" y="92" class="title">Evaluation Dispatch Flow (eval/run.py)</text>
+  <text x="70" y="122" class="sub">CLI task routing for benchmark scripts and evaluation reproducibility.</text>
+
+  <rect class="panel" x="90" y="180" width="280" height="170" rx="14" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="114" y="214" class="h">1) CLI Entry</text>
+  <text x="114" y="238" class="p">jitmind-eval &lt;task&gt; [args]</text>
+  <text x="114" y="260" class="p">or: python3 eval/run.py ...</text>
+  <text x="114" y="282" class="p">validates task id</text>
+  <text x="114" y="304" class="p">prints help on invalid input</text>
+
+  <rect class="panel" x="420" y="180" width="300" height="170" rx="14" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="444" y="214" class="h">2) Dispatch Map</text>
+  <text x="444" y="238" class="p">• hotpotqa -> hotpotqa_test.py</text>
+  <text x="444" y="260" class="p">• locomo -> locomo_test.py</text>
+  <text x="444" y="282" class="p">• narrativeqa -> narrativeqa_test.py</text>
+  <text x="444" y="304" class="p">• ruler -> ruler_test.py</text>
+
+  <rect class="panel" x="770" y="180" width="280" height="170" rx="14" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="794" y="214" class="h">3) Script Execution</text>
+  <text x="794" y="238" class="p">• subprocess invocation</text>
+  <text x="794" y="260" class="p">• pass-through CLI args</text>
+  <text x="794" y="282" class="p">• preserve exit codes</text>
+  <text x="794" y="304" class="p">• deterministic routing path</text>
+
+  <rect class="panel" x="1100" y="180" width="220" height="170" rx="14" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="1124" y="214" class="h">4) Output</text>
+  <text x="1124" y="238" class="p">• benchmark metrics</text>
+  <text x="1124" y="260" class="p">• task-level logs</text>
+  <text x="1124" y="282" class="p">• return code status</text>
+  <text x="1124" y="304" class="p">• reproducible runs</text>
+
+  <rect x="220" y="430" width="960" height="220" rx="16" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="250" y="468" class="h">Common Commands</text>
+  <text x="250" y="494" class="p">python3 eval/run.py --help</text>
+  <text x="250" y="518" class="p">python3 eval/run.py hotpotqa --help</text>
+  <text x="250" y="542" class="p">python3 eval/run.py narrativeqa --help</text>
+  <text x="250" y="566" class="p">python3 eval/run.py ruler --help</text>
+
+  <path class="edge" marker-end="url(#arr)" d="M370 265 C390 265, 400 265, 420 265"/>
+  <path class="edge" marker-end="url(#arr)" d="M720 265 C740 265, 750 265, 770 265"/>
+  <path class="edge" marker-end="url(#arr)" d="M1050 265 C1070 265, 1080 265, 1100 265"/>
+  <path class="edge" marker-end="url(#arr)" d="M1210 350 C1210 390, 1080 410, 900 430"/>
+</svg>

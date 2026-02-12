@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">Quickstart Example Flow</title>
+  <desc id="desc">Simple flow showing quickstart scripts and what each demonstrates.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8FCFF"/>
+      <stop offset="100%" stop-color="#EEF5FF"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0EA5A0"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <style>
+      .title { font: 800 34px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .sub { font: 600 18px Inter, Segoe UI, Arial, sans-serif; fill: #334155; }
+      .h { font: 800 17px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .p { font: 600 13px Inter, Segoe UI, Arial, sans-serif; fill: #1E293B; }
+      .edge { stroke: url(#flow); stroke-width: 4; fill: none; stroke-linecap: round; stroke-dasharray: 10 8; animation: dash 7s linear infinite; }
+      .panel { transform-box: fill-box; transform-origin: center; animation: float 7s ease-in-out infinite; }
+      @keyframes dash { to { stroke-dashoffset: -150; } }
+      @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+    </style>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#0EA5A0"/>
+    </marker>
+  </defs>
+
+  <rect width="1400" height="760" fill="url(#bg)"/>
+  <rect x="28" y="28" width="1344" height="704" rx="22" fill="#FFFFFF" stroke="#DDE7F7"/>
+
+  <text x="70" y="92" class="title">Quickstart Flow (examples/quickstart)</text>
+  <text x="70" y="122" class="sub">Minimal learning path for developers onboarding to the package.</text>
+
+  <rect class="panel" x="90" y="180" width="280" height="170" rx="14" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="114" y="214" class="h">1) basic_usage.py</text>
+  <text x="114" y="238" class="p">• MemoryAgent setup</text>
+  <text x="114" y="260" class="p">• document memorization</text>
+  <text x="114" y="282" class="p">• ResearchAgent query run</text>
+  <text x="114" y="304" class="p">• integrated answer output</text>
+
+  <rect class="panel" x="420" y="180" width="280" height="170" rx="14" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="444" y="214" class="h">2) model_usage.py</text>
+  <text x="444" y="238" class="p">• OpenRouter generator usage</text>
+  <text x="444" y="260" class="p">• OpenAI-compatible endpoints</text>
+  <text x="444" y="282" class="p">• vLLM local mode examples</text>
+  <text x="444" y="304" class="p">• backend tradeoff guidance</text>
+
+  <rect class="panel" x="750" y="180" width="280" height="170" rx="14" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="774" y="214" class="h">3) ttl_usage.py</text>
+  <text x="774" y="238" class="p">• TTL memory behavior</text>
+  <text x="774" y="260" class="p">• cleanup and retention</text>
+  <text x="774" y="282" class="p">• before/after operational effect</text>
+  <text x="774" y="304" class="p">• persistence expectations</text>
+
+  <rect class="panel" x="1080" y="180" width="240" height="170" rx="14" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="1104" y="214" class="h">4) Next Step</text>
+  <text x="1104" y="238" class="p">• enable graph mode</text>
+  <text x="1104" y="260" class="p">• add reranker</text>
+  <text x="1104" y="282" class="p">• run eval tasks</text>
+  <text x="1104" y="304" class="p">• production tuning</text>
+
+  <rect x="210" y="430" width="980" height="220" rx="16" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="240" y="468" class="h">Quick Commands</text>
+  <text x="240" y="494" class="p">python3 examples/quickstart/basic_usage.py</text>
+  <text x="240" y="518" class="p">python3 examples/quickstart/model_usage.py</text>
+  <text x="240" y="542" class="p">python3 examples/quickstart/ttl_usage.py</text>
+  <text x="240" y="566" class="p">Set OPENROUTER_API_KEY and COHERE_API_KEY before running.</text>
+
+  <path class="edge" marker-end="url(#arr)" d="M370 265 C390 265, 400 265, 420 265"/>
+  <path class="edge" marker-end="url(#arr)" d="M700 265 C720 265, 730 265, 750 265"/>
+  <path class="edge" marker-end="url(#arr)" d="M1030 265 C1050 265, 1060 265, 1080 265"/>
+  <path class="edge" marker-end="url(#arr)" d="M1200 350 C1200 390, 1070 410, 900 430"/>
+</svg>
