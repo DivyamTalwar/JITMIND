@@ -7,6 +7,17 @@
 Self-editing bi-temporal memory + temporal graph reasoning + an iterative Plan -> Search -> Integrate -> Reflect loop for evidence-grounded answers.  
 It fuses BM25 + dense + graph retrieval with robust ranking + provenance so long-running agents stay accurate as facts change.
 
+[![Python 3.8+](https://img.shields.io/badge/python-3.8%2B-blue.svg?style=flat)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](LICENSE)
+[![Memory: Self-Editing](https://img.shields.io/badge/memory-self--editing-0ea5a4.svg?style=flat)](#features)
+[![Time: Bi-Temporal](https://img.shields.io/badge/time-bi--temporal-f59e0b.svg?style=flat)](#features)
+[![Graph: Temporal Reasoning](https://img.shields.io/badge/graph-temporal%20reasoning-111827.svg?style=flat)](#features)
+[![Retrieval: Hybrid Fusion](https://img.shields.io/badge/retrieval-hybrid%20fusion-1f2937.svg?style=flat)](#features)
+[![Loop: Plan-Search-Integrate-Reflect](https://img.shields.io/badge/loop-plan--search--integrate--reflect-0f172a.svg?style=flat)](#features)
+[![Status: Research](https://img.shields.io/badge/status-research-7c3aed.svg?style=flat)](#)
+
+<br/>
+
 <b>Author:</b> <a href="https://github.com/DivyamTalwar">Divyam Talwar</a>
 
 <br/>

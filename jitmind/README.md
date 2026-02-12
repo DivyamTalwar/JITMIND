@@ -6,6 +6,15 @@
 
 Memory lifecycle control, temporal validity, graph semantics, and retrieval fusion for production-grade agent memory systems.
 
+[![Python 3.8+](https://img.shields.io/badge/python-3.8%2B-blue.svg?style=flat)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](../LICENSE)
+[![Memory: Self-Editing](https://img.shields.io/badge/memory-self--editing-0ea5a4.svg?style=flat)](#features)
+[![Time: Bi-Temporal](https://img.shields.io/badge/time-bi--temporal-f59e0b.svg?style=flat)](#features)
+[![Graph: Semantics+CRUD](https://img.shields.io/badge/graph-semantics%20%2B%20crud-111827.svg?style=flat)](#features)
+[![Retrieval: Fusion+Rerank](https://img.shields.io/badge/retrieval-fusion%20%2B%20rerank-1f2937.svg?style=flat)](#features)
+[![Loop: Plan-Search-Integrate-Reflect](https://img.shields.io/badge/loop-plan--search--integrate--reflect-0f172a.svg?style=flat)](#features)
+[![Status: Research](https://img.shields.io/badge/status-research-7c3aed.svg?style=flat)](#)
+
 <br/>
 
 </div>
