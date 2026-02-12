@@ -45,6 +45,7 @@ assets/
 - `tests/README.md` uses `assets/readme/folder_svgs/tests_quality_flow.svg`
 - `eval/README.md` uses `assets/readme/folder_svgs/eval_runner_flow.svg`
 - `examples/quickstart/README.md` uses `assets/readme/folder_svgs/examples_quickstart_flow.svg`
+- `scripts/README.md` uses `assets/readme/folder_svgs/scripts_ops_flow.svg`
 
 ## Naming Conventions
 

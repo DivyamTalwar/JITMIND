@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">Scripts Ops Flow</title>
+  <desc id="desc">Operational scripts overview: local graph setup, tests, live E2E, stress harness, evaluation, and maintenance.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8FCFF"/>
+      <stop offset="100%" stop-color="#EEF5FF"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0EA5A0"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <style>
+      .title { font: 800 34px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .sub { font: 600 18px Inter, Segoe UI, Arial, sans-serif; fill: #334155; }
+      .h { font: 800 16px Inter, Segoe UI, Arial, sans-serif; fill: #0B0F19; }
+      .p { font: 600 13px Inter, Segoe UI, Arial, sans-serif; fill: #1E293B; }
+      .mono { font: 700 12px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; fill: #0B0F19; }
+      .edge { stroke: url(#flow); stroke-width: 4; fill: none; stroke-linecap: round; stroke-dasharray: 10 8; animation: dash 7s linear infinite; }
+      .panel { transform-box: fill-box; transform-origin: center; animation: float 7s ease-in-out infinite; }
+      @keyframes dash { to { stroke-dashoffset: -150; } }
+      @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+    </style>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#0EA5A0"/>
+    </marker>
+  </defs>
+
+  <rect width="1400" height="760" fill="url(#bg)"/>
+  <rect x="28" y="28" width="1344" height="704" rx="22" fill="#FFFFFF" stroke="#DDE7F7"/>
+
+  <text x="70" y="92" class="title">Scripts Directory (Ops + Tests + Eval)</text>
+  <text x="70" y="122" class="sub">One place to run local deps, quality gates, live E2E, stress harnesses, and maintenance jobs.</text>
+
+  <!-- Panels -->
+  <rect class="panel" x="90" y="180" width="250" height="190" rx="14" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="114" y="214" class="h">1) Local Graph</text>
+  <text x="114" y="240" class="p">• neo4j_local_up.sh</text>
+  <text x="114" y="262" class="p">• neo4j_local_down.sh</text>
+  <text x="114" y="284" class="p">• docker-compose.neo4j.yml</text>
+  <text x="114" y="306" class="p">• bolt://localhost:7687</text>
+  <text x="114" y="328" class="p">• http://localhost:7474</text>
+
+  <rect class="panel" x="370" y="180" width="250" height="190" rx="14" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="394" y="214" class="h">2) Quality Gate</text>
+  <text x="394" y="240" class="p">• test_all.sh</text>
+  <text x="394" y="262" class="p">• pytest unit tests</text>
+  <text x="394" y="284" class="p">• optional live E2E</text>
+  <text x="394" y="306" class="p">• fails fast on regressions</text>
+
+  <rect class="panel" x="650" y="180" width="250" height="190" rx="14" fill="#FFF7EB" stroke="#F59E0B"/>
+  <text x="674" y="214" class="h">3) Live E2E</text>
+  <text x="674" y="240" class="p">• e2e_live_test.py</text>
+  <text x="674" y="262" class="p">• synthetic corpus only</text>
+  <text x="674" y="284" class="p">• real providers (LLM + embed)</text>
+  <text x="674" y="306" class="p">• graph optional (Aura/local)</text>
+
+  <rect class="panel" x="930" y="180" width="250" height="190" rx="14" fill="#F5FAFF" stroke="#BFD0EE"/>
+  <text x="954" y="214" class="h">4) Stress Harness</text>
+  <text x="954" y="240" class="p">• e2e_stress_live_test.py</text>
+  <text x="954" y="262" class="p">• concurrency + dedup</text>
+  <text x="954" y="284" class="p">• maintenance pass exercised</text>
+  <text x="954" y="306" class="p">• local Neo4j auto-start</text>
+
+  <rect class="panel" x="1190" y="180" width="160" height="190" rx="14" fill="#ECFDFA" stroke="#0EA5A0"/>
+  <text x="1212" y="214" class="h">5) Ops</text>
+  <text x="1212" y="240" class="p">• run_maintenance.py</text>
+  <text x="1212" y="262" class="p">• eval_*.sh</text>
+  <text x="1212" y="284" class="p">• download_data.sh</text>
+  <text x="1212" y="306" class="p">• cron-safe entrypoint</text>
+
+  <!-- Flow arrows -->
+  <path class="edge" marker-end="url(#arr)" d="M340 275 C352 275, 362 275, 370 275"/>
+  <path class="edge" marker-end="url(#arr)" d="M620 275 C632 275, 642 275, 650 275"/>
+  <path class="edge" marker-end="url(#arr)" d="M900 275 C912 275, 922 275, 930 275"/>
+  <path class="edge" marker-end="url(#arr)" d="M1180 275 C1188 275, 1189 275, 1190 275"/>
+
+  <!-- Command block -->
+  <rect x="120" y="430" width="1160" height="230" rx="16" fill="#F8FBFF" stroke="#C8D8F2"/>
+  <text x="150" y="468" class="h">Common Commands</text>
+
+  <text x="150" y="502" class="mono">./scripts/neo4j_local_up.sh</text>
+  <text x="150" y="528" class="mono">./scripts/test_all.sh</text>
+  <text x="150" y="554" class="mono">python3 scripts/e2e_live_test.py</text>
+  <text x="150" y="580" class="mono">python3 scripts/e2e_stress_live_test.py</text>
+  <text x="150" y="606" class="mono">python3 scripts/run_maintenance.py --summarize --consolidate</text>
+  <text x="150" y="632" class="mono">./scripts/download_data.sh</text>
+</svg>
+

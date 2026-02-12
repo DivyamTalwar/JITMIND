@@ -64,8 +64,9 @@ This repository currently includes:
 - Examples: `examples/quickstart/`
 - Evaluation entrypoints: `eval/`
 - Test suite (TTL-centric): `tests/`
+- Operational scripts: `scripts/`
 - Visual assets and architecture SVGs: `assets/readme/`
-- Packaging: `setup.py`
+- Packaging: `setup.py`, `pyproject.toml`, `requirements.txt`
 
 Notes on current state:
 
@@ -984,13 +985,18 @@ Environment variables discovered from implementation:
 ```text
 .
 |-- assets/
+|   |-- README.md
 |   |-- logo.png
 |   `-- readme/
 |       |-- final_svgs/
+|       |-- folder_svgs/
+|       |-- jitmind_package_images/
+|       |-- jitmind_package_svgs/
+|       |-- root_readme_images/
 |       |-- theme_samples/
-|       |-- theme_samples_light/
-|       `-- Images/
+|       `-- theme_samples_light/
 |-- download_data/
+|-- docker-compose.neo4j.yml
 |-- eval/
 |-- examples/
 |   `-- quickstart/
@@ -1009,6 +1015,10 @@ Environment variables discovered from implementation:
 |   |-- schemas/
 |   |-- summarization/
 |   `-- utils/
+|-- LICENSE
+|-- pyproject.toml
+|-- requirements.txt
+|-- scripts/
 |-- tests/
 |-- setup.py
 `-- README.md
