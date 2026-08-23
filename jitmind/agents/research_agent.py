@@ -16,7 +16,7 @@ The module focuses on providing clear abstraction and extensible interfaces for 
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Sequence
 import os
 import json
 import asyncio
@@ -41,6 +41,7 @@ from jitmind.schemas import AdvancedMemoryStore, MemoryEntry
 from jitmind.utils.checkpoint import CheckpointManager
 from jitmind.learning.replay_buffer import ExperienceReplayBuffer
 from jitmind.profile import UserProfileStore
+from jitmind.scoping import Namespace, namespace_matches, normalize_namespace
 try:
     from jitmind.graph import GraphMemoryStore, load_ontology_from_env
 except ImportError:
@@ -114,6 +115,7 @@ class ResearchAgent:
         self.replay_buffer = replay_buffer
         self.profile_store = profile_store
         self._current_user_id: Optional[str] = None
+        self._current_namespace: Namespace = normalize_namespace()
         
         # Initialize system_prompts (default empty strings)
         default_system_prompts = {
@@ -165,10 +167,12 @@ class ResearchAgent:
         resume: bool = True,
         feedback: Optional[float] = None,
         user_id: Optional[str] = None,
+        namespace: str | Sequence[str] | None = None,
     ) -> ResearchOutput:
         # Ensure retriever indexes are up to date before research
         self._update_retrievers()
         self._current_user_id = user_id
+        self._current_namespace = normalize_namespace(namespace, user_id=user_id)
         
         temp = Result()
         iterations: List[Dict[str, Any]] = []
@@ -185,7 +189,7 @@ class ResearchAgent:
 
         for step in range(start_step, self.max_iters):
             # Load current memory state dynamically
-            memory_state = self.memory_store.load()
+            memory_state = self._load_scoped_memory()
             plan = self._planning(next_request, memory_state)
 
             temp = self._search(plan, temp, request)
@@ -261,9 +265,11 @@ class ResearchAgent:
         resume: bool = True,
         feedback: Optional[float] = None,
         user_id: Optional[str] = None,
+        namespace: str | Sequence[str] | None = None,
     ) -> ResearchOutput:
         self._update_retrievers()
         self._current_user_id = user_id
+        self._current_namespace = normalize_namespace(namespace, user_id=user_id)
 
         temp = Result()
         iterations: List[Dict[str, Any]] = []
@@ -279,7 +285,7 @@ class ResearchAgent:
                 start_step = loaded.get("step", 0)
 
         for step in range(start_step, self.max_iters):
-            memory_state = self.memory_store.load()
+            memory_state = self._load_scoped_memory()
             plan = await asyncio.to_thread(self._planning, next_request, memory_state)
 
             temp = await self._search_async(plan, temp, request)
@@ -362,6 +368,39 @@ class ResearchAgent:
         
         # Update page count
         self._last_page_count = current_page_count
+
+    def _load_scoped_memory(self) -> MemoryState:
+        if isinstance(self.memory_store, AdvancedMemoryStore):
+            return self.memory_store.load(namespace=self._current_namespace)
+        if self._current_namespace != ("default",):
+            raise ValueError(
+                "explicit namespaces require AdvancedMemoryStore isolation support"
+            )
+        return self.memory_store.load()
+
+    def _filter_scope_hits(self, hits: List[Hit]) -> List[Hit]:
+        """Fail closed when a retriever returns a page from another namespace."""
+
+        get_page = getattr(self.page_store, "get", None)
+        if not get_page:
+            return []
+        scoped: List[Hit] = []
+        for hit in hits:
+            if hit.page_id is None:
+                # Tool-produced evidence has no durable page and is not tenant data.
+                scoped.append(hit)
+                continue
+            try:
+                page = get_page(int(hit.page_id))
+            except (TypeError, ValueError):
+                continue
+            if page is None:
+                continue
+            candidate = (page.meta or {}).get("namespace", ["default"])
+            if namespace_matches(candidate, self._current_namespace):
+                hit.meta["namespace"] = list(self._current_namespace)
+                scoped.append(hit)
+        return scoped
 
     def _load_checkpoint_state(self, checkpoint_id: str) -> Optional[Dict[str, Any]]:
         if not self.checkpoint_manager:
@@ -518,6 +557,14 @@ class ResearchAgent:
         if not tool_hits:
             return result
 
+        tool_hits = {
+            tool: scoped
+            for tool, hits in tool_hits.items()
+            if (scoped := self._filter_scope_hits(hits))
+        }
+        if not tool_hits:
+            return result
+
         # Dynamic hybrid alpha scores (dense + sparse)
         dense_scores: Dict[str, float] = {}
         sparse_scores: Dict[str, float] = {}
@@ -615,6 +662,14 @@ class ResearchAgent:
             if hits:
                 tool_hits[tool] = hits
 
+        if not tool_hits:
+            return result
+
+        tool_hits = {
+            tool: scoped
+            for tool, hits in tool_hits.items()
+            if (scoped := self._filter_scope_hits(hits))
+        }
         if not tool_hits:
             return result
 
@@ -991,7 +1046,14 @@ class ResearchAgent:
 
         # Prefer ranked entries if available and context pressure is high
         if isinstance(self.memory_store, AdvancedMemoryStore):
-            entries = self.memory_store.get_ranked_entries(limit=len(self.memory_store.get_entries()))
+            entries = self.memory_store.get_ranked_entries(
+                limit=len(
+                    self.memory_store.get_entries(
+                        namespace=self._current_namespace
+                    )
+                ),
+                namespace=self._current_namespace,
+            )
             lines = []
             for e in entries:
                 if e.source_page_id is not None:

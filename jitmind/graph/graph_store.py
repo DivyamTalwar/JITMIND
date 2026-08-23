@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Sequence
 from contextlib import contextmanager
 import hashlib
 
@@ -622,7 +622,13 @@ class GraphMemoryStore:
         except Exception as e:
             print(f"[WARN] Failed to delete community {community_id}: {e}")
 
-    def query_memories(self, entity_names: List[str], depth: int = 1, limit: int = 20) -> List[Dict[str, Any]]:
+    def query_memories(
+        self,
+        entity_names: List[str],
+        depth: int = 1,
+        limit: int = 20,
+        namespace: Sequence[str] | None = None,
+    ) -> List[Dict[str, Any]]:
         if not entity_names:
             return []
         # Filter out invalid entity names
@@ -636,12 +642,15 @@ class GraphMemoryStore:
                 direct = session.run(
                     """
                     MATCH (m:Memory)-[:MENTIONS]->(e:Entity)
-                    WHERE e.name IN $names AND (m.status IS NULL OR m.status = 'active')
+                    WHERE e.name IN $names
+                      AND (m.status IS NULL OR m.status = 'active')
+                      AND ($namespace IS NULL OR m.namespace = $namespace)
                     RETURN m.id AS id, m.content AS content, m.source_page_id AS page_id
                     LIMIT $limit
                     """,
                     names=valid_names,
                     limit=limit,
+                    namespace=list(namespace) if namespace is not None else None,
                 )
                 for r in direct:
                     if r["id"] is None:
@@ -660,12 +669,14 @@ class GraphMemoryStore:
                     MATCH (e:Entity)
                     WHERE e.name IN $names
                     MATCH (e)-[:RELATION*1..{safe_depth}]-(e2:Entity)<-[:MENTIONS]-(m:Memory)
-                    WHERE m.status IS NULL OR m.status = 'active'
+                    WHERE (m.status IS NULL OR m.status = 'active')
+                      AND ($namespace IS NULL OR m.namespace = $namespace)
                     RETURN DISTINCT m.id AS id, m.content AS content, m.source_page_id AS page_id
                     LIMIT $limit
                     """,
                     names=valid_names,
                     limit=limit,
+                    namespace=list(namespace) if namespace is not None else None,
                 )
                 for r in related:
                     mid = r["id"]
@@ -689,6 +700,7 @@ class GraphMemoryStore:
         depth: int = 2,
         max_iter: int = 20,
         limit: int = 20,
+        namespace: Sequence[str] | None = None,
     ) -> List[Dict[str, Any]]:
         if not entity_names:
             return []
@@ -710,6 +722,7 @@ class GraphMemoryStore:
                     // This avoids Neo4j warnings for relationship types that aren't present yet (e.g. HAS_MEMBER).
                     MATCH p=(seed)-[*1..{safe_depth}]-(n)
                     WHERE ALL(x IN nodes(p) WHERE x:Entity OR x:Memory OR x:Episode OR x:Semantic OR x:Community)
+                      AND ALL(x IN nodes(p) WHERE NOT x:Memory OR $namespace IS NULL OR x.namespace = $namespace)
                     WITH relationships(p) AS rels
                     UNWIND rels AS r
                     WITH startNode(r) AS s, endNode(r) AS t
@@ -717,6 +730,7 @@ class GraphMemoryStore:
                     LIMIT 1000
                     """,
                     names=valid_names,
+                    namespace=list(namespace) if namespace is not None else None,
                 )
                 for rec in records:
                     s = rec["s"]
@@ -777,10 +791,13 @@ class GraphMemoryStore:
                 rows = session.run(
                     """
                     MATCH (m:Memory)
-                    WHERE m.id IN $ids AND (m.status IS NULL OR m.status = 'active')
+                    WHERE m.id IN $ids
+                      AND (m.status IS NULL OR m.status = 'active')
+                      AND ($namespace IS NULL OR m.namespace = $namespace)
                     RETURN m.id AS id, m.content AS content, m.source_page_id AS page_id
                     """,
                     ids=top_ids,
+                    namespace=list(namespace) if namespace is not None else None,
                 )
                 mem_map = {r["id"]: r for r in rows}
             for mid, score in memory_scores[:limit]:
