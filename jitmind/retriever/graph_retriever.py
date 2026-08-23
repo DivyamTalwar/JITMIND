@@ -21,6 +21,7 @@ class GraphRetriever(AbsRetriever):
         self.depth = config.get("depth", 1)
         self.top_k = config.get("top_k", 10)
         self.use_ppr = config.get("use_ppr", True)
+        self.namespace = config.get("namespace")
 
     def build(self, page_store):
         # Graph store is updated by MemoryAgent; no build needed.
@@ -40,9 +41,19 @@ class GraphRetriever(AbsRetriever):
                 continue
             entity_names = [e.strip() for e in q.split(",") if e.strip()]
             if self.use_ppr:
-                rows = self.graph_store.personalized_pagerank(entity_names, depth=self.depth, limit=top_k)
+                rows = self.graph_store.personalized_pagerank(
+                    entity_names,
+                    depth=self.depth,
+                    limit=top_k,
+                    namespace=self.namespace,
+                )
             else:
-                rows = self.graph_store.query_memories(entity_names, depth=self.depth, limit=top_k)
+                rows = self.graph_store.query_memories(
+                    entity_names,
+                    depth=self.depth,
+                    limit=top_k,
+                    namespace=self.namespace,
+                )
             hits: List[Hit] = []
             for rank, row in enumerate(rows):
                 hits.append(

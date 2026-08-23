@@ -13,7 +13,7 @@ This module defines the MemoryAgent for the JITMind (JITMind) framework.
 
 from __future__ import annotations
 
-from typing import Dict, Optional, Tuple, Any
+from typing import Dict, Optional, Tuple, Any, Sequence
 import os
 
 from jitmind.prompts import MemoryAgent_PROMPT, MemoryOperation_PROMPT, ConflictCheck_PROMPT
@@ -25,6 +25,7 @@ from jitmind.schemas import (
 from jitmind.generator import AbsGenerator
 from jitmind.profile import UserProfileAgent
 from jitmind.memory_context import MemoryContextSelector
+from jitmind.scoping import Namespace, normalize_namespace
 try:
     from jitmind.graph import GraphMemoryStore, load_ontology_from_env
 except ImportError:
@@ -96,7 +97,13 @@ class MemoryAgent:
 
 
     # ---- Public ----
-    def memorize(self, message: str, meta: Optional[Dict[str, Any]] = None, user_id: Optional[str] = None) -> MemoryUpdate:
+    def memorize(
+        self,
+        message: str,
+        meta: Optional[Dict[str, Any]] = None,
+        user_id: Optional[str] = None,
+        namespace: str | Sequence[str] | None = None,
+    ) -> MemoryUpdate:
         """
         Update long-term memory with a new message and persist a decorated page.
         Steps:
@@ -105,17 +112,20 @@ class MemoryAgent:
           3) Write Page into page_store  (page_id left None by default)
         """
         message = message.strip()
-        state = self.memory_store.load()
+        active_namespace = normalize_namespace(namespace, user_id=user_id)
+        state = self._load_scoped_state(active_namespace)
 
         # (1) Decorate - this generates the abstract and decorated page
         abstract, header, decorated_new_page = self._decorate(message, state)
 
         # (2) Decide memory operation (self-edit)
-        decision = self._decide_operation(abstract, message)
+        decision = self._decide_operation(abstract, message, active_namespace)
 
         # (3) Apply memory operation first (uses page_id for provenance)
         page_id = len(self.page_store.load())
-        memory_id = self._apply_memory_operation(decision, abstract, page_id)
+        memory_id = self._apply_memory_operation(
+            decision, abstract, page_id, active_namespace
+        )
 
         # (4) Persist page
         page = Page(
@@ -128,6 +138,7 @@ class MemoryAgent:
                 "t_observed": decision.get("t_observed"),
                 "t_valid": decision.get("t_valid"),
                 "t_invalid": decision.get("t_invalid"),
+                "namespace": list(active_namespace),
             },
         )
         if meta:
@@ -147,7 +158,7 @@ class MemoryAgent:
                 pass
         
         # (6) Get updated state after adding abstract
-        updated_state = self.memory_store.load()
+        updated_state = self._load_scoped_state(active_namespace)
 
         return MemoryUpdate(new_state=updated_state, new_page=page, debug={"decorated_page": decorated_new_page})
 
@@ -194,9 +205,23 @@ class MemoryAgent:
         decorated_new_page = f"{header}; {message}"
         return abstract, header, decorated_new_page
 
-    def _build_memory_context(self, query: str = "") -> str:
+    def _load_scoped_state(self, namespace: Namespace) -> MemoryState:
+        if isinstance(self.memory_store, AdvancedMemoryStore):
+            return self.memory_store.load(namespace=namespace)
+        if namespace != ("default",):
+            raise ValueError(
+                "explicit namespaces require AdvancedMemoryStore isolation support"
+            )
+        return self.memory_store.load()
+
+    def _build_memory_context(
+        self, query: str = "", namespace: Namespace | None = None
+    ) -> str:
         if hasattr(self.memory_store, "get_entries"):
-            entries = self.memory_store.get_entries(include_inactive=True)
+            kwargs = {"include_inactive": True}
+            if namespace is not None:
+                kwargs["namespace"] = namespace
+            entries = self.memory_store.get_entries(**kwargs)
             entries = self.context_selector.select_entries(query, entries)
             lines = [f"{e.id} [{e.tier}/{e.status}]: {e.content}" for e in entries]
             return "\n".join(lines) if lines else "No memory currently."
@@ -206,8 +231,12 @@ class MemoryAgent:
         abstracts = self.context_selector.select_abstracts(query, state.abstracts)
         return "\n".join([f"Page {i}: {a}" for i, a in enumerate(abstracts)])
 
-    def _decide_operation(self, abstract: str, message: str):
-        memory_context = self._build_memory_context(f"{abstract}\n{message}")
+    def _decide_operation(
+        self, abstract: str, message: str, namespace: Namespace | None = None
+    ):
+        memory_context = self._build_memory_context(
+            f"{abstract}\n{message}", namespace
+        )
         prompt = MemoryOperation_PROMPT.format(
             memory_context=memory_context,
             new_abstract=abstract,
@@ -228,7 +257,13 @@ class MemoryAgent:
             data = {}
         return data
 
-    def _apply_memory_operation(self, decision: Dict[str, Any], abstract: str, page_id: int) -> Optional[str]:
+    def _apply_memory_operation(
+        self,
+        decision: Dict[str, Any],
+        abstract: str,
+        page_id: int,
+        namespace: Namespace = ("default",),
+    ) -> Optional[str]:
         op = (decision.get("operation") or "add").lower()
         importance = decision.get("importance") or "short"
         t_observed = decision.get("t_observed")
@@ -246,7 +281,7 @@ class MemoryAgent:
             if op == "noop":
                 return None
             if op == "delete" and target_id:
-                self.memory_store.delete_entry(target_id)
+                self.memory_store.delete_entry(target_id, namespace=namespace)
                 if self.graph_store:
                     self.graph_store.mark_memory_status(target_id, "deleted")
                     self.graph_store.mark_memory_latest(target_id, False)
@@ -260,10 +295,11 @@ class MemoryAgent:
                 t_invalid=t_invalid,
                 source_page_id=str(page_id),
                 version_of=target_id if op == "update" else None,
+                namespace=namespace,
             )
 
             if op == "update" and target_id:
-                self.memory_store.update_entry(target_id, entry)
+                self.memory_store.update_entry(target_id, entry, namespace=namespace)
                 if self.graph_store:
                     self.graph_store.mark_memory_status(target_id, "superseded")
                     self.graph_store.link_memory_relation(entry.id, target_id, "UPDATES")
@@ -281,6 +317,7 @@ class MemoryAgent:
                     "t_valid": entry.t_valid,
                     "t_invalid": entry.t_invalid,
                     "source_page_id": entry.source_page_id,
+                    "namespace": list(entry.namespace),
                 })
                 self.graph_store.add_entities_relations(
                     entry.id,
@@ -348,7 +385,7 @@ class MemoryAgent:
                         pass
                 # Conflict detection and resolution (for ADD operations)
                 if op == "add" and entities:
-                    self._resolve_conflicts(entry, entities)
+                    self._resolve_conflicts(entry, entities, namespace)
             return entry.id
         else:
             # Fallback to simple add
@@ -357,7 +394,12 @@ class MemoryAgent:
                 return None
         return None
 
-    def _resolve_conflicts(self, new_entry: MemoryEntry, entities: List[Dict[str, Any]]) -> None:
+    def _resolve_conflicts(
+        self,
+        new_entry: MemoryEntry,
+        entities: List[Dict[str, Any]],
+        namespace: Namespace = ("default",),
+    ) -> None:
         if not self.graph_store or not isinstance(self.memory_store, AdvancedMemoryStore):
             return
         names = [e.get("name") for e in entities if e.get("name")]
@@ -366,7 +408,9 @@ class MemoryAgent:
 
         # Fetch related memories from graph
         try:
-            related = self.graph_store.query_memories(names, depth=1, limit=10)
+            related = self.graph_store.query_memories(
+                names, depth=1, limit=10, namespace=namespace
+            )
         except Exception as e:
             print(f"[WARN] Conflict query failed: {e}")
             return
@@ -380,7 +424,11 @@ class MemoryAgent:
                 continue
             if self._is_contradictory(existing, new_entry.content):
                 try:
-                    self.memory_store.supersede_entry(mid, t_invalid=new_entry.t_observed)
+                    self.memory_store.supersede_entry(
+                        mid,
+                        t_invalid=new_entry.t_observed,
+                        namespace=namespace,
+                    )
                     self.graph_store.mark_memory_status(mid, "superseded")
                 except Exception as e:
                     print(f"[WARN] Failed to supersede conflict {mid}: {e}")

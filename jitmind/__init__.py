@@ -101,6 +101,7 @@ except ImportError:
     MemoryConsolidator = None  # type: ignore
 from jitmind.utils import CheckpointManager
 from jitmind.learning import ExperienceReplayBuffer
+from jitmind.scoping import DEFAULT_NAMESPACE, Namespace, normalize_namespace
 try:
     from jitmind.evaluation import RAGASEvaluator
 except Exception:
@@ -177,5 +178,8 @@ __all__ = [
     "MemoryConsolidator",
     "CheckpointManager",
     "ExperienceReplayBuffer",
+    "DEFAULT_NAMESPACE",
+    "Namespace",
+    "normalize_namespace",
     "RAGASEvaluator",
 ]

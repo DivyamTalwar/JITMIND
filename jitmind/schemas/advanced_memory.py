@@ -9,7 +9,7 @@ Advanced memory schema and store with:
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Literal
+from typing import Any, Dict, List, Optional, Literal, Sequence
 from pydantic import BaseModel, Field
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -21,6 +21,7 @@ from contextlib import nullcontext
 
 from jitmind.utils.atomic_io import atomic_write_json
 from jitmind.utils.file_lock import file_lock
+from jitmind.scoping import DEFAULT_NAMESPACE, namespace_matches, normalize_namespace
 
 
 MemoryStatus = Literal["active", "deleted", "superseded", "expired"]
@@ -49,6 +50,10 @@ class MemoryEntry(BaseModel):
     source_page_id: Optional[str] = Field(default=None)
     version_of: Optional[str] = Field(default=None)
     meta: Dict[str, Any] = Field(default_factory=dict)
+    namespace: tuple[str, ...] = Field(
+        default=DEFAULT_NAMESPACE,
+        description="Component-safe isolation boundary for this memory",
+    )
 
 
 class AdvancedMemoryState(BaseModel):
@@ -186,21 +191,56 @@ class AdvancedMemoryStore:
         return False
 
     # ---- public ----
-    def load(self):
+    def load(
+        self,
+        namespace: str | Sequence[str] | None = None,
+        *,
+        include_descendants: bool = False,
+    ):
         with self._lock:
             self._refresh_from_disk()
             if self._enable_auto_cleanup:
                 self.cleanup_expired()
             # return MemoryState-compatible object
             from .memory import MemoryState
-            return MemoryState(abstracts=self._state.to_abstracts(include_inactive=False))
+            entries = [e for e in self._state.entries if e.status == "active"]
+            if namespace is not None:
+                entries = [
+                    e
+                    for e in entries
+                    if namespace_matches(
+                        e.namespace,
+                        namespace,
+                        include_descendants=include_descendants,
+                    )
+                ]
+            return MemoryState(abstracts=[e.content for e in entries])
 
-    def get_entries(self, include_inactive: bool = False) -> List[MemoryEntry]:
+    def get_entries(
+        self,
+        include_inactive: bool = False,
+        *,
+        namespace: str | Sequence[str] | None = None,
+        include_descendants: bool = False,
+    ) -> List[MemoryEntry]:
         with self._lock:
             self._refresh_from_disk()
-            if include_inactive:
-                return list(self._state.entries)
-            return [e for e in self._state.entries if e.status == "active"]
+            entries = (
+                list(self._state.entries)
+                if include_inactive
+                else [e for e in self._state.entries if e.status == "active"]
+            )
+            if namespace is None:
+                return entries
+            return [
+                e
+                for e in entries
+                if namespace_matches(
+                    e.namespace,
+                    namespace,
+                    include_descendants=include_descendants,
+                )
+            ]
 
     def save(self, state: Any) -> None:
         with self._lock:
@@ -220,44 +260,83 @@ class AdvancedMemoryStore:
         with self._lock:
             with self._persistence_lock():
                 self._refresh_from_disk()
+                entry.namespace = normalize_namespace(entry.namespace)
                 self._state.entries.append(entry)
                 self.promote_demote()
                 if self._dir_path:
                     self._save_to_disk()
 
-    def update_entry(self, entry_id: str, new_entry: MemoryEntry) -> None:
+    def update_entry(
+        self,
+        entry_id: str,
+        new_entry: MemoryEntry,
+        *,
+        namespace: str | Sequence[str] | None = None,
+    ) -> None:
         with self._lock:
             with self._persistence_lock():
                 self._refresh_from_disk()
+                expected = normalize_namespace(namespace) if namespace is not None else None
+                if expected is not None and tuple(new_entry.namespace) != expected:
+                    raise ValueError("replacement memory must remain in the target namespace")
+                matched = False
                 # mark old as superseded, add new version
                 for e in self._state.entries:
-                    if e.id == entry_id and e.status == "active":
+                    if (
+                        e.id == entry_id
+                        and e.status == "active"
+                        and (expected is None or tuple(e.namespace) == expected)
+                    ):
+                        matched = True
                         e.status = "superseded"
                         e.t_invalid = new_entry.t_valid or self._now_iso()
                         e.t_expired = self._now_iso()
+                if expected is not None and not matched:
+                    raise LookupError("target memory does not exist in this namespace")
                 self._state.entries.append(new_entry)
                 self.promote_demote()
                 if self._dir_path:
                     self._save_to_disk()
 
-    def delete_entry(self, entry_id: str) -> None:
+    def delete_entry(
+        self,
+        entry_id: str,
+        *,
+        namespace: str | Sequence[str] | None = None,
+    ) -> None:
         with self._lock:
             with self._persistence_lock():
                 self._refresh_from_disk()
+                expected = normalize_namespace(namespace) if namespace is not None else None
                 for e in self._state.entries:
-                    if e.id == entry_id and e.status == "active":
+                    if (
+                        e.id == entry_id
+                        and e.status == "active"
+                        and (expected is None or tuple(e.namespace) == expected)
+                    ):
                         e.status = "deleted"
                         e.t_invalid = e.t_invalid or self._now_iso()
                         e.t_expired = self._now_iso()
                 if self._dir_path:
                     self._save_to_disk()
 
-    def supersede_entry(self, entry_id: str, t_invalid: Optional[str] = None) -> None:
+    def supersede_entry(
+        self,
+        entry_id: str,
+        t_invalid: Optional[str] = None,
+        *,
+        namespace: str | Sequence[str] | None = None,
+    ) -> None:
         with self._lock:
             with self._persistence_lock():
                 self._refresh_from_disk()
+                expected = normalize_namespace(namespace) if namespace is not None else None
                 for e in self._state.entries:
-                    if e.id == entry_id and e.status == "active":
+                    if (
+                        e.id == entry_id
+                        and e.status == "active"
+                        and (expected is None or tuple(e.namespace) == expected)
+                    ):
                         e.status = "superseded"
                         e.t_invalid = t_invalid or self._now_iso()
                         e.t_expired = self._now_iso()
@@ -336,6 +415,8 @@ class AdvancedMemoryStore:
         valid_at: str | datetime,
         *,
         transaction_at: str | datetime | None = None,
+        namespace: str | Sequence[str] | None = None,
+        include_descendants: bool = False,
     ) -> List[MemoryEntry]:
         """Return facts valid at a time, optionally as known at a transaction time.
 
@@ -353,6 +434,12 @@ class AdvancedMemoryStore:
             self._refresh_from_disk()
             matches: List[MemoryEntry] = []
             for entry in self._state.entries:
+                if namespace is not None and not namespace_matches(
+                    entry.namespace,
+                    namespace,
+                    include_descendants=include_descendants,
+                ):
+                    continue
                 valid_start = (
                     self._parse_ts(entry.t_valid)
                     or self._parse_ts(entry.t_observed)
@@ -502,10 +589,17 @@ class AdvancedMemoryStore:
                     return e
             return None
 
-    def get_ranked_entries(self, limit: int = 50) -> List[MemoryEntry]:
+    def get_ranked_entries(
+        self,
+        limit: int = 50,
+        *,
+        namespace: str | Sequence[str] | None = None,
+    ) -> List[MemoryEntry]:
         with self._lock:
             self._refresh_from_disk()
             active = [e for e in self._state.entries if e.status == "active"]
+            if namespace is not None:
+                active = [e for e in active if namespace_matches(e.namespace, namespace)]
             self.promote_demote()
             scored = [
                 (e, self.TIER_WEIGHTS.get(e.tier, 1.0) * self._retention(e))
