@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Sequence
 from contextlib import contextmanager
+from datetime import datetime, timezone
 import hashlib
 
 try:
@@ -11,6 +12,7 @@ except ImportError:
     GraphDatabase = None  # type: ignore
 
 from jitmind.graph.ontology import GraphOntology
+from jitmind.schemas.graph_fact import GraphFact
 
 
 class GraphMemoryStore:
@@ -182,6 +184,9 @@ class GraphMemoryStore:
                     t_type = entity_type_map.get(tail, "Entity")
                     h_key = f"{h_type}:{head}"
                     t_key = f"{t_type}:{tail}"
+                    relation_id = self._relation_id(
+                        memory_id, h_key, rel_type, t_key
+                    )
                     try:
                         session.run(
                             """
@@ -189,8 +194,9 @@ class GraphMemoryStore:
                             SET h.name = $head, h.type = $h_type
                             MERGE (t:Entity {key: $t_key})
                             SET t.name = $tail, t.type = $t_type
-                            MERGE (h)-[r:RELATION {type: $rel_type}]->(t)
-                            SET r.source_memory_id = $mid,
+                            MERGE (h)-[r:RELATION {id: $relation_id}]->(t)
+                            SET r.type = $rel_type,
+                                r.source_memory_id = $mid,
                                 r.t_observed = $t_observed,
                                 r.t_valid = $t_valid,
                                 r.t_invalid = $t_invalid
@@ -206,11 +212,99 @@ class GraphMemoryStore:
                             t_observed=t_observed or r.get("t_observed"),
                             t_valid=t_valid or r.get("t_valid"),
                             t_invalid=t_invalid or r.get("t_invalid"),
+                            relation_id=relation_id,
                         )
                     except Exception as e:
                         print(f"[WARN] Failed to add relation {head}->{tail}: {e}")
         except Exception as e:
             print(f"[WARN] Failed to add entities/relations for memory {memory_id}: {e}")
+
+    def query_facts(
+        self,
+        entity_names: Sequence[str] | None = None,
+        *,
+        relation_types: Sequence[str] | None = None,
+        valid_at: str | datetime | None = None,
+        observed_at: str | datetime | None = None,
+        namespace: Sequence[str] | None = None,
+        limit: int = 20,
+    ) -> List[GraphFact]:
+        """Return fact observations through valid- and transaction-time gates.
+
+        ``valid_at`` asks what was true at an event time. ``observed_at`` asks
+        what the graph could have known by an ingestion time. Supplying both
+        provides a bi-temporal snapshot rather than a present-day projection.
+        """
+
+        if limit < 1 or limit > 1000:
+            raise ValueError("limit must be between 1 and 1000")
+        names = sorted(
+            {name.strip() for name in entity_names or () if isinstance(name, str) and name.strip()}
+        )
+        types = sorted(
+            {
+                relation.strip().replace(" ", "_").upper()
+                for relation in relation_types or ()
+                if isinstance(relation, str) and relation.strip()
+            }
+        )
+        params = {
+            "names": names,
+            "types": types,
+            "valid_at": self._normalize_query_time(valid_at, "valid_at"),
+            "observed_at": self._normalize_query_time(observed_at, "observed_at"),
+            "namespace": list(namespace) if namespace is not None else None,
+            "limit": limit,
+        }
+        query = """
+        MATCH (h:Entity)-[r:RELATION]->(t:Entity)
+        OPTIONAL MATCH (m:Memory {id: r.source_memory_id})
+        WHERE (size($names) = 0 OR h.name IN $names OR t.name IN $names)
+          AND (size($types) = 0 OR r.type IN $types)
+          AND ($namespace IS NULL OR m.namespace = $namespace)
+          AND (
+            $valid_at IS NULL OR (
+              datetime(coalesce(r.t_valid, r.t_observed, m.t_valid, m.t_observed, m.t_created))
+                <= datetime($valid_at)
+              AND (r.t_invalid IS NULL OR datetime($valid_at) < datetime(r.t_invalid))
+            )
+          )
+          AND (
+            $observed_at IS NULL OR
+            datetime(coalesce(r.t_observed, m.t_observed, m.t_created))
+              <= datetime($observed_at)
+          )
+        RETURN r.id AS id, h.name AS head, r.type AS relation, t.name AS tail,
+               r.source_memory_id AS source_memory_id,
+               m.source_page_id AS source_page_id,
+               r.t_observed AS t_observed, r.t_valid AS t_valid,
+               r.t_invalid AS t_invalid
+        ORDER BY coalesce(r.t_valid, r.t_observed) DESC, r.id ASC
+        LIMIT $limit
+        """
+        try:
+            with self._get_session() as session:
+                rows = session.run(query, **params)
+                return [GraphFact(**dict(row)) for row in rows]
+        except Exception as exc:
+            print(f"[WARN] Failed to query temporal graph facts: {exc}")
+            return []
+
+    def _normalize_query_time(
+        self, value: str | datetime | None, field_name: str
+    ) -> Optional[str]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            parsed = value
+        else:
+            try:
+                parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"{field_name} must be an ISO-8601 timestamp") from exc
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=timezone.utc)
+        return parsed.astimezone(timezone.utc).isoformat()
 
     # ---- 3-tier graph architecture ----
     def add_episode(
@@ -818,3 +912,9 @@ class GraphMemoryStore:
 
     def _semantic_id(self, fact: str) -> str:
         return hashlib.sha256(fact.lower().encode("utf-8")).hexdigest()
+
+    def _relation_id(
+        self, memory_id: str, head_key: str, relation: str, tail_key: str
+    ) -> str:
+        payload = "\x1f".join((memory_id, head_key, relation, tail_key))
+        return hashlib.sha256(payload.encode("utf-8")).hexdigest()
