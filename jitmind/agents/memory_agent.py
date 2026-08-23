@@ -24,6 +24,7 @@ from jitmind.schemas import (
 )
 from jitmind.generator import AbsGenerator
 from jitmind.profile import UserProfileAgent
+from jitmind.memory_context import MemoryContextSelector
 try:
     from jitmind.graph import GraphMemoryStore, load_ontology_from_env
 except ImportError:
@@ -48,6 +49,8 @@ class MemoryAgent:
         system_prompts: Optional[Dict[str, str]] = None,  # system prompts dictionary
         graph_store: Optional[GraphMemoryStore] = None,
         profile_agent: Optional[UserProfileAgent] = None,
+        context_limit: int = 32,
+        context_selector: Optional[MemoryContextSelector] = None,
     ) -> None:
         if generator is None:
             raise ValueError("Generator instance is required for MemoryAgent")
@@ -87,6 +90,9 @@ class MemoryAgent:
             # Merge user prompts with defaults
             self.system_prompts = {**default_system_prompts, **system_prompts}
         self.profile_agent = profile_agent
+        self.context_selector = context_selector or MemoryContextSelector(
+            limit=context_limit
+        )
 
 
     # ---- Public ----
@@ -153,10 +159,13 @@ class MemoryAgent:
         Private. Generate abstract for the message and compose: "abstract; header; new_page".
         Returns: (abstract, header, decorated_new_page)
         """
-        # Build memory context from all abstracts (concatenate all memories)
-        if memory_state.abstracts:
+        # Bound prompt growth while retaining lexical matches and recent context.
+        selected_abstracts = self.context_selector.select_abstracts(
+            message, memory_state.abstracts
+        )
+        if selected_abstracts:
             memory_context_lines = []
-            for i, abstract in enumerate(memory_state.abstracts):
+            for i, abstract in enumerate(selected_abstracts):
                 memory_context_lines.append(f"Page {i}: {abstract}")
             memory_context = "\n".join(memory_context_lines)
         else:
@@ -185,18 +194,20 @@ class MemoryAgent:
         decorated_new_page = f"{header}; {message}"
         return abstract, header, decorated_new_page
 
-    def _build_memory_context(self) -> str:
+    def _build_memory_context(self, query: str = "") -> str:
         if hasattr(self.memory_store, "get_entries"):
             entries = self.memory_store.get_entries(include_inactive=True)
+            entries = self.context_selector.select_entries(query, entries)
             lines = [f"{e.id} [{e.tier}/{e.status}]: {e.content}" for e in entries]
             return "\n".join(lines) if lines else "No memory currently."
         state = self.memory_store.load()
         if not state.abstracts:
             return "No memory currently."
-        return "\n".join([f"Page {i}: {a}" for i, a in enumerate(state.abstracts)])
+        abstracts = self.context_selector.select_abstracts(query, state.abstracts)
+        return "\n".join([f"Page {i}: {a}" for i, a in enumerate(abstracts)])
 
     def _decide_operation(self, abstract: str, message: str):
-        memory_context = self._build_memory_context()
+        memory_context = self._build_memory_context(f"{abstract}\n{message}")
         prompt = MemoryOperation_PROMPT.format(
             memory_context=memory_context,
             new_abstract=abstract,
