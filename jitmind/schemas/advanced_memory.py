@@ -80,6 +80,7 @@ class AdvancedMemoryStore:
         demotion_grace_days: int = 14,
         long_to_mid_retention: float = 0.35,
         mid_to_short_retention: float = 0.25,
+        retain_history: bool = True,
     ) -> None:
         self._lock = threading.RLock()
         self._dir_path = Path(dir_path) if dir_path else None
@@ -95,6 +96,7 @@ class AdvancedMemoryStore:
         self._demotion_grace_days = demotion_grace_days
         self._long_to_mid_retention = long_to_mid_retention
         self._mid_to_short_retention = mid_to_short_retention
+        self._retain_history = retain_history
 
         self._state = AdvancedMemoryState()
 
@@ -290,12 +292,8 @@ class AdvancedMemoryStore:
                 self._refresh_from_disk()
             removed = 0
             now = datetime.now(timezone.utc)
-            to_remove_ids: List[str] = []
-
             for e in self._state.entries:
                 if e.status != "active":
-                    # Already expired/deleted - mark for removal from list
-                    to_remove_ids.append(e.id)
                     continue
                 t_invalid = self._parse_ts(e.t_invalid)
                 if t_invalid and t_invalid <= now:
@@ -313,12 +311,133 @@ class AdvancedMemoryStore:
                     e.t_expired = self._now_iso()
                     removed += 1
 
-            # Purge all non-active entries to prevent memory leak
-            self._state.entries = [e for e in self._state.entries if e.status == "active"]
+            if not self._retain_history:
+                self._state.entries = [
+                    e for e in self._state.entries if e.status == "active"
+                ]
 
-            if (removed or to_remove_ids) and self._dir_path:
+            if removed and self._dir_path:
                 self._save_to_disk()
             return removed
+
+    def _coerce_datetime(self, value: str | datetime, *, field_name: str) -> datetime:
+        if isinstance(value, datetime):
+            parsed = value
+        else:
+            parsed = self._parse_ts(value)
+            if parsed is None:
+                raise ValueError(f"{field_name} must be an ISO-8601 timestamp")
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=timezone.utc)
+        return parsed.astimezone(timezone.utc)
+
+    def query_as_of(
+        self,
+        valid_at: str | datetime,
+        *,
+        transaction_at: str | datetime | None = None,
+    ) -> List[MemoryEntry]:
+        """Return facts valid at a time, optionally as known at a transaction time.
+
+        With no ``transaction_at`` the complete retained ledger is consulted,
+        which answers "what is now known to have been valid then?". Supplying a
+        transaction time answers "what did the store believe at that moment?".
+        """
+        valid = self._coerce_datetime(valid_at, field_name="valid_at")
+        transaction = (
+            self._coerce_datetime(transaction_at, field_name="transaction_at")
+            if transaction_at is not None
+            else None
+        )
+        with self._lock:
+            self._refresh_from_disk()
+            matches: List[MemoryEntry] = []
+            for entry in self._state.entries:
+                valid_start = (
+                    self._parse_ts(entry.t_valid)
+                    or self._parse_ts(entry.t_observed)
+                    or self._parse_ts(entry.t_created)
+                )
+                valid_end = self._parse_ts(entry.t_invalid)
+                if valid_start is None or valid < valid_start:
+                    continue
+                if valid_end is not None and valid >= valid_end:
+                    continue
+                if transaction is not None:
+                    created = self._parse_ts(entry.t_created)
+                    retired = self._parse_ts(entry.t_expired)
+                    if created is not None and transaction < created:
+                        continue
+                    if retired is not None and transaction >= retired:
+                        continue
+                matches.append(entry.model_copy(deep=True))
+            matches.sort(key=lambda entry: (entry.t_valid or entry.t_observed, entry.id))
+            return matches
+
+    def get_version_history(self, entry_id: str) -> List[MemoryEntry]:
+        """Return the complete oldest-to-newest version chain for an entry."""
+        with self._lock:
+            self._refresh_from_disk()
+            by_id = {entry.id: entry for entry in self._state.entries}
+            current = by_id.get(entry_id)
+            if current is None:
+                return []
+            seen: set[str] = set()
+            while current.version_of and current.version_of in by_id:
+                if current.id in seen:
+                    break
+                seen.add(current.id)
+                current = by_id[current.version_of]
+            root_id = current.id
+
+            def root_of(entry: MemoryEntry) -> str:
+                cursor = entry
+                visited: set[str] = set()
+                while cursor.version_of and cursor.version_of in by_id:
+                    if cursor.id in visited:
+                        break
+                    visited.add(cursor.id)
+                    cursor = by_id[cursor.version_of]
+                return cursor.id
+
+            history = [
+                entry.model_copy(deep=True)
+                for entry in self._state.entries
+                if root_of(entry) == root_id
+            ]
+            history.sort(key=lambda entry: (entry.t_created, entry.id))
+            return history
+
+    def diff_as_of(
+        self,
+        before: str | datetime,
+        after: str | datetime,
+        *,
+        transaction_at: str | datetime | None = None,
+    ) -> Dict[str, List[MemoryEntry]]:
+        """Return added, removed, and changed facts between two valid times."""
+        before_entries = self.query_as_of(before, transaction_at=transaction_at)
+        after_entries = self.query_as_of(after, transaction_at=transaction_at)
+
+        def roots(entries: List[MemoryEntry]) -> Dict[str, MemoryEntry]:
+            mapped: Dict[str, MemoryEntry] = {}
+            for entry in entries:
+                history = self.get_version_history(entry.id)
+                root = history[0].id if history else entry.id
+                mapped[root] = entry
+            return mapped
+
+        old = roots(before_entries)
+        new = roots(after_entries)
+        return {
+            "added": [new[key] for key in sorted(new.keys() - old.keys())],
+            "removed": [old[key] for key in sorted(old.keys() - new.keys())],
+            "changed": [
+                new[key]
+                for key in sorted(old.keys() & new.keys())
+                if old[key].id != new[key].id or old[key].content != new[key].content
+            ],
+        }
 
     def promote_demote(self) -> None:
         with self._lock:
