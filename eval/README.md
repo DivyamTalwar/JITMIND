@@ -23,29 +23,18 @@ This folder provides evaluation entrypoints and wrappers for benchmark execution
 
 It then forwards remaining CLI arguments to that script via subprocess.
 
-## Current Repository Snapshot Note
+## Current repository snapshot
 
-In this snapshot, only `run.py` and `ragas_eval.py` are present in `eval/`.
-If task scripts are not present, task execution will fail with:
-
-- `Evaluation script not found: ...`
-
-So today, these commands are guaranteed to work:
+The repository includes task scripts for HotpotQA, LoCoMo, NarrativeQA, and
+RULER. Install evaluation dependencies before running them:
 
 ```bash
-python3 eval/run.py --help
-```
-
-And these commands require adding the corresponding task scripts first:
-
-```bash
+pip install -e ".[eval]"
 python3 eval/run.py hotpotqa
 python3 eval/run.py locomo
 python3 eval/run.py narrativeqa
 python3 eval/run.py ruler
 ```
-
-## When Task Scripts Are Added
 
 Recommended command style:
 
@@ -65,4 +54,3 @@ jitmind-eval <task> [task-specific-args...]
 2. Emit machine-readable results (JSON/CSV) alongside logs.
 3. Capture model/retriever config in output metadata for reproducibility.
 4. Use fixed seeds where randomness impacts metrics.
-
