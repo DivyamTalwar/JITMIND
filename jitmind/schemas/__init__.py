@@ -14,6 +14,7 @@ from .tools import ToolResult, Tool, ToolRegistry
 from .result import Result, EnoughDecision, ReflectionDecision, ResearchOutput, GenerateRequests
 from .memory_ops import MemoryOperationDecision, ExtractedEntity, ExtractedRelation
 from .self_rag import SelfRAGDecision
+from .graph_fact import GraphFact
 
 # =============================
 # Model rebuilding for forward references
@@ -41,5 +42,6 @@ __all__ = [
     "ToolResult", "Tool", "ToolRegistry",
     "Result", "EnoughDecision", "ReflectionDecision", "ResearchOutput", "GenerateRequests",
     "MemoryOperationDecision", "ExtractedEntity", "ExtractedRelation", "SelfRAGDecision",
+    "GraphFact",
     "PLANNING_SCHEMA", "INTEGRATE_SCHEMA", "INFO_CHECK_SCHEMA", "GENERATE_REQUESTS_SCHEMA", "MEMORY_OP_SCHEMA", "SELF_RAG_SCHEMA",
 ]
