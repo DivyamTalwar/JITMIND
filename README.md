@@ -42,8 +42,11 @@ JITMIND directly addresses these failure modes with:
 - A hybrid retrieval stack (BM25 + dense + index + graph) with RRF, dynamic weighting, tier-aware boosting, and optional reranking.
 - A looped research process (plan -> search -> integrate -> reflect) instead of one-shot generation.
 - Graph memory with entity semantics, provenance edges, and Personalized PageRank for associative recall.
+- Privacy-safe retrieval traces with per-channel latency, candidate flow, fusion evidence, and optional JSONL export.
 - Bi-temporal graph-fact search with immutable observations and source-memory/page evidence.
 
+See [`docs/retrieval-observability.md`](docs/retrieval-observability.md) for the
+trace contract, privacy defaults, and sink configuration.
 See [`docs/temporal-graph-facts.md`](docs/temporal-graph-facts.md) for valid-time
 and observation-time query examples.
 

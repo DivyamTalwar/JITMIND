@@ -20,6 +20,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import os
 import json
 import asyncio
+from contextvars import ContextVar
 
 from jitmind.prompts import (
     Planning_PROMPT,
@@ -41,6 +42,7 @@ from jitmind.schemas import AdvancedMemoryStore, MemoryEntry
 from jitmind.utils.checkpoint import CheckpointManager
 from jitmind.learning.replay_buffer import ExperienceReplayBuffer
 from jitmind.profile import UserProfileStore
+from jitmind.observability import RetrievalTrace, TraceRecorder, TraceSink
 try:
     from jitmind.graph import GraphMemoryStore, load_ontology_from_env
 except ImportError:
@@ -89,6 +91,8 @@ class ResearchAgent:
         checkpoint_every: int = 1,
         replay_buffer: Optional[ExperienceReplayBuffer] = None,
         profile_store: Optional[UserProfileStore] = None,
+        trace_sink: Optional[TraceSink] = None,
+        trace_capture_content: bool = False,
     ) -> None:
         if generator is None:
             raise ValueError("Generator instance is required for ResearchAgent")
@@ -114,6 +118,12 @@ class ResearchAgent:
         self.replay_buffer = replay_buffer
         self.profile_store = profile_store
         self._current_user_id: Optional[str] = None
+        self.trace_sink = trace_sink
+        self.trace_capture_content = trace_capture_content
+        self._trace_context: ContextVar[Optional[TraceRecorder]] = ContextVar(
+            f"jitmind_trace_{id(self)}", default=None
+        )
+        self._last_trace: Optional[RetrievalTrace] = None
         
         # Initialize system_prompts (default empty strings)
         default_system_prompts = {
@@ -166,6 +176,7 @@ class ResearchAgent:
         feedback: Optional[float] = None,
         user_id: Optional[str] = None,
     ) -> ResearchOutput:
+        recorder = self._begin_trace(request)
         # Ensure retriever indexes are up to date before research
         self._update_retrievers()
         self._current_user_id = user_id
@@ -252,6 +263,8 @@ class ResearchAgent:
             except Exception:
                 pass
 
+        trace = self._finish_trace(recorder)
+        raw["retrieval_trace"] = trace.to_dict()
         return ResearchOutput(integrated_memory=temp.content, raw_memory=raw)
 
     async def research_async(
@@ -262,6 +275,7 @@ class ResearchAgent:
         feedback: Optional[float] = None,
         user_id: Optional[str] = None,
     ) -> ResearchOutput:
+        recorder = self._begin_trace(request)
         self._update_retrievers()
         self._current_user_id = user_id
 
@@ -343,7 +357,77 @@ class ResearchAgent:
             except Exception:
                 pass
 
+        trace = self._finish_trace(recorder)
+        raw["retrieval_trace"] = trace.to_dict()
         return ResearchOutput(integrated_memory=temp.content, raw_memory=raw)
+
+    def explain_last_retrieval(self) -> Optional[Dict[str, Any]]:
+        """Return the last completed trace without exposing query text by default."""
+
+        return self._last_trace.to_dict() if self._last_trace else None
+
+    def _begin_trace(self, query: str) -> TraceRecorder:
+        recorder = TraceRecorder(query, capture_content=self.trace_capture_content)
+        self._trace_context.set(recorder)
+        return recorder
+
+    def _finish_trace(self, recorder: TraceRecorder) -> RetrievalTrace:
+        trace = recorder.finish()
+        self._last_trace = trace
+        if self.trace_sink:
+            try:
+                self.trace_sink.emit(trace)
+            except Exception as exc:
+                recorder.record(
+                    "trace.export",
+                    attributes={"error_type": type(exc).__name__},
+                )
+        self._trace_context.set(None)
+        return trace
+
+    def _timed_retrieval(self, name: str, function, *args):
+        recorder = self._trace_context.get()
+        if recorder is None:
+            return function(*args)
+        with recorder.stage(name, input_count=len(args[0]) if args else None) as stage:
+            result = function(*args)
+            stage.output_count = sum(
+                len(group) if isinstance(group, list) else 1
+                for group in (result or [])
+            )
+            return result
+
+    def _record_fusion_trace(
+        self,
+        tool_hits: Dict[str, List[Hit]],
+        before_temporal: int,
+        final_hits: List[Hit],
+    ) -> None:
+        recorder = self._trace_context.get()
+        if recorder is None:
+            return
+        top = []
+        for hit in final_hits[:5]:
+            top.append(
+                {
+                    "page_id": hit.page_id,
+                    "source": hit.source,
+                    "rrf_score": hit.meta.get("rrf_score"),
+                    "hybrid_score": hit.meta.get("hybrid_score"),
+                    "rerank_score": hit.meta.get("rerank_score"),
+                }
+            )
+        recorder.record(
+            "retrieval.fusion",
+            input_count=sum(len(hits) for hits in tool_hits.values()),
+            output_count=len(final_hits),
+            attributes={
+                "channels": sorted(tool_hits),
+                "deduplicated_before_temporal": before_temporal,
+                "temporal_rejections": before_temporal - len(final_hits),
+                "top_evidence": top,
+            },
+        )
 
     def _update_retrievers(self):
         """Ensure retriever indexes are up to date."""
@@ -473,7 +557,12 @@ class ResearchAgent:
             if tool == "keyword":
                 if plan.keyword_collection:
                     combined_keywords = " ".join(plan.keyword_collection)
-                    keyword_results = self._search_by_keyword([combined_keywords], top_k=5)
+                    keyword_results = self._timed_retrieval(
+                        "retriever.keyword",
+                        self._search_by_keyword,
+                        [combined_keywords],
+                        5,
+                    )
                     if keyword_results and isinstance(keyword_results[0], list):
                         for result_list in keyword_results:
                             hits.extend(result_list)
@@ -487,7 +576,9 @@ class ResearchAgent:
                         hyde = self._hyde_expand(question)
                         if hyde:
                             vector_queries = vector_queries + [hyde]
-                    vector_results = self._search_by_vector(vector_queries, top_k=5)
+                    vector_results = self._timed_retrieval(
+                        "retriever.vector", self._search_by_vector, vector_queries, 5
+                    )
                     if vector_results and isinstance(vector_results[0], list):
                         for result_list in vector_results:
                             hits.extend(result_list)
@@ -496,7 +587,11 @@ class ResearchAgent:
 
             elif tool == "page_index":
                 if plan.page_index:
-                    page_results = self._search_by_page_index(plan.page_index)
+                    page_results = self._timed_retrieval(
+                        "retriever.page_index",
+                        self._search_by_page_index,
+                        plan.page_index,
+                    )
                     if page_results and isinstance(page_results[0], list):
                         for result_list in page_results:
                             hits.extend(result_list)
@@ -505,7 +600,9 @@ class ResearchAgent:
 
             elif tool == "graph":
                 if plan.graph_queries:
-                    graph_results = self._search_by_graph(plan.graph_queries, top_k=5)
+                    graph_results = self._timed_retrieval(
+                        "retriever.graph", self._search_by_graph, plan.graph_queries, 5
+                    )
                     if graph_results and isinstance(graph_results[0], list):
                         for result_list in graph_results:
                             hits.extend(result_list)
@@ -569,10 +666,13 @@ class ResearchAgent:
             reverse=True
         )
 
+        before_temporal = len(sorted_hits)
         sorted_hits = self._filter_temporal_hits(sorted_hits)
 
         if self.reranker:
             sorted_hits = self._rerank_hits(sorted_hits, question)
+
+        self._record_fusion_trace(tool_hits, before_temporal, sorted_hits)
 
         # Keep last hits for Self-RAG critique
         self._last_hits = sorted_hits
@@ -586,18 +686,41 @@ class ResearchAgent:
         for tool in plan.tools:
             if tool == "keyword" and plan.keyword_collection:
                 combined_keywords = " ".join(plan.keyword_collection)
-                tasks.append(("keyword", asyncio.to_thread(self._search_by_keyword, [combined_keywords], 5)))
+                tasks.append(("keyword", asyncio.to_thread(
+                    self._timed_retrieval,
+                    "retriever.keyword",
+                    self._search_by_keyword,
+                    [combined_keywords],
+                    5,
+                )))
             elif tool == "vector" and plan.vector_queries:
                 vector_queries = list(plan.vector_queries)
                 if self.enable_hyde:
                     hyde = await asyncio.to_thread(self._hyde_expand, question)
                     if hyde:
                         vector_queries = vector_queries + [hyde]
-                tasks.append(("vector", asyncio.to_thread(self._search_by_vector, vector_queries, 5)))
+                tasks.append(("vector", asyncio.to_thread(
+                    self._timed_retrieval,
+                    "retriever.vector",
+                    self._search_by_vector,
+                    vector_queries,
+                    5,
+                )))
             elif tool == "page_index" and plan.page_index:
-                tasks.append(("page_index", asyncio.to_thread(self._search_by_page_index, plan.page_index)))
+                tasks.append(("page_index", asyncio.to_thread(
+                    self._timed_retrieval,
+                    "retriever.page_index",
+                    self._search_by_page_index,
+                    plan.page_index,
+                )))
             elif tool == "graph" and plan.graph_queries:
-                tasks.append(("graph", asyncio.to_thread(self._search_by_graph, plan.graph_queries, 5)))
+                tasks.append(("graph", asyncio.to_thread(
+                    self._timed_retrieval,
+                    "retriever.graph",
+                    self._search_by_graph,
+                    plan.graph_queries,
+                    5,
+                )))
 
         if not tasks:
             return result
@@ -666,10 +789,13 @@ class ResearchAgent:
             reverse=True
         )
 
+        before_temporal = len(sorted_hits)
         sorted_hits = self._filter_temporal_hits(sorted_hits)
 
         if self.reranker:
             sorted_hits = await asyncio.to_thread(self._rerank_hits, sorted_hits, question)
+
+        self._record_fusion_trace(tool_hits, before_temporal, sorted_hits)
 
         self._last_hits = sorted_hits
         return await asyncio.to_thread(self._integrate, sorted_hits, result, question)

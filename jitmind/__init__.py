@@ -102,6 +102,12 @@ except ImportError:
     MemoryConsolidator = None  # type: ignore
 from jitmind.utils import CheckpointManager
 from jitmind.learning import ExperienceReplayBuffer
+from jitmind.observability import (
+    InMemoryTraceSink,
+    JsonlTraceSink,
+    RetrievalTrace,
+    TraceSink,
+)
 try:
     from jitmind.evaluation import RAGASEvaluator
 except Exception:
@@ -179,5 +185,9 @@ __all__ = [
     "MemoryConsolidator",
     "CheckpointManager",
     "ExperienceReplayBuffer",
+    "InMemoryTraceSink",
+    "JsonlTraceSink",
+    "RetrievalTrace",
+    "TraceSink",
     "RAGASEvaluator",
 ]
