@@ -68,6 +68,7 @@ from jitmind.schemas import (
     TTLMemoryState,
     TTLMemoryEntry,
     TTLPageStore,
+    GraphFact,
 )
 try:
     from jitmind.graph import GraphMemoryStore, GraphOntology
@@ -154,6 +155,7 @@ __all__ = [
     "TTLMemoryState",
     "TTLMemoryEntry",
     "TTLPageStore",
+    "GraphFact",
     "GraphMemoryStore",
     "GraphOntology",
     "Document",
