@@ -27,6 +27,7 @@ from .work_storage import (
     WorkError,
     encoded,
     identifier,
+    is_transient_sqlite_error,
     revision,
 )
 
@@ -226,7 +227,7 @@ class DurableBindingAuthority:
                 and binding.source_generation == row[3]
             )
         except sqlite3.Error as exc:
-            if (getattr(exc, "sqlite_errorcode", 0) & 255) in (5, 6, 9):
+            if is_transient_sqlite_error(exc):
                 raise Deferred() from None
             raise WorkError("binding_authority_unavailable") from None
         finally:

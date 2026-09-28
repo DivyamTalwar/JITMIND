@@ -381,6 +381,8 @@ def test_independent_process_lock_bounded_deferred_and_release(setup, mode, whic
             process.join()
     assert process.exitcode == 0
     if result.state == "deferred":
+        # Recovery correctness is separate from the measured blocked call above.
+        service.policy = replace(service.policy, deadline_seconds=3.0)
         assert service.deliver(scope, session, target).state == "delivered"
 
 

@@ -15,6 +15,24 @@ from contextlib import contextmanager
 from pathlib import Path
 
 
+def is_transient_sqlite_error(exc: sqlite3.Error) -> bool:
+    """Classify only native contention/interruption, including Python 3.10."""
+    code = getattr(exc, "sqlite_errorcode", None)
+    if type(code) is int and code >= 0:
+        return code & 255 in (5, 6, 9)
+    if code is None and isinstance(exc, sqlite3.OperationalError):
+        message = str(exc)
+        return message in {
+            "database is locked",
+            "database table is locked",
+            "database schema is locked",
+            "interrupted",
+        } or message.startswith(
+            ("database table is locked: ", "database schema is locked: ")
+        )
+    return False
+
+
 class WorkError(Exception):
     def __init__(self, code: str = "invalid_request") -> None:
         self.code = code
@@ -160,7 +178,7 @@ class WorkDatabase:
             budget.remaining()
             yield db
         except sqlite3.Error as exc:
-            if (getattr(exc, "sqlite_errorcode", 0) & 255) in (5, 6, 9):
+            if is_transient_sqlite_error(exc):
                 raise Deferred() from None
             raise WorkError("storage_unavailable") from None
         finally:
