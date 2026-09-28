@@ -25,3 +25,12 @@ The missing-node smoke now requires the actual typed `Unavailable` exception wit
 and attribute errors, unrelated typed failures and the obsolete generic code.
 The real installed smoke still runs outside the checkout with Node and optional
 provider packages absent; checkout helper tests cannot substitute for it.
+
+
+## Native SQLite capacity evidence on Python 3.10
+
+The real max_page_count exhaustion fixture now records numeric SQLite error
+metadata when exposed and otherwise requires the exact native OperationalError
+message. Both paths still require a real SQLite capacity limit, zero committed
+effects, a clean integrity check, and successful same-request retry after raising
+the limit. No error injection substitutes for the real engine capacity failure.

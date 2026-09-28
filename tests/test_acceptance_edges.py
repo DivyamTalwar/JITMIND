@@ -144,7 +144,9 @@ def test_real_sqlite_full_rolls_back_every_effect_then_accepts_same_request(
             try:
                 yield connection
             except sqlite3.Error as exc:
-                native_errors.append(exc.sqlite_errorcode)
+                native_errors.append(
+                    (getattr(exc, "sqlite_errorcode", None), type(exc), str(exc))
+                )
                 raise
 
     # Below the public 131072-character input bound; comfortably larger than
@@ -154,7 +156,14 @@ def test_real_sqlite_full_rolls_back_every_effect_then_accepts_same_request(
         fault.setattr(store, "_connection", capped)
         with pytest.raises(StorageFailure, match="^storage_failure$"):
             store.ingest(request, lambda _: _proposal("bounded capacity fact"))
-    assert native_errors == [sqlite3.SQLITE_FULL]
+    assert len(native_errors) == 1
+    code, error_type, message = native_errors[0]
+    if code is None:
+        # Python 3.10 omits result metadata; retain exact native-engine evidence.
+        assert error_type is sqlite3.OperationalError
+        assert message == "database or disk is full"
+    else:
+        assert type(code) is int and code & 255 == 13  # SQLite primary SQLITE_FULL
     assert capacities and all(count == cap for count, cap in capacities)
     fresh = SQLiteDurableStore(store.path)
     assert fresh.status("tenant") == {

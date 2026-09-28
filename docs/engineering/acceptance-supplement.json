@@ -36,12 +36,12 @@
               "status": "not_run",
               "source": {
                 "path": "tests/test_acceptance_edges.py",
-                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
               },
               "fixtures": [
                 {
                   "path": "tests/test_acceptance_edges.py",
-                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
                 }
               ],
               "fixture_description": "Five real legacy store classes in temporary directories; successful initial append, ENOSPC from os.replace after temporary bytes are fsynced, then successful append after fault removal.",
@@ -91,12 +91,12 @@
               "status": "not_run",
               "source": {
                 "path": "tests/test_acceptance_edges.py",
-                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
               },
               "fixtures": [
                 {
                   "path": "tests/test_acceptance_edges.py",
-                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
                 }
               ],
               "fixture_description": "Five real legacy store classes in temporary directories; successful initial append, ENOSPC from os.replace after temporary bytes are fsynced, then successful append after fault removal.",
@@ -146,12 +146,12 @@
               "status": "not_run",
               "source": {
                 "path": "tests/test_acceptance_edges.py",
-                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
               },
               "fixtures": [
                 {
                   "path": "tests/test_acceptance_edges.py",
-                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
                 }
               ],
               "fixture_description": "Five real legacy store classes in temporary directories; successful initial append, ENOSPC from os.replace after temporary bytes are fsynced, then successful append after fault removal.",
@@ -201,12 +201,12 @@
               "status": "not_run",
               "source": {
                 "path": "tests/test_acceptance_edges.py",
-                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
               },
               "fixtures": [
                 {
                   "path": "tests/test_acceptance_edges.py",
-                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
                 }
               ],
               "fixture_description": "Five real legacy store classes in temporary directories; successful initial append, ENOSPC from os.replace after temporary bytes are fsynced, then successful append after fault removal.",
@@ -256,12 +256,12 @@
               "status": "not_run",
               "source": {
                 "path": "tests/test_acceptance_edges.py",
-                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
               },
               "fixtures": [
                 {
                   "path": "tests/test_acceptance_edges.py",
-                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
                 }
               ],
               "fixture_description": "Five real legacy store classes in temporary directories; successful initial append, ENOSPC from os.replace after temporary bytes are fsynced, then successful append after fault removal.",
@@ -317,12 +317,12 @@
               "status": "not_run",
               "source": {
                 "path": "tests/test_acceptance_edges.py",
-                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
               },
               "fixtures": [
                 {
                   "path": "tests/test_acceptance_edges.py",
-                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
                 }
               ],
               "fixture_description": "Real temporary SQLite DB; each ingest connection capped to current page_count; 100000-character allowed input triggers native SQLITE_FULL, then cap removed for same-key successful commit.",
@@ -574,12 +574,12 @@
               "status": "not_run",
               "source": {
                 "path": "tests/test_open_work_bindings.py",
-                "sha256": "3af47733e7e47425d5c6ec79986033433c6b27a54f8eb88d1f1cc8023d28727e"
+                "sha256": "80f876c3cb1f671b41ecbd68c4f969da5f820c6189d4b1b22d6ac4f164fe87e7"
               },
               "fixtures": [
                 {
                   "path": "tests/test_open_work_bindings.py",
-                  "sha256": "3af47733e7e47425d5c6ec79986033433c6b27a54f8eb88d1f1cc8023d28727e"
+                  "sha256": "80f876c3cb1f671b41ecbd68c4f969da5f820c6189d4b1b22d6ac4f164fe87e7"
                 }
               ],
               "fixture_description": "Reviewed existing J06 test: temporary Git checkout parsed by actual J04 Node/tree-sitter, J02 fact, J05 logical binding, J06 obligation; file move then confirmed removal or malformed-source uncertainty.",
@@ -673,12 +673,12 @@
               "status": "not_run",
               "source": {
                 "path": "tests/test_open_work_bindings.py",
-                "sha256": "3af47733e7e47425d5c6ec79986033433c6b27a54f8eb88d1f1cc8023d28727e"
+                "sha256": "80f876c3cb1f671b41ecbd68c4f969da5f820c6189d4b1b22d6ac4f164fe87e7"
               },
               "fixtures": [
                 {
                   "path": "tests/test_open_work_bindings.py",
-                  "sha256": "3af47733e7e47425d5c6ec79986033433c6b27a54f8eb88d1f1cc8023d28727e"
+                  "sha256": "80f876c3cb1f671b41ecbd68c4f969da5f820c6189d4b1b22d6ac4f164fe87e7"
                 }
               ],
               "fixture_description": "Reviewed existing J06 test: temporary Git checkout parsed by actual J04 Node/tree-sitter, J02 fact, J05 logical binding, J06 obligation; file move then confirmed removal or malformed-source uncertainty.",
@@ -1223,12 +1223,12 @@
               "status": "not_run",
               "source": {
                 "path": "tests/test_acceptance_edges.py",
-                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
               },
               "fixtures": [
                 {
                   "path": "tests/test_acceptance_edges.py",
-                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
                 }
               ],
               "fixture_description": "Existing truncated/duplicate-key/NaN legacy-source rejection and three exception rollback nodes; new real child exit(73) after import pages or before import commit; source JSON byte snapshots and clean retry.",
@@ -1275,12 +1275,12 @@
               "status": "not_run",
               "source": {
                 "path": "tests/test_acceptance_edges.py",
-                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
               },
               "fixtures": [
                 {
                   "path": "tests/test_acceptance_edges.py",
-                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
                 }
               ],
               "fixture_description": "Existing truncated/duplicate-key/NaN legacy-source rejection and three exception rollback nodes; new real child exit(73) after import pages or before import commit; source JSON byte snapshots and clean retry.",
@@ -1341,12 +1341,12 @@
               "status": "not_run",
               "source": {
                 "path": "tests/test_acceptance_edges.py",
-                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
               },
               "fixtures": [
                 {
                   "path": "tests/test_acceptance_edges.py",
-                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
                 }
               ],
               "fixture_description": "Temporary unversioned checkout, actual J04 parser, J02 add/NOOP/delete, J05 binding and file move, J06 projected lesson/preflight/open task. Two schedules: primary projection already populated or original add event pending until after delete.",
@@ -1445,12 +1445,12 @@
               "status": "not_run",
               "source": {
                 "path": "tests/test_acceptance_edges.py",
-                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
               },
               "fixtures": [
                 {
                   "path": "tests/test_acceptance_edges.py",
-                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
                 }
               ],
               "fixture_description": "Temporary unversioned checkout, actual J04 parser, J02 add/NOOP/delete, J05 binding and file move, J06 projected lesson/preflight/open task. Two schedules: primary projection already populated or original add event pending until after delete.",
@@ -1563,12 +1563,12 @@
               "status": "not_run",
               "source": {
                 "path": "tests/test_acceptance_edges.py",
-                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
               },
               "fixtures": [
                 {
                   "path": "tests/test_acceptance_edges.py",
-                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
                 }
               ],
               "fixture_description": "Same two actual composed parser chains as J29; memory-only sentinel first positively delivered from bound lesson and memory, then primary forget with deletion projection delayed.",
@@ -1666,12 +1666,12 @@
               "status": "not_run",
               "source": {
                 "path": "tests/test_acceptance_edges.py",
-                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
               },
               "fixtures": [
                 {
                   "path": "tests/test_acceptance_edges.py",
-                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
                 }
               ],
               "fixture_description": "Same two actual composed parser chains as J29; memory-only sentinel first positively delivered from bound lesson and memory, then primary forget with deletion projection delayed.",
