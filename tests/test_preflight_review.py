@@ -87,6 +87,9 @@ def test_primary_temporal_interval_applies_to_authored_policy(
 )
 def test_backing_ttl_exact_boundaries(setup, meta, active):
     _, scope, facts, _, projection, service, session, target = setup
+    # This oracle checks temporal eligibility, not shared-runner fsync speed.
+    # Dedicated contention/deadline tests retain the 150 ms production budget.
+    service.policy = replace(service.policy, deadline_seconds=3.0)
     facts.clock = lambda: "2026-01-01T00:00:00+00:00"
     projection.facts.clock = lambda: stamp(facts.clock())
     fact = temporal_fact(facts, "ttl", meta=meta)

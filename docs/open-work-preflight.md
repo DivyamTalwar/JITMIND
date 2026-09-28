@@ -574,3 +574,14 @@ The Business Source License (this document, or the "License") is not an Open
 Source license. However, the Licensed Work will eventually be made available
 under an Open Source License, as stated in this License.
 ```
+
+
+## Minimum-Python compatibility and timing oracles
+
+Python 3.10 SQLite exceptions omit numeric result metadata. Work and binding
+readers therefore share exact native contention/interruption classification
+when metadata is absent; other failures remain unavailable, never deferred
+indefinitely. The production preflight deadline remains 150 ms. Temporal-only
+and post-contention recovery assertions use an explicit three-second test policy
+to separate eligibility/recovery from shared-runner fsync speed; the original
+blocked-call elapsed-time and deadline tests keep their original limits.
