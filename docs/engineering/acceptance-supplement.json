@@ -574,12 +574,12 @@
               "status": "not_run",
               "source": {
                 "path": "tests/test_open_work_bindings.py",
-                "sha256": "645628f66ceddab3ebc92c5260f3289aa4c7bea19a165c135d337417e9857f59"
+                "sha256": "3af47733e7e47425d5c6ec79986033433c6b27a54f8eb88d1f1cc8023d28727e"
               },
               "fixtures": [
                 {
                   "path": "tests/test_open_work_bindings.py",
-                  "sha256": "645628f66ceddab3ebc92c5260f3289aa4c7bea19a165c135d337417e9857f59"
+                  "sha256": "3af47733e7e47425d5c6ec79986033433c6b27a54f8eb88d1f1cc8023d28727e"
                 }
               ],
               "fixture_description": "Reviewed existing J06 test: temporary Git checkout parsed by actual J04 Node/tree-sitter, J02 fact, J05 logical binding, J06 obligation; file move then confirmed removal or malformed-source uncertainty.",
@@ -673,12 +673,12 @@
               "status": "not_run",
               "source": {
                 "path": "tests/test_open_work_bindings.py",
-                "sha256": "645628f66ceddab3ebc92c5260f3289aa4c7bea19a165c135d337417e9857f59"
+                "sha256": "3af47733e7e47425d5c6ec79986033433c6b27a54f8eb88d1f1cc8023d28727e"
               },
               "fixtures": [
                 {
                   "path": "tests/test_open_work_bindings.py",
-                  "sha256": "645628f66ceddab3ebc92c5260f3289aa4c7bea19a165c135d337417e9857f59"
+                  "sha256": "3af47733e7e47425d5c6ec79986033433c6b27a54f8eb88d1f1cc8023d28727e"
                 }
               ],
               "fixture_description": "Reviewed existing J06 test: temporary Git checkout parsed by actual J04 Node/tree-sitter, J02 fact, J05 logical binding, J06 obligation; file move then confirmed removal or malformed-source uncertainty.",
