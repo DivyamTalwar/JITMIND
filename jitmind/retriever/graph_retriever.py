@@ -55,3 +55,46 @@ class GraphRetriever(AbsRetriever):
                 )
             results_all.append(hits)
         return results_all
+
+    def search_temporal(
+        self,
+        query_list: List[str],
+        *,
+        valid_at: str | None = None,
+        observed_at: str | None = None,
+        relation_types: List[str] | None = None,
+        top_k: int = 10,
+    ) -> List[List[Hit]]:
+        """Search versioned graph facts and preserve their temporal evidence."""
+
+        if not self.graph_store:
+            return [[] for _ in query_list]
+        results_all: List[List[Hit]] = []
+        for query in query_list:
+            names = [name.strip() for name in query.split(",") if name.strip()]
+            facts = self.graph_store.query_facts(
+                names,
+                relation_types=relation_types,
+                valid_at=valid_at,
+                observed_at=observed_at,
+                limit=top_k,
+            )
+            results_all.append(
+                [
+                    Hit(
+                        page_id=fact.source_page_id,
+                        snippet=fact.statement,
+                        source="graph_fact",
+                        meta={
+                            "fact_id": fact.id,
+                            "memory_id": fact.source_memory_id,
+                            "relation": fact.relation,
+                            "t_observed": fact.t_observed,
+                            "t_valid": fact.t_valid,
+                            "t_invalid": fact.t_invalid,
+                        },
+                    )
+                    for fact in facts
+                ]
+            )
+        return results_all

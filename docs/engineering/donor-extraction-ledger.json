@@ -1,0 +1,44 @@
+[
+  {
+    "name": "Graft",
+    "repository": "trailhq/Graft",
+    "revision": "80692e5ad0bc8e8f7e1edea648247d90b9f76820",
+    "ticket": "J-04",
+    "starting_paths": [
+      "src/context/check.ts",
+      "src/mcp/tools.ts",
+      "src/graph/build.ts",
+      "src/graph/types.ts"
+    ],
+    "decision": "Bounded structural parser/context adapter. Exclude onboarding, telemetry, LLM enrichment, LSP and donor runtime authority.",
+    "dependency_closure": "must be completed in component PR before acceptance",
+    "permission": "owner states reuse authorization; private agreement not inspected or included; copied dependency notices must be retained"
+  },
+  {
+    "name": "KoragraphMCP",
+    "repository": "Koragraph/KoragraphMCP",
+    "revision": "c9ce746fbd6db67e794f5f8714c8d9a8f4669e27",
+    "ticket": "J-05/J-06",
+    "starting_paths": [
+      "src/practice/revalidate.js",
+      "src/practice/loop-anchors.js",
+      "src/practice/preflight.js"
+    ],
+    "decision": "Native target-owned conservative bindings/open-work/preflight. No wholesale database/CLI import.",
+    "dependency_closure": "must be completed in component PR before acceptance",
+    "permission": "owner states reuse authorization; private agreement not inspected or included; copied dependency notices must be retained"
+  },
+  {
+    "name": "Omnara",
+    "repository": "omnara-ai/omnara",
+    "revision": "5fa80ea4f3be999aa63fbc44513de3020ee940af",
+    "ticket": "J-07",
+    "starting_paths": [
+      "internal/storage/executionstore/context_checkpoints_boundary.go",
+      "internal/storage/executionstore/context_checkpoints_store.go"
+    ],
+    "decision": "Port closed-range/correlation invariants; do not import Go service or claim process restoration.",
+    "dependency_closure": "must be completed in component PR before acceptance",
+    "permission": "owner states reuse authorization; private agreement not inspected or included; copied dependency notices must be retained"
+  }
+]

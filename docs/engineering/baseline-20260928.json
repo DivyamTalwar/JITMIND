@@ -1,0 +1,81 @@
+{
+  "schema": "jitmind.implementation-baseline/v1",
+  "target": "DivyamTalwar/JITMIND",
+  "date": "2026-09-28",
+  "audit_revision": "dc6877e85b4048f81ce801d8700dfb934277e5f3",
+  "tested_revision": "dc6877e85b4048f81ce801d8700dfb934277e5f3",
+  "python": "3.12.12",
+  "sqlite_version": "3.51.2",
+  "platform": "macOS arm64",
+  "tests": {
+    "passed": 38,
+    "warnings": 3,
+    "duration_seconds": 19.4
+  },
+  "checks": [
+    {
+      "check": "venv",
+      "exit_code": 0
+    },
+    {
+      "check": "install",
+      "exit_code": 0
+    },
+    {
+      "check": "pip-check",
+      "exit_code": 0
+    },
+    {
+      "check": "pytest-baseline",
+      "exit_code": 0
+    },
+    {
+      "check": "compile-baseline",
+      "exit_code": 0
+    }
+  ],
+  "selected_source": [
+    {
+      "path": "jitmind/agents/memory_agent.py",
+      "sha256": "9d62bff7acabfffd2509a12f749eeef457e6d1dbd25249398c66e074b17e36fd",
+      "drift_from_audit": "none"
+    },
+    {
+      "path": "jitmind/agents/research_agent.py",
+      "sha256": "ca2fef6deeca7d06a92059dbf81cfa603774ba09694ee247219378f02f5a6e3a",
+      "drift_from_audit": "none"
+    },
+    {
+      "path": "jitmind/schemas/advanced_memory.py",
+      "sha256": "b9c1821a1a953abc3f6bfcb2886a9f1dc4e643f373bf120cceb9c535e45ca32a",
+      "drift_from_audit": "none"
+    },
+    {
+      "path": "jitmind/utils/file_lock.py",
+      "sha256": "ae35772e787503d28cda37c02d1bb662ec36a49b2d93d05df2d56cdfb72b517b",
+      "drift_from_audit": "none"
+    },
+    {
+      "path": "jitmind/utils/atomic_io.py",
+      "sha256": "8f4f02d53dcad726af97ca7e1e7ce8c4298e5ff6c0c61ef00d7c43be5e382685",
+      "drift_from_audit": "none"
+    },
+    {
+      "path": "jitmind/utils/checkpoint.py",
+      "sha256": "9e8e5667e67960ae8e874770fafa31527088c9c3b9f3a69e120ce97f7af9b974",
+      "drift_from_audit": "none"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "032a5cacf99e5f40bbb3d6bae1bbe050a1bef7209da90a68aeb60d2108e7cca6",
+      "drift_from_audit": "none"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "b7fb6fe4816a0b8664bcec18d6f517ec809ef9b01ef5a5a531d9cc2ea6d40f49",
+      "drift_from_audit": "none"
+    }
+  ],
+  "live_provider_calls": false,
+  "qualification": "local core baseline only; not production/release qualification"
+}
