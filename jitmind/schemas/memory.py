@@ -1,12 +1,17 @@
 from __future__ import annotations
-from typing import Any, Dict, List, Optional, Protocol
+from typing import Any, Dict, List, Optional, Protocol, TYPE_CHECKING
 from pydantic import BaseModel, Field
 import json
 from pathlib import Path
 import threading
+from contextlib import nullcontext
 
-from jitmind.utils.atomic_io import atomic_write_json
+from jitmind.utils.atomic_io import atomic_write_json, CorruptStoreError, PersistenceError
 from jitmind.utils.file_lock import file_lock
+
+if TYPE_CHECKING:
+    from .page import Page
+
 
 class MemoryState(BaseModel):
     """Long-term memory: only abstracts list."""
@@ -37,23 +42,34 @@ class InMemoryMemoryStore:
         with self._lock:
             if self._dir_path and self._memory_file.exists():
                 try:
-                    with open(self._memory_file, 'r', encoding='utf-8') as f:
+                    with open(self._memory_file, "r", encoding="utf-8") as f:
                         data = json.load(f)
-                        return MemoryState(**data)
-                except (json.JSONDecodeError, KeyError, TypeError) as e:
-                    print(f"Warning: Failed to load memory state from {self._memory_file}: {e}")
-                    return MemoryState()
-            return self._state
+                        if not isinstance(data, dict) or "abstracts" not in data:
+                            raise ValueError("Invalid memory envelope")
+                        self._state = MemoryState(**data)
+                except Exception as exc:
+                    raise CorruptStoreError() from exc
+            return self._state.model_copy(deep=True)
 
     def save(self, state: MemoryState) -> None:
         with self._lock:
-            self._state = state
-            if self._dir_path:
-                self._dir_path.mkdir(parents=True, exist_ok=True)
-                try:
-                    atomic_write_json(self._memory_file, state.model_dump(), ensure_ascii=False, indent=2)
-                except Exception as e:
-                    print(f"Warning: Failed to save memory state to {self._memory_file}: {e}")
+            lock = file_lock(Path(str(self._memory_file) + ".lock")) if self._dir_path else nullcontext()
+            with lock:
+                if self._dir_path:
+                    # Refuse to overwrite corrupt data even for explicit save.
+                    self.load()
+                    try:
+                        atomic_write_json(self._memory_file, state.model_dump(), ensure_ascii=False, indent=2)
+                    except Exception as exc:
+                        self._state = MemoryState()
+                        try:
+                            self.load()
+                        except Exception:
+                            pass
+                        if isinstance(exc, PersistenceError):
+                            raise
+                        raise PersistenceError() from exc
+                self._state = state.model_copy(deep=True)
 
     def add(self, abstract: str) -> None:
         with self._lock:

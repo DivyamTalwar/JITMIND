@@ -19,7 +19,7 @@ import uuid
 import threading
 from contextlib import nullcontext
 
-from jitmind.utils.atomic_io import atomic_write_json
+from jitmind.utils.atomic_io import atomic_write_json, CorruptStoreError, PersistenceError
 from jitmind.utils.file_lock import file_lock
 
 
@@ -102,41 +102,46 @@ class AdvancedMemoryStore:
 
         if self._dir_path:
             self._memory_file = self._dir_path / "advanced_memory_state.json"
-            if self._memory_file.exists():
-                self._state = self._load_from_disk()
-                if self._enable_auto_cleanup:
-                    self.cleanup_expired()
-            else:
-                # Backward compatibility: migrate legacy memory_state.json if present
-                legacy_file = self._dir_path / "memory_state.json"
-                if legacy_file.exists():
-                    try:
-                        with open(legacy_file, "r", encoding="utf-8") as f:
-                            data = json.load(f)
-                        if isinstance(data, dict) and "abstracts" in data:
-                            self._state.entries = [MemoryEntry(content=a) for a in data["abstracts"]]
-                            self._save_to_disk()
-                    except Exception as e:
-                        print(f"Warning: Failed to migrate legacy memory_state.json: {e}")
+            with self._persistence_lock():
+                if self._memory_file.exists():
+                    self._state = self._load_from_disk()
+                else:
+                    # Migration also runs under the destination lock. A second
+                    # initializer must not overwrite an already migrated store.
+                    legacy_file = self._dir_path / "memory_state.json"
+                    if legacy_file.exists():
+                        from .memory import InMemoryMemoryStore
+                        legacy = InMemoryMemoryStore(str(self._dir_path)).load()
+                        self._state.entries = [MemoryEntry(content=a) for a in legacy.abstracts]
+                        self._save_to_disk()
+            if self._enable_auto_cleanup:
+                self.cleanup_expired()
 
     def _load_from_disk(self) -> AdvancedMemoryState:
         try:
             with open(self._memory_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
-            if isinstance(data, dict) and "entries" in data:
-                return AdvancedMemoryState(**data)
-            return AdvancedMemoryState()
-        except (json.JSONDecodeError, KeyError, TypeError) as e:
-            print(f"Warning: Failed to load advanced memory state from {self._memory_file}: {e}")
-            return AdvancedMemoryState()
+            if not isinstance(data, dict) or "entries" not in data:
+                raise ValueError("Invalid memory envelope")
+            return AdvancedMemoryState(**data)
+        except Exception as exc:
+            raise CorruptStoreError() from exc
 
     def _save_to_disk(self) -> None:
         if self._dir_path:
-            self._dir_path.mkdir(parents=True, exist_ok=True)
             try:
                 atomic_write_json(self._memory_file, self._state.model_dump(), ensure_ascii=False, indent=2)
-            except Exception as e:
-                print(f"Warning: Failed to save advanced memory state to {self._memory_file}: {e}")
+            except Exception as exc:
+                # Reload while still holding the transaction lock: late failures
+                # may have published the replacement; early failures did not.
+                self._state = AdvancedMemoryState()
+                try:
+                    self._refresh_from_disk()
+                except Exception:
+                    pass  # later reads retry and fail closed on corrupt data
+                if isinstance(exc, PersistenceError):
+                    raise
+                raise PersistenceError() from exc
 
     def _persistence_lock(self):
         if not self._dir_path:
@@ -164,9 +169,9 @@ class AdvancedMemoryStore:
         except Exception:
             return None
 
-    def _retention(self, entry: MemoryEntry) -> float:
+    def _retention(self, entry: MemoryEntry, now: Optional[datetime] = None) -> float:
         # R = e^(-t/S)
-        now = datetime.now(timezone.utc)
+        now = now or datetime.now(timezone.utc)
         last_ts = self._parse_ts(entry.last_accessed) or self._parse_ts(entry.t_observed) or self._parse_ts(entry.t_created)
         if last_ts is None:
             return 1.0
@@ -175,13 +180,13 @@ class AdvancedMemoryStore:
         S_days = max(entry.strength, 1.0)
         return math.exp(-t_days / S_days)
 
-    def _apply_ttl(self, entry: MemoryEntry) -> bool:
+    def _apply_ttl(self, entry: MemoryEntry, now: Optional[datetime] = None) -> bool:
         if self._ttl_seconds is None:
             return False
         created = self._parse_ts(entry.t_created)
         if created is None:
             return False
-        if datetime.now(timezone.utc) - created > timedelta(seconds=self._ttl_seconds):
+        if (now or datetime.now(timezone.utc)) - created > timedelta(seconds=self._ttl_seconds):
             return True
         return False
 
@@ -221,7 +226,7 @@ class AdvancedMemoryStore:
             with self._persistence_lock():
                 self._refresh_from_disk()
                 self._state.entries.append(entry)
-                self.promote_demote()
+                self._promote_demote_unlocked()
                 if self._dir_path:
                     self._save_to_disk()
 
@@ -236,7 +241,7 @@ class AdvancedMemoryStore:
                         e.t_invalid = new_entry.t_valid or self._now_iso()
                         e.t_expired = self._now_iso()
                 self._state.entries.append(new_entry)
-                self.promote_demote()
+                self._promote_demote_unlocked()
                 if self._dir_path:
                     self._save_to_disk()
 
@@ -281,42 +286,30 @@ class AdvancedMemoryStore:
                         e.last_accessed = now
                         e.strength = e.strength + 1.0
                 # Re-evaluate tiers after strength updates
-                self.promote_demote()
+                self._promote_demote_unlocked()
                 if self._dir_path:
                     self._save_to_disk()
 
     def cleanup_expired(self) -> int:
-        """Mark expired entries and optionally purge them from memory."""
-        with self._lock:
-            with self._persistence_lock():
-                self._refresh_from_disk()
+        """Expire/filter/save as one transaction; return newly expired count."""
+        with self._lock, self._persistence_lock():
+            self._refresh_from_disk()
             removed = 0
             now = datetime.now(timezone.utc)
             for e in self._state.entries:
                 if e.status != "active":
                     continue
                 t_invalid = self._parse_ts(e.t_invalid)
-                if t_invalid and t_invalid <= now:
+                if ((t_invalid is not None and t_invalid <= now)
+                        or self._apply_ttl(e, now)
+                        or self._retention(e, now) < self._retention_threshold):
                     e.status = "expired"
-                    e.t_expired = self._now_iso()
+                    e.t_expired = now.isoformat()
                     removed += 1
-                    continue
-                if self._apply_ttl(e):
-                    e.status = "expired"
-                    e.t_expired = self._now_iso()
-                    removed += 1
-                    continue
-                if self._retention(e) < self._retention_threshold:
-                    e.status = "expired"
-                    e.t_expired = self._now_iso()
-                    removed += 1
-
+            original_count = len(self._state.entries)
             if not self._retain_history:
-                self._state.entries = [
-                    e for e in self._state.entries if e.status == "active"
-                ]
-
-            if removed and self._dir_path:
+                self._state.entries = [e for e in self._state.entries if e.status == "active"]
+            if removed or len(self._state.entries) != original_count:
                 self._save_to_disk()
             return removed
 
@@ -440,6 +433,12 @@ class AdvancedMemoryStore:
         }
 
     def promote_demote(self) -> None:
+        with self._lock, self._persistence_lock():
+            self._refresh_from_disk()
+            self._promote_demote_unlocked()
+            self._save_to_disk()
+
+    def _promote_demote_unlocked(self) -> None:
         with self._lock:
             now = datetime.now(timezone.utc)
             for e in self._state.entries:
@@ -503,10 +502,11 @@ class AdvancedMemoryStore:
             return None
 
     def get_ranked_entries(self, limit: int = 50) -> List[MemoryEntry]:
-        with self._lock:
+        with self._lock, self._persistence_lock():
             self._refresh_from_disk()
             active = [e for e in self._state.entries if e.status == "active"]
-            self.promote_demote()
+            self._promote_demote_unlocked()
+            self._save_to_disk()
             scored = [
                 (e, self.TIER_WEIGHTS.get(e.tier, 1.0) * self._retention(e))
                 for e in active
@@ -516,11 +516,12 @@ class AdvancedMemoryStore:
 
     def get_ranked_abstracts(self, limit: int = 50) -> List[str]:
         """Get abstracts ranked by tier and retention score."""
-        with self._lock:
+        with self._lock, self._persistence_lock():
             self._refresh_from_disk()
             active = [e for e in self._state.entries if e.status == "active"]
             # Trigger promotion check on retrieval
-            self.promote_demote()
+            self._promote_demote_unlocked()
+            self._save_to_disk()
             # Sort by tier weight * retention
             scored = [
                 (e, self.TIER_WEIGHTS.get(e.tier, 1.0) * self._retention(e))

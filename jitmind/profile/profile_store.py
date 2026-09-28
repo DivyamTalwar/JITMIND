@@ -6,7 +6,7 @@ from pathlib import Path
 import json
 from datetime import datetime, timezone
 
-from jitmind.utils.atomic_io import atomic_write_json
+from jitmind.utils.atomic_io import atomic_write_json, CorruptStoreError
 from jitmind.utils.file_lock import file_lock
 
 @dataclass
@@ -33,6 +33,10 @@ class UserProfileStore:
             return UserProfile(user_id=user_id)
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
+            if not isinstance(data, dict) or not any(key in data for key in ("static", "dynamic", "traits")):
+                raise ValueError("Invalid profile envelope")
+            if any(not isinstance(data.get(key, {}), dict) for key in ("static", "dynamic", "traits")):
+                raise ValueError("Invalid profile fields")
             return UserProfile(
                 user_id=user_id,
                 static=data.get("static", {}),
@@ -40,20 +44,23 @@ class UserProfileStore:
                 traits=data.get("traits", {}),
                 updated_at=data.get("updated_at") or UserProfile(user_id).updated_at,
             )
-        except Exception:
-            return UserProfile(user_id=user_id)
+        except Exception as exc:
+            raise CorruptStoreError() from exc
 
     def save(self, profile: UserProfile) -> None:
-        profile.updated_at = datetime.now(timezone.utc).isoformat()
         path = self._path(profile.user_id)
-        payload = {
-            "user_id": profile.user_id,
-            "static": profile.static,
-            "dynamic": profile.dynamic,
-            "traits": profile.traits,
-            "updated_at": profile.updated_at,
-        }
-        atomic_write_json(path, payload, ensure_ascii=False, indent=2)
+        with file_lock(Path(str(path) + ".lock")):
+            self.load(profile.user_id)
+            updated_at = datetime.now(timezone.utc).isoformat()
+            payload = {
+                "user_id": profile.user_id,
+                "static": profile.static,
+                "dynamic": profile.dynamic,
+                "traits": profile.traits,
+                "updated_at": updated_at,
+            }
+            atomic_write_json(path, payload, ensure_ascii=False, indent=2)
+            profile.updated_at = updated_at
 
     def update(
         self,

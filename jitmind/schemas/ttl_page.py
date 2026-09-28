@@ -13,9 +13,10 @@ from datetime import datetime, timedelta, timezone
 import json
 from pathlib import Path
 import threading
+from contextlib import nullcontext
 
 from .page import Page
-from jitmind.utils.atomic_io import atomic_write_json
+from jitmind.utils.atomic_io import atomic_write_json, CorruptStoreError, PersistenceError
 from jitmind.utils.file_lock import file_lock
 
 
@@ -98,6 +99,8 @@ class TTLPageStore:
             with open(self._pages_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 
+            if isinstance(data, dict) and 'pages' in data and not isinstance(data['pages'], list):
+                raise ValueError('Invalid pages list')
             if isinstance(data, list):
                 pages = []
                 for page_data in data:
@@ -122,21 +125,25 @@ class TTLPageStore:
                     pages.append(Page(**page_data))
                 return pages
             
-            return []
-            
-        except (json.JSONDecodeError, KeyError, TypeError) as e:
-            print(f"Warning: Failed to load TTL pages from {self._pages_file}: {e}")
-            return []
-    
+            raise ValueError("Invalid persisted envelope")
+        except Exception as exc:
+            raise CorruptStoreError() from exc
+
     def _save_to_disk(self) -> None:
         """Save pages to disk"""
         if self._dir_path:
-            self._dir_path.mkdir(parents=True, exist_ok=True)
             try:
                 pages_data = [page.model_dump() for page in self._pages]
                 atomic_write_json(self._pages_file, pages_data, ensure_ascii=False, indent=2)
-            except Exception as e:
-                print(f"Warning: Failed to save TTL pages to {self._pages_file}: {e}")
+            except Exception as exc:
+                self._pages = []
+                try:
+                    self._refresh_from_disk()
+                except Exception:
+                    pass
+                if isinstance(exc, PersistenceError):
+                    raise
+                raise PersistenceError() from exc
 
     def _refresh_from_disk(self) -> None:
         if not self._dir_path:
@@ -291,17 +298,21 @@ class TTLPageStore:
         Args:
             pages: List of Page objects
         """
-        # Add timestamps to all pages
-        for page in pages:
-            if page.meta is None:
-                page.meta = {}
-            if 'timestamp' not in page.meta:
-                page.meta['timestamp'] = datetime.now(timezone.utc).isoformat()
+        with self._lock:
+            lock = file_lock(Path(str(self._pages_file) + ".lock")) if self._dir_path else nullcontext()
+            with lock:
+                self._refresh_from_disk()
+                # Add timestamps to all pages
+                for page in pages:
+                    if page.meta is None:
+                        page.meta = {}
+                    if 'timestamp' not in page.meta:
+                        page.meta['timestamp'] = datetime.now(timezone.utc).isoformat()
         
-        self._pages = pages
+                self._pages = pages
         
-        if self._dir_path:
-            self._save_to_disk()
+                if self._dir_path:
+                    self._save_to_disk()
     
     def get(self, index: int) -> Optional[Page]:
         """
