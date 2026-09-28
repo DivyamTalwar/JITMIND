@@ -7,8 +7,10 @@ runner records actual results separately against a committed candidate and wheel
 
 The map retains 32 cases, all 41 required stages, 103 stage-node associations and
 97 unique identities (96 pytest nodes and one separately executed installed smoke).
-Case text, node identities, parameter variants, fixture assertions and original
-handoff/oracle hashes are unchanged. Source-controlled statuses remain `not_run`.
+Original case text, node identities, parameter variants and handoff/oracle hashes
+remain. The timing-oracle corrections and three added boundary nodes are recorded
+below; they are not described as unchanged assertions. Source-controlled statuses
+remain `not_run`.
 
 ## Metadata correction
 
