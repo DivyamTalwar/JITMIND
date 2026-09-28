@@ -1,0 +1,610 @@
+{
+  "donor_commit": "80692e5ad0bc8e8f7e1edea648247d90b9f76820",
+  "package": "@nanonets/graft",
+  "package_version": "0.20.0",
+  "audit_roots": [
+    "src/context/check.ts",
+    "src/mcp/tools.ts",
+    "src/graph/extract.ts"
+  ],
+  "closure_kind": "static local imports/exports, including type-only imports; dynamic imports not claimed",
+  "source_closure": {
+    "src/ai/crux.ts": {
+      "sha256": "9e575aaa480b10e38184a0a2b93acc560226c29acfad0a0f76ac04a399bd7b1e",
+      "local_imports": [
+        "src/ai/llm/recover-tool.ts",
+        "src/ai/llm/types.ts",
+        "src/graph/types.ts"
+      ]
+    },
+    "src/ai/failure.ts": {
+      "sha256": "5fdfb3f88d90bf5b448d5497e6bc90097171210ea9a02c37842f336c402067b3",
+      "local_imports": []
+    },
+    "src/ai/llm/anthropic.ts": {
+      "sha256": "140e23e5030c044f49d9996464064e3519232bef0e77052f8910e088eed1b1c2",
+      "local_imports": [
+        "src/ai/llm/types.ts"
+      ]
+    },
+    "src/ai/llm/factory.ts": {
+      "sha256": "0639b41a50831db67bcbdb33acff71a99a5c1665c52c8c10dfc0e7ff2a8dad29",
+      "local_imports": [
+        "src/ai/llm/anthropic.ts",
+        "src/ai/llm/litellm.ts",
+        "src/ai/llm/openai.ts",
+        "src/ai/llm/orcarouter.ts",
+        "src/ai/llm/types.ts"
+      ]
+    },
+    "src/ai/llm/litellm.ts": {
+      "sha256": "896af2ea8ea51217f4a358473ca23a86e00cd7887426395ba3e622f4532a3cc2",
+      "local_imports": [
+        "src/ai/llm/openai.ts",
+        "src/ai/llm/types.ts"
+      ]
+    },
+    "src/ai/llm/openai.ts": {
+      "sha256": "fd97517219f2252a5255d32a8227e66ff7504b3d981de2be9a9284ce40edf25f",
+      "local_imports": [
+        "src/ai/llm/types.ts"
+      ]
+    },
+    "src/ai/llm/orcarouter.ts": {
+      "sha256": "e7c0b58a6925d677166cf62668c7f50096e61eaa4e0f99dccc7ee6e372f0e565",
+      "local_imports": [
+        "src/ai/llm/openai.ts",
+        "src/ai/llm/types.ts"
+      ]
+    },
+    "src/ai/llm/recover-tool.ts": {
+      "sha256": "4b7cd04d9c8ee5f3cdb1228db4ece1b1d155492a238b36df0d3805b903187ee3",
+      "local_imports": []
+    },
+    "src/ai/llm/types.ts": {
+      "sha256": "66feb88afd39583419d506ab8f9923ba660a6c3f92ef088649780b389ace5035",
+      "local_imports": []
+    },
+    "src/ai/providers.ts": {
+      "sha256": "6f789df8111fb7b41eb3931a2901e7cff2c9ec21ffce2fb916a960056a2ca4f6",
+      "local_imports": [
+        "src/ai/crux.ts",
+        "src/ai/llm/factory.ts",
+        "src/ai/llm/types.ts",
+        "src/ai/summarize.ts",
+        "src/ai/synthesize.ts"
+      ]
+    },
+    "src/ai/summarize.ts": {
+      "sha256": "8dbec8d421f079ec67c81701d28ed1eb648b64e074b338538d03b9063941cffd",
+      "local_imports": [
+        "src/ai/llm/types.ts"
+      ]
+    },
+    "src/ai/synthesize.ts": {
+      "sha256": "916b6d9b670e4d20c15d91ab263756b14c44ba217ef6dcb72f74e1825a298f5f",
+      "local_imports": [
+        "src/ai/llm/recover-tool.ts",
+        "src/ai/llm/types.ts"
+      ]
+    },
+    "src/ask/ask.ts": {
+      "sha256": "68b305d76334ac027dc08f9342bc0a56ff88ad3da3b28ce47c07f3a349233bbe",
+      "local_imports": [
+        "src/ask/file-rank.ts",
+        "src/ask/file-selection.ts",
+        "src/ask/fuse.ts",
+        "src/ask/graphrank.ts",
+        "src/ask/index-file.ts",
+        "src/brain/attach.ts",
+        "src/brain/link.ts",
+        "src/context/node-file.ts",
+        "src/context/savings.ts",
+        "src/graph/load.ts",
+        "src/graph/scopes.ts",
+        "src/graph/traverse.ts",
+        "src/graph/types.ts",
+        "src/util/paths.ts",
+        "src/util/source.ts"
+      ]
+    },
+    "src/ask/file-rank.ts": {
+      "sha256": "0b4816bcd69e129d976b1ceada2228c9ea7c842d2682a34092fd52341f32e346",
+      "local_imports": []
+    },
+    "src/ask/file-selection.ts": {
+      "sha256": "aeac9270effb1a44d20999a0a81ed6211a09bc3e2fe17ec50d0bf6e2cad75a09",
+      "local_imports": []
+    },
+    "src/ask/fuse.ts": {
+      "sha256": "90101214cd4989eac1e0bc32e0558c59bdc67dfd2114a3e6b0c32ff84717bca6",
+      "local_imports": []
+    },
+    "src/ask/graphrank.ts": {
+      "sha256": "ac55f62b84cfc9a78fee260644f53f82f2f6367a1be91c47d5077476e7524463",
+      "local_imports": [
+        "src/graph/relations.ts",
+        "src/graph/types.ts"
+      ]
+    },
+    "src/ask/index-file.ts": {
+      "sha256": "e22b7388ab9b24da57e93515090697b7f5c37f5d7bf7620cefece5c55927eb75",
+      "local_imports": [
+        "src/context/node-file.ts",
+        "src/graph/types.ts"
+      ]
+    },
+    "src/blast/blast.ts": {
+      "sha256": "d2b73166f8af434f95df1c2e7740350580ebb06e9512962f18a5eeac6e0ccea3",
+      "local_imports": [
+        "src/blast/diff.ts",
+        "src/blast/modules.ts",
+        "src/blast/owners.ts",
+        "src/graph/traverse.ts",
+        "src/graph/types.ts"
+      ]
+    },
+    "src/blast/diff.ts": {
+      "sha256": "18ddd8de7791f7836b88c370b6879ae9eb8908228e742f8b52a8cf4e6f0a056f",
+      "local_imports": []
+    },
+    "src/blast/evidence.ts": {
+      "sha256": "3ed684787d6dc8d1b0799d172ba531b0eb841d5966b7995ef973a9195c8360cc",
+      "local_imports": [
+        "src/blast/blast.ts",
+        "src/blast/diff.ts",
+        "src/viz/assemble.ts"
+      ]
+    },
+    "src/blast/modules.ts": {
+      "sha256": "7f85971324a98168051edb3da01dce7b78b63da7818007df2089e321c251b05c",
+      "local_imports": [
+        "src/context/node-file.ts"
+      ]
+    },
+    "src/blast/owners.ts": {
+      "sha256": "7e1e2ad0a083cdcb1c48c9d9e9d696a5b96bb4ce52992f30508691badccd0dc2",
+      "local_imports": [
+        "src/blast/blast.ts"
+      ]
+    },
+    "src/brain/attach.ts": {
+      "sha256": "40bd6021609fa3d17182ca538f801f3a8eda80eb5ef5716efd8a80ab2b331c93",
+      "local_imports": [
+        "src/brain/link.ts",
+        "src/graph/types.ts"
+      ]
+    },
+    "src/brain/link.ts": {
+      "sha256": "cacf0ddba912ad43d76084f53608f1ebd9caf8f45e5ff34103eb151266b5ed20",
+      "local_imports": [
+        "src/context/node-file.ts",
+        "src/util/state.ts"
+      ]
+    },
+    "src/claude/session-metrics.ts": {
+      "sha256": "74940a06de97f1e4661baa68c12b612745dd016b00a3049292d3ec060d932d96",
+      "local_imports": [
+        "src/claude/state.ts",
+        "src/context/price.ts",
+        "src/context/savings.ts",
+        "src/mcp/tool-names.ts",
+        "src/telemetry/contract.ts"
+      ]
+    },
+    "src/claude/state.ts": {
+      "sha256": "1fd7698a1194521e0d157134e59d22024c836608b79782caafa61b7b1dc28e7b",
+      "local_imports": [
+        "src/telemetry/contract.ts",
+        "src/util/state.ts"
+      ]
+    },
+    "src/context/build.ts": {
+      "sha256": "c2a489fb3b91dce1ff14c8a6522babee3b96f947f76862ddb2598d10804670bb",
+      "local_imports": [
+        "src/ai/failure.ts",
+        "src/ai/summarize.ts",
+        "src/ai/synthesize.ts",
+        "src/context/node-file.ts",
+        "src/graph/fingerprint.ts",
+        "src/graph/source-files.ts",
+        "src/ingest/fs.ts",
+        "src/util/id.ts",
+        "src/util/paths.ts",
+        "src/util/source.ts",
+        "src/util/state.ts"
+      ]
+    },
+    "src/context/check.ts": {
+      "sha256": "515cbb6e84ca0508575865f08184f018c365c1f4dee985f75e1bdf4fee0a9657",
+      "local_imports": [
+        "src/context/build.ts",
+        "src/context/node-file.ts",
+        "src/util/id.ts",
+        "src/util/paths.ts",
+        "src/util/source.ts"
+      ]
+    },
+    "src/context/node-file.ts": {
+      "sha256": "4fdb7542c232cb9ad5b6613a7020ee599bcb952e8055556568302977cbb20e96",
+      "local_imports": [
+        "src/graph/write.ts",
+        "src/util/id.ts",
+        "src/util/paths.ts"
+      ]
+    },
+    "src/context/price.ts": {
+      "sha256": "027f73dfd8a73ece075856037f4d7e016d668a386de22e63ab1ac80513304f49",
+      "local_imports": []
+    },
+    "src/context/savings.ts": {
+      "sha256": "a210da80cda2fee84c1fe944febd65ac4532f91b77fe0d749d21db05f0446039",
+      "local_imports": [
+        "src/context/price.ts",
+        "src/graph/types.ts"
+      ]
+    },
+    "src/engine.ts": {
+      "sha256": "f5cc44b0bcf186f8c1cdefafcb4bde8a057ba9cd6613f49580ca785fcb6b2c50",
+      "local_imports": [
+        "src/ai/crux.ts",
+        "src/ai/llm/factory.ts",
+        "src/ai/llm/types.ts",
+        "src/ai/providers.ts",
+        "src/ai/summarize.ts",
+        "src/ai/synthesize.ts",
+        "src/ask/ask.ts",
+        "src/context/build.ts",
+        "src/context/check.ts",
+        "src/graph/build.ts",
+        "src/graph/check.ts"
+      ]
+    },
+    "src/graph/bindings.ts": {
+      "sha256": "80b166f0ff20bb8d402c532c242a170da1682cd64d5d526f988b91123a133be3",
+      "local_imports": [
+        "src/graph/extract.ts"
+      ]
+    },
+    "src/graph/build.ts": {
+      "sha256": "4ac53f4c00655e08a7107af0e7ec08258328fc3143ce8f4694e04694d9e2864b",
+      "local_imports": [
+        "src/ai/crux.ts",
+        "src/ask/index-file.ts",
+        "src/context/node-file.ts",
+        "src/graph/cards.ts",
+        "src/graph/container.ts",
+        "src/graph/enrich.ts",
+        "src/graph/extract-cache.ts",
+        "src/graph/extract.ts",
+        "src/graph/fingerprint.ts",
+        "src/graph/generic.ts",
+        "src/graph/resolve.ts",
+        "src/graph/scopes.ts",
+        "src/graph/seed.ts",
+        "src/graph/source-files.ts",
+        "src/graph/types.ts",
+        "src/graph/write.ts",
+        "src/ingest/fs.ts",
+        "src/util/id.ts",
+        "src/util/paths.ts",
+        "src/util/source.ts",
+        "src/util/state.ts"
+      ]
+    },
+    "src/graph/cards.ts": {
+      "sha256": "0950f88daecc8ed04773ac8c8614d1ee7163bb662cf194b94f5b63566026153e",
+      "local_imports": [
+        "src/context/node-file.ts",
+        "src/graph/types.ts",
+        "src/graph/write.ts",
+        "src/util/paths.ts"
+      ]
+    },
+    "src/graph/check.ts": {
+      "sha256": "00b4b46a86dc31c5ff9107b82830127879592c3698b9979f7a5273fd12ad7c98",
+      "local_imports": [
+        "src/context/node-file.ts",
+        "src/graph/build.ts",
+        "src/graph/container.ts",
+        "src/graph/extract.ts",
+        "src/graph/fingerprint.ts",
+        "src/graph/generic.ts",
+        "src/graph/write.ts",
+        "src/util/paths.ts",
+        "src/util/source.ts"
+      ]
+    },
+    "src/graph/container.ts": {
+      "sha256": "178ccc48c1e51ac35a0a74a66b73b384ee0951d61fa9466a990ccca85f5ea9ba",
+      "local_imports": [
+        "src/graph/extract.ts",
+        "src/graph/generic.ts",
+        "src/graph/types.ts",
+        "src/util/id.ts"
+      ]
+    },
+    "src/graph/enrich.ts": {
+      "sha256": "90b9538a1ef37d169854b2d1ee81ebb099c11058443c1b2de78f1a25994a6351",
+      "local_imports": [
+        "src/ai/crux.ts",
+        "src/ai/failure.ts",
+        "src/graph/types.ts"
+      ]
+    },
+    "src/graph/extract-cache.ts": {
+      "sha256": "60e95c011c7c67d5c724e15b99b71867428c6fe48696a60fe8be2165dac57061",
+      "local_imports": [
+        "src/context/node-file.ts",
+        "src/graph/extract.ts",
+        "src/graph/types.ts",
+        "src/util/state.ts"
+      ]
+    },
+    "src/graph/extract.ts": {
+      "sha256": "c394abb04fcb11fec4d0e57cdc6de346ff202b65fb979fba0d46932931a2bb82",
+      "local_imports": [
+        "src/graph/bindings.ts",
+        "src/graph/types.ts",
+        "src/util/id.ts"
+      ]
+    },
+    "src/graph/fingerprint.ts": {
+      "sha256": "54408a793afc1e1d457daa9093e332fa9e922766997382f54b586b1bcff17f90",
+      "local_imports": [
+        "src/context/node-file.ts",
+        "src/graph/extract-cache.ts",
+        "src/graph/source-files.ts",
+        "src/util/id.ts",
+        "src/util/source.ts",
+        "src/util/state.ts"
+      ]
+    },
+    "src/graph/generic.ts": {
+      "sha256": "4554592a5ec7f3421eefb6a79ca41653b16393102d7d0db1440deb17cd198feb",
+      "local_imports": [
+        "src/graph/extract.ts",
+        "src/graph/types.ts",
+        "src/util/id.ts"
+      ]
+    },
+    "src/graph/load.ts": {
+      "sha256": "c8625caac2e521e5a5c3422f3c4028422517f4e2532aff0343f88d39fb7c501f",
+      "local_imports": [
+        "src/ask/index-file.ts",
+        "src/graph/types.ts",
+        "src/graph/write.ts"
+      ]
+    },
+    "src/graph/map.ts": {
+      "sha256": "6fbfda0d2914e773bbac28dad9de3dc0d055ad19226873edaf6c5b62bef2db2a",
+      "local_imports": [
+        "src/context/savings.ts",
+        "src/graph/extract.ts",
+        "src/graph/relations.ts",
+        "src/graph/scopes.ts",
+        "src/graph/types.ts"
+      ]
+    },
+    "src/graph/refresh.ts": {
+      "sha256": "646c44319e51e3f0cc43c48529ba6ffc331681b1e68d99d5968e2fab97b662ea",
+      "local_imports": [
+        "src/context/node-file.ts",
+        "src/graph/build.ts",
+        "src/graph/fingerprint.ts",
+        "src/graph/load.ts",
+        "src/graph/seed.ts",
+        "src/graph/write.ts",
+        "src/util/state.ts"
+      ]
+    },
+    "src/graph/relations.ts": {
+      "sha256": "e62bc9934057bf232f86edcf942e71b0a2f4c44b57ffd78ddb935b85ab75aca8",
+      "local_imports": [
+        "src/graph/types.ts"
+      ]
+    },
+    "src/graph/resolve.ts": {
+      "sha256": "c6a23a45e9468f66dc66a3eb7664461d8d204a76e3c4a30367befc62f29dbd2a",
+      "local_imports": [
+        "src/graph/extract.ts",
+        "src/graph/generic.ts",
+        "src/graph/types.ts",
+        "src/util/paths.ts"
+      ]
+    },
+    "src/graph/scopes.ts": {
+      "sha256": "9c293665cb91472f2ae7d4550f7fea9c2cbd0dca47d533ae7707177eeaa6d756",
+      "local_imports": [
+        "src/graph/types.ts",
+        "src/ingest/fs.ts",
+        "src/util/paths.ts",
+        "src/util/state.ts"
+      ]
+    },
+    "src/graph/seed.ts": {
+      "sha256": "3e3babc7ff07fe9ab3fd83fc8dc3873ca2cb78080b73d808dee2773598c9df84",
+      "local_imports": [
+        "src/ask/index-file.ts",
+        "src/context/node-file.ts",
+        "src/graph/extract-cache.ts",
+        "src/graph/fingerprint.ts",
+        "src/graph/write.ts"
+      ]
+    },
+    "src/graph/source-files.ts": {
+      "sha256": "d2c8a910a2ae825049fdcc42391c6225fd91f01f34a5ef7692c4155f018b7989",
+      "local_imports": [
+        "src/graph/container.ts",
+        "src/graph/extract.ts",
+        "src/graph/generic.ts",
+        "src/ingest/fs.ts",
+        "src/util/paths.ts",
+        "src/util/state.ts"
+      ]
+    },
+    "src/graph/traverse-cli.ts": {
+      "sha256": "11831c7e4036f8e9ea0e3433ff2cc5ab397bb2f9d0636ec57403743c2ba29416",
+      "local_imports": [
+        "src/blast/evidence.ts",
+        "src/context/node-file.ts",
+        "src/context/savings.ts",
+        "src/graph/load.ts",
+        "src/graph/traverse.ts",
+        "src/graph/types.ts"
+      ]
+    },
+    "src/graph/traverse.ts": {
+      "sha256": "0926baed5cebdd3a1e5885a5d2a2bdb3507a079bf18f2f9918c0daa639d9b5c3",
+      "local_imports": [
+        "src/graph/relations.ts",
+        "src/graph/scopes.ts",
+        "src/graph/types.ts",
+        "src/util/paths.ts"
+      ]
+    },
+    "src/graph/types.ts": {
+      "sha256": "fd51032bec8f7fb65e41a26774e39278cf15ea2fed16b90b1e04f1e654136747",
+      "local_imports": []
+    },
+    "src/graph/workspace.ts": {
+      "sha256": "52f96f92473b555660f9873197f2d0f8613748023abcd68646a05b93498f66b0",
+      "local_imports": [
+        "src/ask/ask.ts",
+        "src/ask/file-selection.ts",
+        "src/ask/fuse.ts",
+        "src/context/node-file.ts",
+        "src/context/savings.ts",
+        "src/graph/check.ts",
+        "src/graph/load.ts",
+        "src/graph/map.ts",
+        "src/graph/scopes.ts",
+        "src/graph/traverse-cli.ts",
+        "src/graph/traverse.ts",
+        "src/graph/types.ts",
+        "src/graph/write.ts",
+        "src/search/grep-cli.ts",
+        "src/search/grep.ts"
+      ]
+    },
+    "src/graph/write.ts": {
+      "sha256": "387c2bb02211b460bce8be88c0446109dd7465c2ad3344d93d2d369c087f1568",
+      "local_imports": [
+        "src/graph/types.ts"
+      ]
+    },
+    "src/ingest/fs.ts": {
+      "sha256": "f8f4c0004f7f4bc0b50d900d06387d1c683322d2937335ccd2296e5c7f909913",
+      "local_imports": []
+    },
+    "src/mcp/tool-names.ts": {
+      "sha256": "b173114d436689ef6e0e32148839057d35c00b1b4e813192b0ef478454014fec",
+      "local_imports": []
+    },
+    "src/mcp/tools.ts": {
+      "sha256": "338302e1be533124d2b2e6791cfc4c70fb9c07e7e541aadb3834d08ed10535a8",
+      "local_imports": [
+        "src/ask/ask.ts",
+        "src/claude/session-metrics.ts",
+        "src/context/check.ts",
+        "src/context/node-file.ts",
+        "src/context/savings.ts",
+        "src/engine.ts",
+        "src/graph/check.ts",
+        "src/graph/load.ts",
+        "src/graph/map.ts",
+        "src/graph/refresh.ts",
+        "src/graph/traverse-cli.ts",
+        "src/graph/traverse.ts",
+        "src/graph/types.ts",
+        "src/graph/workspace.ts",
+        "src/mcp/tool-names.ts",
+        "src/search/grep-cli.ts",
+        "src/search/grep.ts"
+      ]
+    },
+    "src/search/grep-cli.ts": {
+      "sha256": "3339726778a41557488d7ceab309748adcb5180c337ee8d7c40072ceed3a4c58",
+      "local_imports": [
+        "src/context/node-file.ts",
+        "src/context/savings.ts",
+        "src/graph/load.ts",
+        "src/search/grep.ts"
+      ]
+    },
+    "src/search/grep.ts": {
+      "sha256": "9b3c915d3d422062663a9b6d0cd62db8b9215df5f2347e6ccb4583876296c4ad",
+      "local_imports": [
+        "src/context/savings.ts",
+        "src/graph/relations.ts",
+        "src/graph/scopes.ts",
+        "src/graph/types.ts",
+        "src/util/paths.ts",
+        "src/util/source.ts"
+      ]
+    },
+    "src/telemetry/contract.ts": {
+      "sha256": "c66eff64dea61407a375c62836bcd1fbfe22b3820e12b4ecdd1bf287a52593f9",
+      "local_imports": []
+    },
+    "src/util/id.ts": {
+      "sha256": "5fabc8ddcc3abc907ce69f04ad2ebe51933262cf44aa2dfd40589f71f1926e8a",
+      "local_imports": []
+    },
+    "src/util/paths.ts": {
+      "sha256": "bad2b4cfdf0667026fd532ecb72e5022df5c90f102af8b34c3610c549bc92e83",
+      "local_imports": []
+    },
+    "src/util/source.ts": {
+      "sha256": "378d6253d521c60f7afe7dd500ce125ef599ab3f5d72988d46c6e8881ac66e0f",
+      "local_imports": []
+    },
+    "src/util/state.ts": {
+      "sha256": "f54b233fcb4986aa936871c83493ee91ec24db48e410d1486fc7648e30cbeeae",
+      "local_imports": []
+    },
+    "src/viz/assemble.ts": {
+      "sha256": "8d9348e9b0e10b81c03c5984014a7524ad4ef244854a7cae6f453626fd821973",
+      "local_imports": [
+        "src/context/node-file.ts"
+      ]
+    }
+  },
+  "external_imports": [
+    " shape), in which case the\n * caller falls through to `lexical()` silently, same as before this fix. */\ntype StructuralOutcome = { result: AskResult } | { fallthroughNote: string } | null;\n\nfunction fallthroughNoteFor(subject: string): string {\n  return (\n    `structural index: no entries for ",
+    " \u2014 else default to callers\n  const rels = new Set(outgoing ? OUTGOING_RELS : INCOMING_RELS);\n\n  const hits: AskHit[] = [];\n  const seen = new Set<string>();\n  for (const e of graph.edges as EdgeV1[]) {\n    if (!rels.has(e.relation)) continue;\n    const anchor = outgoing ? e.source : e.target;\n    const other = outgoing ? e.target : e.source;\n    if (!ids.has(anchor) || seen.has(other + e.relation)) continue;\n    seen.add(other + e.relation);\n    const node = byId.get(other);\n    hits.push({\n      kind: outgoing ? ",
+    ")\n *     \u2192 walk the wiring graph",
+    ") {\n    const nameNode = node.childForFieldName(",
+    ");\n    return m?.text ?? null;\n  }\n  if (lang === ",
+    "@anthropic-ai/sdk",
+    "always re-parse the repo",
+    "fmt",
+    "graft saved you less than a cent",
+    "gray-matter",
+    "node:child_process",
+    "node:crypto",
+    "node:fs",
+    "node:module",
+    "node:path",
+    "node:url",
+    "now",
+    "openai",
+    "s fully-qualified type name to an in-repo file node;\n * otherwise return the raw specifier (JDK or third-party type).\n *\n * Java names a *type*, not a path, and states no source root \u2014 `com.acme.Foo` may\n * live under `src/main/java/`, `src/`, or a module dir. Matching on the path SUFFIX\n * (`com/acme/Foo.java`) is therefore root-agnostic and needs no build-file parsing,\n * which is what keeps this deterministic and dependency-free.\n *\n * `import static com.acme.Foo.bar` names a member, so when the full name misses, the\n * last segment is dropped and the enclosing type retried. A wildcard (`com.acme.*`)\n * names a package rather than one file and is deliberately left unresolved: picking a\n * representative would invent an edge the source does not state.\n *\n * A suffix shared by two files (the same FQN under two source roots, e.g. a\n * duplicated test tree) is ambiguous, so it stays unresolved rather than guessing.\n */\nfunction resolveJavaImport(spec: string, filesBySuffix: Map<string, string[]>): string {\n  const hit = (fqn: string): string | null => {\n    const suffix = `${fqn.split(",
+    "s own FQN picks the right depth.\n        const parts = toPosixPath(n.path).split(",
+    "tree-sitter",
+    "tree-sitter-go",
+    "tree-sitter-java",
+    "tree-sitter-kotlin",
+    "tree-sitter-php",
+    "tree-sitter-python",
+    "tree-sitter-r",
+    "tree-sitter-swift",
+    "tree-sitter-typescript"
+  ],
+  "selected_runtime_closure": [
+    "runner.mjs -> extract.mjs + node:crypto",
+    "extract.mjs -> tree-sitter@0.21.1 + tree-sitter-python@0.21.0",
+    "tree-sitter and tree-sitter-python -> node-gyp-build@4.8.4 -> platform native prebuilds",
+    "node-addon-api@8.9.2 and nested @7.1.1 are installed header/build dependencies; see package-lock.json"
+  ]
+}

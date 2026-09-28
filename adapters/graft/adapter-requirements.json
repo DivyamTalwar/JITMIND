@@ -1,0 +1,10 @@
+{
+  "schema": "jitmind.adapter-requirements/v1",
+  "donor": {"package": "@nanonets/graft", "version": "0.20.0", "commit": "80692e5ad0bc8e8f7e1edea648247d90b9f76820"},
+  "runtime": "Node >=20, trusted absolute executable configured by host",
+  "dependencies": {"tree-sitter": "0.21.1", "tree-sitter-python": "0.21.0"},
+  "installation": "Independently provision this directory with npm install --ignore-scripts. Native prebuilds are required; do not execute donor hooks.",
+  "supported_extensions": [".py", ".pyi"],
+  "entrypoint": "runner.mjs",
+  "protocol": "jitmind.graft-parser/v1"
+}

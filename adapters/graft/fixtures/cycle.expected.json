@@ -1,0 +1,9 @@
+{
+  "status": "ok",
+  "symbols": [
+    {"name": "alpha", "qualified_name": "alpha", "kind": "function", "start_line": 1, "end_line": 2, "signature": "def alpha():", "calls": ["beta"]},
+    {"name": "beta", "qualified_name": "beta", "kind": "function", "start_line": 4, "end_line": 5, "signature": "def beta():", "calls": ["alpha"]},
+    {"name": "Example", "qualified_name": "Example", "kind": "class", "start_line": 7, "end_line": 9, "signature": "class Example:", "calls": []},
+    {"name": "method", "qualified_name": "Example.method", "kind": "method", "start_line": 8, "end_line": 9, "signature": "def method(self):", "calls": ["alpha"]}
+  ]
+}
