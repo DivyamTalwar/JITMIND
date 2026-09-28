@@ -427,9 +427,13 @@ def test_binding_authority_independent_process_contention(bound_host, mode):
     process.start()
     try:
         assert ready.wait(5)
-        h[
-            "service"
-        ].policy = PreflightPolicy()  # measure the unchanged production budget
+        # EXCLUSIVE tests the real deadline; IMMEDIATE is a read-compatibility
+        # control and still must satisfy the unchanged 300 ms ceiling below.
+        h["service"].policy = (
+            PreflightPolicy()
+            if mode == "EXCLUSIVE"
+            else PreflightPolicy(deadline_seconds=3.0)
+        )
         started = time.monotonic()
         result = h["service"].deliver(h["scope"], h["session"], h["target"])
         elapsed = time.monotonic() - started
@@ -444,6 +448,7 @@ def test_binding_authority_independent_process_contention(bound_host, mode):
             process.join()
     assert process.exitcode == 0
     if result.state == "deferred":
+        h["service"].policy = PreflightPolicy(deadline_seconds=3.0)
         assert (
             h["service"].deliver(h["scope"], h["session"], h["target"]).state
             == "delivered"
