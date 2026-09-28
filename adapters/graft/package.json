@@ -1,0 +1,9 @@
+{
+  "name": "jitmind-graft-python-adapter",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": {"node": ">=20"},
+  "dependencies": {"tree-sitter": "0.21.1", "tree-sitter-python": "0.21.0"}
+}
