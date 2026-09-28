@@ -6,25 +6,49 @@ MemoryAgent Module
 This module defines the MemoryAgent for the JITMind (JITMind) framework.
 
 - Memory is represented as a list[str] of abstracts (no events/tags included).
-- MemoryAgent exposes only: memorize(message) -> MemoryUpdate, allowing the agent to store new information.
+- MemoryAgent exposes memorize(message) -> MemoryUpdate and an opt-in durable receipt API.
 - Prompts within the module are used as placeholders for future prompt templates or instructions.
 """
 
 
 from __future__ import annotations
 
-from typing import Dict, Optional, Tuple, Any
+import json
 import os
+import uuid
+from typing import Any, Dict, Optional, Tuple
 
-from jitmind.prompts import MemoryAgent_PROMPT, MemoryOperation_PROMPT, ConflictCheck_PROMPT
-from jitmind.schemas import (
-    MemoryState, Page, MemoryUpdate, MemoryStore, PageStore,
-    InMemoryMemoryStore, InMemoryPageStore, Retriever,
-    AdvancedMemoryStore, MemoryEntry, MEMORY_OP_SCHEMA
-)
 from jitmind.generator import AbsGenerator
-from jitmind.profile import UserProfileAgent
 from jitmind.memory_context import MemoryContextSelector
+from jitmind.profile import UserProfileAgent
+from jitmind.prompts import (
+    ConflictCheck_PROMPT,
+    MemoryAgent_PROMPT,
+    MemoryOperation_PROMPT,
+)
+from jitmind.schemas import (
+    MEMORY_OP_SCHEMA,
+    AdvancedMemoryStore,
+    InMemoryPageStore,
+    MemoryEntry,
+    MemoryState,
+    MemoryStore,
+    MemoryUpdate,
+    Page,
+    PageStore,
+)
+from jitmind.storage import (
+    DurableMemoryAdapter,
+    DurablePageAdapter,
+    DurableReceipt,
+    IngestRequest,
+    InvalidRequest,
+    NamespaceSnapshot,
+    Proposal,
+    ProposalFailure,
+    SQLiteDurableStore,
+)
+
 try:
     from jitmind.graph import GraphMemoryStore, load_ontology_from_env
 except ImportError:
@@ -35,6 +59,7 @@ class MemoryAgent:
     """
     Public API:
       - memorize(message) -> MemoryUpdate
+      - memorize_durable(message, idempotency_key=...) -> DurableReceipt (opt-in)
     Internal only:
       - _decorate(message, memory_state) -> (abstract, header, decorated_new_page)
     Note: memory_state contains ONLY abstracts (list[str]).
@@ -51,13 +76,26 @@ class MemoryAgent:
         profile_agent: Optional[UserProfileAgent] = None,
         context_limit: int = 32,
         context_selector: Optional[MemoryContextSelector] = None,
+        durable_store: SQLiteDurableStore | None = None,
+        namespace_id: str = "default",
     ) -> None:
         if generator is None:
             raise ValueError("Generator instance is required for MemoryAgent")
-        self.memory_store = memory_store or AdvancedMemoryStore(dir_path=dir_path)
-        self.page_store = page_store or InMemoryPageStore(dir_path=dir_path)
+        self.durable_store = durable_store
+        self.namespace_id = namespace_id
+        if durable_store is not None:
+            if memory_store is not None or page_store is not None or dir_path is not None:
+                raise InvalidRequest()
+            self.memory_store = DurableMemoryAdapter(durable_store, namespace_id)
+            self.page_store = DurablePageAdapter(durable_store, namespace_id)
+        else:
+            self.memory_store = memory_store or AdvancedMemoryStore(dir_path=dir_path)
+            self.page_store = page_store or InMemoryPageStore(dir_path=dir_path)
         self.generator = generator
-        if graph_store is None:
+        if durable_store is not None:
+            # Durable projections are explicit consumers; never auto-connect providers.
+            self.graph_store = graph_store
+        elif graph_store is None:
             neo4j_uri = os.getenv("NEO4J_URI")
             neo4j_user = os.getenv("NEO4J_USERNAME")
             neo4j_password = os.getenv("NEO4J_PASSWORD")
@@ -96,7 +134,7 @@ class MemoryAgent:
 
 
     # ---- Public ----
-    def memorize(self, message: str, meta: Optional[Dict[str, Any]] = None, user_id: Optional[str] = None) -> MemoryUpdate:
+    def memorize(self, message: str, meta: Optional[Dict[str, Any]] = None, user_id: Optional[str] = None, *, idempotency_key: str | None = None) -> MemoryUpdate:
         """
         Update long-term memory with a new message and persist a decorated page.
         Steps:
@@ -104,6 +142,17 @@ class MemoryAgent:
           2) Merge into MemoryState (append unique abstract)
           3) Write Page into page_store  (page_id left None by default)
         """
+        if self.durable_store is not None:
+            receipt = self.memorize_durable(
+                message, idempotency_key=idempotency_key if idempotency_key is not None else str(uuid.uuid4()),
+                meta=meta, user_id=user_id,
+            )
+            # A committed DELETE/NOOP still acknowledges successfully when its
+            # administrative page has no ordinary content visibility. The
+            # compatibility view carries the receipt and explicit content status.
+            return self.durable_store.memory_update(receipt)
+        if idempotency_key is not None:
+            raise InvalidRequest()
         message = message.strip()
         state = self.memory_store.load()
 
@@ -151,6 +200,56 @@ class MemoryAgent:
 
         return MemoryUpdate(new_state=updated_state, new_page=page, debug={"decorated_page": decorated_new_page})
 
+
+    def memorize_durable(
+        self,
+        message: str,
+        *,
+        idempotency_key: str,
+        meta: dict[str, Any] | None = None,
+        user_id: str | None = None,
+        max_replans: int = 2,
+    ) -> DurableReceipt:
+        """Return a committed receipt, replayable across restarts with the same key.
+
+        Graph/profile updates are not executed here. Durable projections consume
+        the committed outbox; this path acknowledges only the SQLite authority.
+        Receipt identity survives retirement. Use store.receipt_content(receipt)
+        for typed current availability; administrative NOOP/DELETE pages are not
+        ordinary payloads. memorize() retains MemoryUpdate with a redacted page.
+        """
+        if self.durable_store is None:
+            raise InvalidRequest()
+        request = IngestRequest.create(self.namespace_id, idempotency_key, message, meta, user_id)
+        return self.durable_store.ingest(
+            request, lambda snapshot: self._propose_durable(message, snapshot),
+            max_replans=max_replans,
+        )
+
+    def _propose_durable(self, message: str, snapshot: NamespaceSnapshot) -> Proposal:
+        # Both prompts use the SAME captured revision. No mutable store swapping.
+        selected = self.context_selector.select_entries(message, list(snapshot.entries))
+        context = "\n".join(f"{e.id} [{e.tier}/{e.status}]: {e.content}" for e in selected)
+        context = context or "No memory currently."
+        prompt = MemoryAgent_PROMPT.format(input_message=message, memory_context=context)
+        system = self.system_prompts.get("memory")
+        if system:
+            prompt = f"User Instructions: {system}\n\n System Prompt: {prompt}"
+        try:
+            abstract = self.generator.generate_single(prompt=prompt).get("text", "").strip()
+            response = self.generator.generate_single(
+                prompt=MemoryOperation_PROMPT.format(memory_context=context, new_abstract=abstract, new_message=message),
+                schema=MEMORY_OP_SCHEMA,
+            )
+            data = response.get("json")
+            if data is None:
+                text = response.get("text", "")
+                data = json.loads(text[text.find("{"):text.rfind("}") + 1])
+            header = f"[ABSTRACT] {abstract}"
+            return Proposal(abstract=abstract, header=header, decorated=f"{header}; {message}", decision=data)
+        except Exception:  # noqa: BLE001 - sanitize provider exceptions
+            # Provider errors can contain private payloads. Never expose or log them.
+            raise ProposalFailure() from None
 
     # ---- Internal----
 
@@ -357,7 +456,7 @@ class MemoryAgent:
                 return None
         return None
 
-    def _resolve_conflicts(self, new_entry: MemoryEntry, entities: List[Dict[str, Any]]) -> None:
+    def _resolve_conflicts(self, new_entry: MemoryEntry, entities: list[dict[str, Any]]) -> None:
         if not self.graph_store or not isinstance(self.memory_store, AdvancedMemoryStore):
             return
         names = [e.get("name") for e in entities if e.get("name")]
