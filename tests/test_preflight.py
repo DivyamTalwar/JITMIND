@@ -413,11 +413,14 @@ def test_session_expiry_cleanup_quota_and_end(setup, monkeypatch):
         service.deliver(scope, expiring, target)
     assert service.cleanup(scope) == 1
     live = service.start_session(scope, REPO)
-    with database.connect(Budget(1)) as db:
+    # Seed the quota fixture in one transaction rather than 256 fsync commits.
+    with database.connect(Budget(3)) as db:
+        db.execute("BEGIN IMMEDIATE")
         db.executemany(
             "INSERT INTO delivery_receipts VALUES (?,?,?,?)",
             [(live.id, str(n), "digest", "[]") for n in range(256)],
         )
+        db.execute("COMMIT")
     assert service.deliver(scope, live, target).reason == "session_quota"
 
 

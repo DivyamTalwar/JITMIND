@@ -598,3 +598,9 @@ restore PreflightPolicy() before measuring. The deadline-exhaustion fixture keep
 its one-millisecond injected budget, and the default-value regression requires
 0.15 seconds. Every original state, payload and elapsed-time assertion remains.
 No production runtime behavior changes with this test separation.
+
+Quota-fixture rows are now seeded in one bounded transaction rather than 256
+autocommit fsyncs. The binding IMMEDIATE-lock test uses the functional policy
+while retaining its original delivered-result and 300 ms assertions; EXCLUSIVE
+keeps the production deadline and deferred-result assertions. Post-release
+recovery uses the functional policy. No production code or assertion was removed.
