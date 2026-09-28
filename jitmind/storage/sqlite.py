@@ -60,9 +60,21 @@ SCHEMA = [
 
 
 def _db_error(exc: sqlite3.Error) -> DurableError:
-    code = getattr(exc, "sqlite_errorcode", 0) or 0
-    if code & 255 in (sqlite3.SQLITE_BUSY, sqlite3.SQLITE_LOCKED):
-        return StorageBusy()
+    # SQLite primary codes are stable; Python 3.10 does not expose the aliases
+    # or sqlite_errorcode metadata. Prefer numeric engine evidence when present.
+    code = getattr(exc, "sqlite_errorcode", None)
+    if type(code) is int and code >= 0:
+        return StorageBusy() if code & 255 in (5, 6) else StorageFailure()
+    if code is None and isinstance(exc, sqlite3.OperationalError):
+        message = str(exc)
+        if message in {
+            "database is locked",
+            "database table is locked",
+            "database schema is locked",
+        } or message.startswith(
+            ("database table is locked: ", "database schema is locked: ")
+        ):
+            return StorageBusy()
     return StorageFailure()
 
 
