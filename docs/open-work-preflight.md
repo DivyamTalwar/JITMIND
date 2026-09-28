@@ -604,3 +604,22 @@ autocommit fsyncs. The binding IMMEDIATE-lock test uses the functional policy
 while retaining its original delivered-result and 300 ms assertions; EXCLUSIVE
 keeps the production deadline and deferred-result assertions. Post-release
 recovery uses the functional policy. No production code or assertion was removed.
+
+## Reserved-reader compatibility versus deadline correctness
+
+A primary `BEGIN IMMEDIATE` lock permits reads, but a complete delivery also
+writes and syncs a receipt in another database. Requiring that successful path
+to finish inside 150 ms on shared CI conflated storage compatibility with a
+performance guarantee that the cooperative deadline does not make. That one
+positive control now uses a bounded three-second functional policy and still
+requires delivered content while the other process holds its primary lock.
+All three incompatible-lock controls retain the original 150 ms ceiling,
+production policy, deferred outcome, and empty-payload requirement.
+
+Three new real-storage controls advance only the monotonic deadline clock to
+just before, exactly at, and just after the default policy cutoff. They require
+successful delivery before expiry and an empty deferred response with no receipt
+at or after expiry. The existing sleep-driven exhaustion test remains. No runtime
+budget, permission check, test case, or blocked-call assertion is removed. This
+corrects a test oracle; it does not establish production latency or excuse a slow
+runtime in a performance benchmark.

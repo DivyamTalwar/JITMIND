@@ -357,7 +357,15 @@ def _hold_lock(path, mode, ready, release):
 @pytest.mark.parametrize("which", ["work", "facts"])
 def test_independent_process_lock_bounded_deferred_and_release(setup, mode, which):
     _, scope, facts, database, _, service, session, target = setup
-    service.policy = PreflightPolicy()  # keep the real 150 ms production budget
+    read_compatible = which == "facts" and mode == "IMMEDIATE"
+    # Success through a RESERVED primary lock is a compatibility contract, not
+    # a 150 ms fsync benchmark on a shared runner. The other cases still test
+    # immediate deferral under the unchanged production deadline.
+    service.policy = (
+        PreflightPolicy(deadline_seconds=3.0)
+        if read_compatible
+        else PreflightPolicy()
+    )
     add(setup)
     ctx = multiprocessing.get_context("spawn")
     ready, release = ctx.Event(), ctx.Event()
@@ -374,7 +382,12 @@ def test_independent_process_lock_bounded_deferred_and_release(setup, mode, whic
             "delivered" if which == "facts" and mode == "IMMEDIATE" else "deferred"
         )
         assert result.state == expected
-        assert elapsed < 0.15
+        if read_compatible:
+            assert elapsed < 3.0  # bounded functional success, not a latency claim
+            assert result.payload
+        else:
+            assert elapsed < 0.15  # retain the original blocked-call ceiling
+            assert result.payload == ""
         print(f"lock_probe {which}/{mode}: {elapsed:.6f}s {result.state}")
     finally:
         release.set()
@@ -535,3 +548,50 @@ def test_new_policy_revision_resurfaces_and_session_lock_never_reads(
 def test_deadline_must_be_finite_positive(value):
     with pytest.raises(WorkError):
         PreflightPolicy(deadline_seconds=value)
+
+
+@pytest.mark.parametrize(
+    ("offset", "expected"),
+    [(-0.001, "delivered"), (0.0, "deferred"), (0.001, "deferred")],
+    ids=["before", "at", "after"],
+)
+def test_default_deadline_boundary_with_real_storage(setup, monkeypatch, offset, expected):
+    """Advance only the deadline clock; real SQLite and policy checks still run."""
+    from types import SimpleNamespace
+    import jitmind.code_memory.preflight as module
+    import jitmind.code_memory.work_storage as storage
+
+    _, scope, _, database, _, service, session, target = setup
+    add(setup)
+    service.policy = PreflightPolicy()
+    assert service.policy.deadline_seconds == 0.15
+    clock = [1000.0]
+    budgets = []
+    original_budget = storage.Budget
+
+    class ObservedBudget(original_budget):
+        def __init__(self, seconds):
+            super().__init__(seconds)
+            budgets.append(self)
+
+    monkeypatch.setattr(storage, "time", SimpleNamespace(monotonic=lambda: clock[0]))
+    monkeypatch.setattr(module, "Budget", ObservedBudget)
+    original_rank = service._rank
+
+    def cross_boundary(*args):
+        assert len(budgets) == 1
+        clock[0] = budgets[0].end + offset
+        return original_rank(*args)
+
+    monkeypatch.setattr(service, "_rank", cross_boundary)
+    result = service.deliver(scope, session, target)
+    assert result.state == expected
+    if expected == "deferred":
+        assert result.reason == "deadline_or_contention"
+        assert result.payload == "" and result.lesson_ids == ()
+    else:
+        assert result.payload and result.lesson_ids
+    with database.connect(original_budget(1)) as db:
+        assert db.execute("SELECT count(*) FROM delivery_receipts").fetchone()[0] == (
+            1 if expected == "delivered" else 0
+        )
