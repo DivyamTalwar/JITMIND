@@ -591,3 +591,10 @@ both just-before and exactly-at expiry, avoiding a scheduler-dependent 10 ms
 session setup. Binding-invalidation fixtures likewise use a separate functional
 three-second policy; production and explicit deadline/blocked-call tests retain
 the original 150 ms deadline. No runtime behavior is relaxed by these fixtures.
+
+Functional fixtures use a separately configured bounded three-second policy.
+Independent-process contention and candidate-selection timing fixtures explicitly
+restore PreflightPolicy() before measuring. The deadline-exhaustion fixture keeps
+its one-millisecond injected budget, and the default-value regression requires
+0.15 seconds. Every original state, payload and elapsed-time assertion remains.
+No production runtime behavior changes with this test separation.
