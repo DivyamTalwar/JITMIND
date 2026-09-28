@@ -292,6 +292,10 @@ def test_known_j05_change_blocks_delayed_projection_and_receipt(
     service, scope, session, target = (
         h[k] for k in ("service", "scope", "session", "target")
     )
+    # This fixture verifies source invalidation, not shared-runner fsync speed.
+    from dataclasses import replace
+
+    service.policy = replace(service.policy, deadline_seconds=3.0)
     first = service.deliver(scope, session, target, delivery_key="saved")
     assert (
         first.state == "delivered" and "Trusted authored instruction" in first.payload
