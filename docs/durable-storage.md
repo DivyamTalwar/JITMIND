@@ -381,3 +381,15 @@ legacy behaviors and are not run automatically by this durable backend.
 Authorization, encryption, administrative historical access controls, external
 consumer delivery ledgers, scoped ResearchAgent integration, and operational
 power-loss/filesystem testing remain integration responsibilities.
+
+
+## Python 3.10 error-classification compatibility
+
+The initial Ubuntu/Python 3.10 CI exposed missing `sqlite3.SQLITE_BUSY` and
+`SQLITE_LOCKED` aliases in exception translation. The backend now prefers
+numeric SQLite primary result codes when available and uses only exact native
+lock-message forms for metadata-free OperationalError instances. Disk-full,
+corrupt-database and unrelated failures remain sanitized StorageFailure results.
+The existing busy-commit rollback/no-regeneration contract is unchanged.
+`tests/test_durable_python310.py` simulates missing metadata on newer Python;
+the existing CI matrix separately exercises the actual minimum runtime.
