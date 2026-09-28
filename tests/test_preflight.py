@@ -63,7 +63,7 @@ def setup(tmp_path):
         DurableFactAuthority(facts, authority),
         can_author=lambda s, repo: s.principal_id == "alice",
     )
-    service = PreflightService(projection)
+    service = PreflightService(projection, policy=PreflightPolicy(deadline_seconds=3.0))
     session = service.start_session(scope, REPO)
     target = ProposedAction(REPO, "src/service.py", "process")
     return authority, scope, facts, database, projection, service, session, target
@@ -190,7 +190,9 @@ def test_explicit_unvalidated_policy_labels_and_normal_no_match(setup):
     add(setup, "hypothesis", tier="hypothesis", source_verified=False)
     service = PreflightService(
         projection,
-        policy=PreflightPolicy(allow_unvalidated=True, allow_hypotheses=True),
+        policy=PreflightPolicy(
+            allow_unvalidated=True, allow_hypotheses=True, deadline_seconds=3.0
+        ),
     )
     session = service.start_session(scope, REPO)
     assert (
@@ -355,6 +357,7 @@ def _hold_lock(path, mode, ready, release):
 @pytest.mark.parametrize("which", ["work", "facts"])
 def test_independent_process_lock_bounded_deferred_and_release(setup, mode, which):
     _, scope, facts, database, _, service, session, target = setup
+    service.policy = PreflightPolicy()  # keep the real 150 ms production budget
     add(setup)
     ctx = multiprocessing.get_context("spawn")
     ready, release = ctx.Event(), ctx.Event()

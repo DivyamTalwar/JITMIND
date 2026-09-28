@@ -17,7 +17,7 @@ from jitmind.code_memory.lesson_models import (
     ProposedAction,
 )
 from jitmind.code_memory.open_work import OpenWorkService
-from jitmind.code_memory.preflight import PreflightService
+from jitmind.code_memory.preflight import PreflightPolicy, PreflightService
 from jitmind.code_memory.work_storage import WorkDatabase
 from jitmind.scope import ScopeAuthority
 from jitmind.storage import IngestRequest, Proposal, SQLiteDurableStore
@@ -142,7 +142,9 @@ def test_j16_j31_real_binding_move_disappearance_forget_keep_obligation(
         source_revision=fact.revision,
         body="private lesson body",
     )
-    preflight = PreflightService(projection)
+    preflight = PreflightService(
+        projection, policy=PreflightPolicy(deadline_seconds=3.0)
+    )
     request_scope = scope()
     session = preflight.start_session(request_scope, repo)
     assert preflight.deliver(request_scope, session, target).state == "nothing_relevant"
@@ -262,7 +264,7 @@ def bound_host(tmp_path):
         binding_id="logical",
         binding_revision=binding.revision,
     )
-    service = PreflightService(projection)
+    service = PreflightService(projection, policy=PreflightPolicy(deadline_seconds=3.0))
     session = service.start_session(scope, repo)
     work = OpenWorkService(database, authority)
     item = work.create(
@@ -425,6 +427,9 @@ def test_binding_authority_independent_process_contention(bound_host, mode):
     process.start()
     try:
         assert ready.wait(5)
+        h[
+            "service"
+        ].policy = PreflightPolicy()  # measure the unchanged production budget
         started = time.monotonic()
         result = h["service"].deliver(h["scope"], h["session"], h["target"])
         elapsed = time.monotonic() - started
