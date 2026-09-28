@@ -1663,12 +1663,12 @@
               "kind": "public_api",
               "source": {
                 "path": "tests/test_preflight.py",
-                "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
               },
               "fixtures": [
                 {
                   "path": "tests/test_preflight.py",
-                  "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
                 }
               ],
               "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
@@ -1696,12 +1696,12 @@
               "kind": "public_api",
               "source": {
                 "path": "tests/test_preflight.py",
-                "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
               },
               "fixtures": [
                 {
                   "path": "tests/test_preflight.py",
-                  "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
                 }
               ],
               "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
@@ -1729,12 +1729,12 @@
               "kind": "real_storage",
               "source": {
                 "path": "tests/test_preflight.py",
-                "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
               },
               "fixtures": [
                 {
                   "path": "tests/test_preflight.py",
-                  "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
                 }
               ],
               "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
@@ -1744,12 +1744,12 @@
               "kind": "real_storage",
               "source": {
                 "path": "tests/test_preflight.py",
-                "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
               },
               "fixtures": [
                 {
                   "path": "tests/test_preflight.py",
-                  "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
                 }
               ],
               "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
@@ -1759,12 +1759,12 @@
               "kind": "real_storage",
               "source": {
                 "path": "tests/test_preflight.py",
-                "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
               },
               "fixtures": [
                 {
                   "path": "tests/test_preflight.py",
-                  "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
                 }
               ],
               "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
@@ -1774,15 +1774,63 @@
               "kind": "real_storage",
               "source": {
                 "path": "tests/test_preflight.py",
-                "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
               },
               "fixtures": [
                 {
                   "path": "tests/test_preflight.py",
-                  "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
                 }
               ],
               "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_preflight.py::test_default_deadline_boundary_with_real_storage[before]",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_preflight.py",
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_preflight.py",
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+                }
+              ],
+              "fixture_description": "Actual SQLite and default 150 ms policy with only the monotonic deadline clock advanced to before the cutoff. Checks response content and receipt count; not a wall-clock benchmark.",
+              "status": "not_run"
+            },
+            {
+              "node_id": "tests/test_preflight.py::test_default_deadline_boundary_with_real_storage[at]",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_preflight.py",
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_preflight.py",
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+                }
+              ],
+              "fixture_description": "Actual SQLite and default 150 ms policy with only the monotonic deadline clock advanced to at the cutoff. Checks response content and receipt count; not a wall-clock benchmark.",
+              "status": "not_run"
+            },
+            {
+              "node_id": "tests/test_preflight.py::test_default_deadline_boundary_with_real_storage[after]",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_preflight.py",
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_preflight.py",
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+                }
+              ],
+              "fixture_description": "Actual SQLite and default 150 ms policy with only the monotonic deadline clock advanced to after the cutoff. Checks response content and receipt count; not a wall-clock benchmark.",
+              "status": "not_run"
             }
           ]
         }
@@ -3353,12 +3401,12 @@
               "kind": "public_api",
               "source": {
                 "path": "tests/test_preflight.py",
-                "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
               },
               "fixtures": [
                 {
                   "path": "tests/test_preflight.py",
-                  "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
                 }
               ],
               "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."

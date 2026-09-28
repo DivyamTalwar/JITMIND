@@ -171,8 +171,8 @@ not inherited peer pass reports. Changing a test source requires reviewing its
 assertions and refreshing its hash. `nodes: []` or
 `additional_mapping_required: true` still blocks a stage. All eight previous
 mapping gaps now have the exact J10 supplement nodes, retaining parameters,
-fixture intent, kinds and `not_run` status. The map has 100 stage-node associations
-and 94 unique identities: 93 pytest nodes and the distinct installed smoke.
+fixture intent, kinds and `not_run` status. The map has 103 stage-node associations
+and 97 unique identities: 96 pytest nodes and the distinct installed smoke.
 Every original mapped node remains, with 14 additional atomic durability checks
 using J07's legitimate v2 checkpoint adaptation. The temporal oracle is unchanged.
 
