@@ -4,8 +4,9 @@ from pydantic import BaseModel, Field
 import json
 from pathlib import Path
 import threading
+from contextlib import nullcontext
 
-from jitmind.utils.atomic_io import atomic_write_json
+from jitmind.utils.atomic_io import atomic_write_json, CorruptStoreError, PersistenceError
 from jitmind.utils.file_lock import file_lock
 
 class Page(BaseModel):
@@ -41,27 +42,36 @@ class InMemoryPageStore:
         with self._lock:
             if self._dir_path and self._pages_file.exists():
                 try:
-                    with open(self._pages_file, 'r', encoding='utf-8') as f:
+                    with open(self._pages_file, "r", encoding="utf-8") as f:
                         data = json.load(f)
-                        if isinstance(data, list):
-                            return [Page(**page_data) for page_data in data]
-                        else:
-                            return [Page(**page_data) for page_data in data.get('pages', [])]
-                except (json.JSONDecodeError, KeyError, TypeError) as e:
-                    print(f"Warning: Failed to load pages from {self._pages_file}: {e}")
-                    return []
-            return self._pages
+                        if isinstance(data, dict) and "pages" in data:
+                            data = data["pages"]
+                        if not isinstance(data, list):
+                            raise ValueError("Invalid page envelope")
+                        self._pages = [Page(**page_data) for page_data in data]
+                except Exception as exc:
+                    raise CorruptStoreError() from exc
+            return [page.model_copy(deep=True) for page in self._pages]
 
     def save(self, pages: List[Page]) -> None:
         with self._lock:
-            self._pages = pages
-            if self._dir_path:
-                self._dir_path.mkdir(parents=True, exist_ok=True)
-                try:
-                    pages_data = [page.model_dump() for page in pages]
-                    atomic_write_json(self._pages_file, pages_data, ensure_ascii=False, indent=2)
-                except Exception as e:
-                    print(f"Warning: Failed to save pages to {self._pages_file}: {e}")
+            lock = file_lock(Path(str(self._pages_file) + ".lock")) if self._dir_path else nullcontext()
+            with lock:
+                if self._dir_path:
+                    # Refuse to overwrite corrupt data even for explicit save.
+                    self.load()
+                    try:
+                        atomic_write_json(self._pages_file, [page.model_dump() for page in pages], ensure_ascii=False, indent=2)
+                    except Exception as exc:
+                        self._pages = []
+                        try:
+                            self.load()
+                        except Exception:
+                            pass
+                        if isinstance(exc, PersistenceError):
+                            raise
+                        raise PersistenceError() from exc
+                self._pages = [page.model_copy(deep=True) for page in pages]
 
     def add(self, page: Page) -> None:
         with self._lock:

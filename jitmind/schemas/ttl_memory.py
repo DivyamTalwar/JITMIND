@@ -10,12 +10,14 @@ tracking and configurable cleanup.
 from __future__ import annotations
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
+from .memory import MemoryState
 from datetime import datetime, timedelta, timezone
 import json
 from pathlib import Path
 import threading
+from contextlib import nullcontext
 
-from jitmind.utils.atomic_io import atomic_write_json
+from jitmind.utils.atomic_io import atomic_write_json, CorruptStoreError, PersistenceError
 from jitmind.utils.file_lock import file_lock
 
 
@@ -125,7 +127,7 @@ class TTLMemoryStore:
                         content=abstract,
                         timestamp=datetime.now(timezone.utc).isoformat()
                     )
-                    for abstract in data['abstracts']
+                    for abstract in MemoryState(**data).abstracts
                 ]
                 return TTLMemoryState(entries=entries)
             
@@ -133,7 +135,7 @@ class TTLMemoryStore:
             elif isinstance(data, list):
                 entries = [
                     TTLMemoryEntry(
-                        content=item if isinstance(item, str) else item.get('content', ''),
+                        content=item if isinstance(item, str) else item['content'],
                         timestamp=item.get('timestamp', datetime.now(timezone.utc).isoformat()) 
                         if isinstance(item, dict) else datetime.now(timezone.utc).isoformat()
                     )
@@ -141,20 +143,24 @@ class TTLMemoryStore:
                 ]
                 return TTLMemoryState(entries=entries)
             
-            return TTLMemoryState()
-            
-        except (json.JSONDecodeError, KeyError, TypeError) as e:
-            print(f"Warning: Failed to load TTL memory state from {self._memory_file}: {e}")
-            return TTLMemoryState()
-    
+            raise ValueError("Invalid persisted envelope")
+        except Exception as exc:
+            raise CorruptStoreError() from exc
+
     def _save_to_disk(self) -> None:
         """Save current state to disk"""
         if self._dir_path:
-            self._dir_path.mkdir(parents=True, exist_ok=True)
             try:
                 atomic_write_json(self._memory_file, self._state.model_dump(), ensure_ascii=False, indent=2)
-            except Exception as e:
-                print(f"Warning: Failed to save TTL memory state to {self._memory_file}: {e}")
+            except Exception as exc:
+                self._state = TTLMemoryState()
+                try:
+                    self._refresh_from_disk()
+                except Exception:
+                    pass
+                if isinstance(exc, PersistenceError):
+                    raise
+                raise PersistenceError() from exc
 
     def _refresh_from_disk(self) -> None:
         if not self._dir_path:
@@ -300,14 +306,18 @@ class TTLMemoryStore:
         Args:
             state: MemoryState object with abstracts
         """
-        # Convert MemoryState to TTLMemoryState
-        self._state.entries = [
-            TTLMemoryEntry(
-                content=abstract,
-                timestamp=datetime.now(timezone.utc).isoformat()
-            )
-            for abstract in state.abstracts
-        ]
+        with self._lock:
+            lock = file_lock(Path(str(self._memory_file) + ".lock")) if self._dir_path else nullcontext()
+            with lock:
+                self._refresh_from_disk()
+                # Convert MemoryState to TTLMemoryState
+                self._state.entries = [
+                    TTLMemoryEntry(
+                        content=abstract,
+                        timestamp=datetime.now(timezone.utc).isoformat()
+                    )
+                    for abstract in state.abstracts
+                ]
         
-        if self._dir_path:
-            self._save_to_disk()
+                if self._dir_path:
+                    self._save_to_disk()
