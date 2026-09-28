@@ -1,0 +1,3500 @@
+{
+  "schema": "jitmind.acceptance-map/v1",
+  "target": "JITMIND",
+  "source_handoff_sha256": "f1b3107ff03f21fb8ccc8c8b90301e4953480e5639bd10a059ec278ecb8cdd51",
+  "notice": "Derived scenario map, not a copy of full handoff fixtures or execution results. Original case fixtures reviewed by supervisor. All scenarios require actual mapped test evidence. Later-stage repeats are required.",
+  "cases": [
+    {
+      "case_id": "J01",
+      "ticket": "J-01",
+      "scenario": "Cleanup races with append",
+      "required_assertion": "A committed append survives cleanup; no stale-snapshot overwrite",
+      "required_in_tickets": [
+        "J-01"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-01",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_legacy_persistence.py::test_cleanup_append_schedule[cleanup]",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_legacy_persistence.py",
+                "sha256": "1516040fc50767e8ca317a7da29e57e1386ac9187657825d3108a136ce079a48"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_legacy_persistence.py",
+                  "sha256": "1516040fc50767e8ca317a7da29e57e1386ac9187657825d3108a136ce079a48"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_legacy_persistence.py::test_cleanup_append_schedule[append]",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_legacy_persistence.py",
+                "sha256": "1516040fc50767e8ca317a7da29e57e1386ac9187657825d3108a136ce079a48"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_legacy_persistence.py",
+                  "sha256": "1516040fc50767e8ca317a7da29e57e1386ac9187657825d3108a136ce079a48"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J02",
+      "ticket": "J-01",
+      "scenario": "Disk-full write failure",
+      "required_assertion": "Durability failure reaches caller; no committed acknowledgement",
+      "required_in_tickets": [
+        "J-01",
+        "J-02"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-01",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_legacy_persistence.py::test_advanced_save_failure_reaches_caller",
+              "kind": "injected_storage_fault",
+              "source": {
+                "path": "tests/test_legacy_persistence.py",
+                "sha256": "1516040fc50767e8ca317a7da29e57e1386ac9187657825d3108a136ce079a48"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_legacy_persistence.py",
+                  "sha256": "1516040fc50767e8ca317a7da29e57e1386ac9187657825d3108a136ce079a48"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[advanced]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+                }
+              ],
+              "fixture_description": "Five real legacy store classes in temporary directories; successful initial append, ENOSPC from os.replace after temporary bytes are fsynced, then successful append after fault removal.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/memory.py",
+                  "sha256": "68e5803e6523b41f09fb710656ddfb9c0f2a61bb9ba9335a8fa684173e59a7e9"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_memory.py",
+                  "sha256": "ff48ac01b5a5a1bacd41d671f48e7cee07a703dcf5b3017eb8b8ca14405e29ca"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_page.py",
+                  "sha256": "2889b4ec309cda92c8eeda1ec624f8a074ae00d791e9d5e7fd11a6e16d9816ca"
+                },
+                {
+                  "path": "jitmind/utils/atomic_io.py",
+                  "sha256": "aa58bbae5ca9f686ad020f7ebe74a27c082400964aebad3614fe46cd4466202d"
+                },
+                {
+                  "path": "jitmind/utils/file_lock.py",
+                  "sha256": "4498fbe42d1a9b8f7224f17d684a8a35fb15dbb815b49de83d1246be5ed6e398"
+                }
+              ],
+              "assertions": [
+                "Typed PersistenceError reaches public add caller with ENOSPC cause and outcome_uncertain=False.",
+                "Previous authoritative bytes unchanged; same-instance and fresh reader contain only prior content; temporary file removed.",
+                "Positive writes before and after fault prove usable fixture."
+              ],
+              "evidence_limits": [
+                "Injects only errno.ENOSPC at the actual pre-replacement boundary; does not fill disk or assert post-replacement failure semantics.",
+                "Covers the five public store add surfaces, not every MemoryAgent/provider path or every filesystem syscall."
+              ]
+            },
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[memory]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+                }
+              ],
+              "fixture_description": "Five real legacy store classes in temporary directories; successful initial append, ENOSPC from os.replace after temporary bytes are fsynced, then successful append after fault removal.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/memory.py",
+                  "sha256": "68e5803e6523b41f09fb710656ddfb9c0f2a61bb9ba9335a8fa684173e59a7e9"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_memory.py",
+                  "sha256": "ff48ac01b5a5a1bacd41d671f48e7cee07a703dcf5b3017eb8b8ca14405e29ca"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_page.py",
+                  "sha256": "2889b4ec309cda92c8eeda1ec624f8a074ae00d791e9d5e7fd11a6e16d9816ca"
+                },
+                {
+                  "path": "jitmind/utils/atomic_io.py",
+                  "sha256": "aa58bbae5ca9f686ad020f7ebe74a27c082400964aebad3614fe46cd4466202d"
+                },
+                {
+                  "path": "jitmind/utils/file_lock.py",
+                  "sha256": "4498fbe42d1a9b8f7224f17d684a8a35fb15dbb815b49de83d1246be5ed6e398"
+                }
+              ],
+              "assertions": [
+                "Typed PersistenceError reaches public add caller with ENOSPC cause and outcome_uncertain=False.",
+                "Previous authoritative bytes unchanged; same-instance and fresh reader contain only prior content; temporary file removed.",
+                "Positive writes before and after fault prove usable fixture."
+              ],
+              "evidence_limits": [
+                "Injects only errno.ENOSPC at the actual pre-replacement boundary; does not fill disk or assert post-replacement failure semantics.",
+                "Covers the five public store add surfaces, not every MemoryAgent/provider path or every filesystem syscall."
+              ]
+            },
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[ttl_memory]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+                }
+              ],
+              "fixture_description": "Five real legacy store classes in temporary directories; successful initial append, ENOSPC from os.replace after temporary bytes are fsynced, then successful append after fault removal.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/memory.py",
+                  "sha256": "68e5803e6523b41f09fb710656ddfb9c0f2a61bb9ba9335a8fa684173e59a7e9"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_memory.py",
+                  "sha256": "ff48ac01b5a5a1bacd41d671f48e7cee07a703dcf5b3017eb8b8ca14405e29ca"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_page.py",
+                  "sha256": "2889b4ec309cda92c8eeda1ec624f8a074ae00d791e9d5e7fd11a6e16d9816ca"
+                },
+                {
+                  "path": "jitmind/utils/atomic_io.py",
+                  "sha256": "aa58bbae5ca9f686ad020f7ebe74a27c082400964aebad3614fe46cd4466202d"
+                },
+                {
+                  "path": "jitmind/utils/file_lock.py",
+                  "sha256": "4498fbe42d1a9b8f7224f17d684a8a35fb15dbb815b49de83d1246be5ed6e398"
+                }
+              ],
+              "assertions": [
+                "Typed PersistenceError reaches public add caller with ENOSPC cause and outcome_uncertain=False.",
+                "Previous authoritative bytes unchanged; same-instance and fresh reader contain only prior content; temporary file removed.",
+                "Positive writes before and after fault prove usable fixture."
+              ],
+              "evidence_limits": [
+                "Injects only errno.ENOSPC at the actual pre-replacement boundary; does not fill disk or assert post-replacement failure semantics.",
+                "Covers the five public store add surfaces, not every MemoryAgent/provider path or every filesystem syscall."
+              ]
+            },
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[pages]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+                }
+              ],
+              "fixture_description": "Five real legacy store classes in temporary directories; successful initial append, ENOSPC from os.replace after temporary bytes are fsynced, then successful append after fault removal.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/memory.py",
+                  "sha256": "68e5803e6523b41f09fb710656ddfb9c0f2a61bb9ba9335a8fa684173e59a7e9"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_memory.py",
+                  "sha256": "ff48ac01b5a5a1bacd41d671f48e7cee07a703dcf5b3017eb8b8ca14405e29ca"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_page.py",
+                  "sha256": "2889b4ec309cda92c8eeda1ec624f8a074ae00d791e9d5e7fd11a6e16d9816ca"
+                },
+                {
+                  "path": "jitmind/utils/atomic_io.py",
+                  "sha256": "aa58bbae5ca9f686ad020f7ebe74a27c082400964aebad3614fe46cd4466202d"
+                },
+                {
+                  "path": "jitmind/utils/file_lock.py",
+                  "sha256": "4498fbe42d1a9b8f7224f17d684a8a35fb15dbb815b49de83d1246be5ed6e398"
+                }
+              ],
+              "assertions": [
+                "Typed PersistenceError reaches public add caller with ENOSPC cause and outcome_uncertain=False.",
+                "Previous authoritative bytes unchanged; same-instance and fresh reader contain only prior content; temporary file removed.",
+                "Positive writes before and after fault prove usable fixture."
+              ],
+              "evidence_limits": [
+                "Injects only errno.ENOSPC at the actual pre-replacement boundary; does not fill disk or assert post-replacement failure semantics.",
+                "Covers the five public store add surfaces, not every MemoryAgent/provider path or every filesystem syscall."
+              ]
+            },
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[ttl_pages]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+                }
+              ],
+              "fixture_description": "Five real legacy store classes in temporary directories; successful initial append, ENOSPC from os.replace after temporary bytes are fsynced, then successful append after fault removal.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/memory.py",
+                  "sha256": "68e5803e6523b41f09fb710656ddfb9c0f2a61bb9ba9335a8fa684173e59a7e9"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_memory.py",
+                  "sha256": "ff48ac01b5a5a1bacd41d671f48e7cee07a703dcf5b3017eb8b8ca14405e29ca"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_page.py",
+                  "sha256": "2889b4ec309cda92c8eeda1ec624f8a074ae00d791e9d5e7fd11a6e16d9816ca"
+                },
+                {
+                  "path": "jitmind/utils/atomic_io.py",
+                  "sha256": "aa58bbae5ca9f686ad020f7ebe74a27c082400964aebad3614fe46cd4466202d"
+                },
+                {
+                  "path": "jitmind/utils/file_lock.py",
+                  "sha256": "4498fbe42d1a9b8f7224f17d684a8a35fb15dbb815b49de83d1246be5ed6e398"
+                }
+              ],
+              "assertions": [
+                "Typed PersistenceError reaches public add caller with ENOSPC cause and outcome_uncertain=False.",
+                "Previous authoritative bytes unchanged; same-instance and fresh reader contain only prior content; temporary file removed.",
+                "Positive writes before and after fault prove usable fixture."
+              ],
+              "evidence_limits": [
+                "Injects only errno.ENOSPC at the actual pre-replacement boundary; does not fill disk or assert post-replacement failure semantics.",
+                "Covers the five public store add surfaces, not every MemoryAgent/provider path or every filesystem syscall."
+              ]
+            },
+            {
+              "node_id": "tests/test_atomic_io_regressions.py::test_atomic_failure_stages_clean_temp_and_descriptors[mkdir]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_atomic_io_regressions.py",
+                "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_atomic_io_regressions.py",
+                  "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+                }
+              ],
+              "fixture_description": "J01 atomic durability/corruption invariants, using J07-owned v2 checkpoint path adaptation. Generic fault coverage supplements, never replaces, the five explicit J10 ENOSPC cases."
+            },
+            {
+              "node_id": "tests/test_atomic_io_regressions.py::test_atomic_failure_stages_clean_temp_and_descriptors[mkstemp]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_atomic_io_regressions.py",
+                "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_atomic_io_regressions.py",
+                  "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+                }
+              ],
+              "fixture_description": "J01 atomic durability/corruption invariants, using J07-owned v2 checkpoint path adaptation. Generic fault coverage supplements, never replaces, the five explicit J10 ENOSPC cases."
+            },
+            {
+              "node_id": "tests/test_atomic_io_regressions.py::test_atomic_failure_stages_clean_temp_and_descriptors[fdopen]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_atomic_io_regressions.py",
+                "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_atomic_io_regressions.py",
+                  "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+                }
+              ],
+              "fixture_description": "J01 atomic durability/corruption invariants, using J07-owned v2 checkpoint path adaptation. Generic fault coverage supplements, never replaces, the five explicit J10 ENOSPC cases."
+            },
+            {
+              "node_id": "tests/test_atomic_io_regressions.py::test_atomic_failure_stages_clean_temp_and_descriptors[write]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_atomic_io_regressions.py",
+                "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_atomic_io_regressions.py",
+                  "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+                }
+              ],
+              "fixture_description": "J01 atomic durability/corruption invariants, using J07-owned v2 checkpoint path adaptation. Generic fault coverage supplements, never replaces, the five explicit J10 ENOSPC cases."
+            },
+            {
+              "node_id": "tests/test_atomic_io_regressions.py::test_atomic_failure_stages_clean_temp_and_descriptors[flush]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_atomic_io_regressions.py",
+                "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_atomic_io_regressions.py",
+                  "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+                }
+              ],
+              "fixture_description": "J01 atomic durability/corruption invariants, using J07-owned v2 checkpoint path adaptation. Generic fault coverage supplements, never replaces, the five explicit J10 ENOSPC cases."
+            },
+            {
+              "node_id": "tests/test_atomic_io_regressions.py::test_atomic_failure_stages_clean_temp_and_descriptors[fsync]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_atomic_io_regressions.py",
+                "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_atomic_io_regressions.py",
+                  "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+                }
+              ],
+              "fixture_description": "J01 atomic durability/corruption invariants, using J07-owned v2 checkpoint path adaptation. Generic fault coverage supplements, never replaces, the five explicit J10 ENOSPC cases."
+            },
+            {
+              "node_id": "tests/test_atomic_io_regressions.py::test_atomic_failure_stages_clean_temp_and_descriptors[replace]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_atomic_io_regressions.py",
+                "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_atomic_io_regressions.py",
+                  "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+                }
+              ],
+              "fixture_description": "J01 atomic durability/corruption invariants, using J07-owned v2 checkpoint path adaptation. Generic fault coverage supplements, never replaces, the five explicit J10 ENOSPC cases."
+            },
+            {
+              "node_id": "tests/test_atomic_io_regressions.py::test_atomic_failure_stages_clean_temp_and_descriptors[directory_open]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_atomic_io_regressions.py",
+                "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_atomic_io_regressions.py",
+                  "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+                }
+              ],
+              "fixture_description": "J01 atomic durability/corruption invariants, using J07-owned v2 checkpoint path adaptation. Generic fault coverage supplements, never replaces, the five explicit J10 ENOSPC cases."
+            },
+            {
+              "node_id": "tests/test_atomic_io_regressions.py::test_atomic_failure_stages_clean_temp_and_descriptors[directory_fsync]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_atomic_io_regressions.py",
+                "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_atomic_io_regressions.py",
+                  "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+                }
+              ],
+              "fixture_description": "J01 atomic durability/corruption invariants, using J07-owned v2 checkpoint path adaptation. Generic fault coverage supplements, never replaces, the five explicit J10 ENOSPC cases."
+            },
+            {
+              "node_id": "tests/test_atomic_io_regressions.py::test_serialization_failure_is_precommit",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_atomic_io_regressions.py",
+                "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_atomic_io_regressions.py",
+                  "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+                }
+              ],
+              "fixture_description": "J01 atomic durability/corruption invariants, using J07-owned v2 checkpoint path adaptation. Generic fault coverage supplements, never replaces, the five explicit J10 ENOSPC cases."
+            },
+            {
+              "node_id": "tests/test_atomic_io_regressions.py::test_other_legacy_stores_errors_and_corruption[False-profile]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_atomic_io_regressions.py",
+                "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_atomic_io_regressions.py",
+                  "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+                }
+              ],
+              "fixture_description": "J01 atomic durability/corruption invariants, using J07-owned v2 checkpoint path adaptation. Generic fault coverage supplements, never replaces, the five explicit J10 ENOSPC cases."
+            },
+            {
+              "node_id": "tests/test_atomic_io_regressions.py::test_other_legacy_stores_errors_and_corruption[False-checkpoint]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_atomic_io_regressions.py",
+                "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_atomic_io_regressions.py",
+                  "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+                }
+              ],
+              "fixture_description": "J01 atomic durability/corruption invariants, using J07-owned v2 checkpoint path adaptation. Generic fault coverage supplements, never replaces, the five explicit J10 ENOSPC cases."
+            },
+            {
+              "node_id": "tests/test_atomic_io_regressions.py::test_other_legacy_stores_errors_and_corruption[True-profile]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_atomic_io_regressions.py",
+                "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_atomic_io_regressions.py",
+                  "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+                }
+              ],
+              "fixture_description": "J01 atomic durability/corruption invariants, using J07-owned v2 checkpoint path adaptation. Generic fault coverage supplements, never replaces, the five explicit J10 ENOSPC cases."
+            },
+            {
+              "node_id": "tests/test_atomic_io_regressions.py::test_other_legacy_stores_errors_and_corruption[True-checkpoint]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_atomic_io_regressions.py",
+                "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_atomic_io_regressions.py",
+                  "sha256": "2f6e21692241b179ddc59e7c7318abf4eb7bd28ab72351d8bac769f0cd178cc4"
+                }
+              ],
+              "fixture_description": "J01 atomic durability/corruption invariants, using J07-owned v2 checkpoint path adaptation. Generic fault coverage supplements, never replaces, the five explicit J10 ENOSPC cases."
+            }
+          ],
+          "additional_mapping_required": false
+        },
+        {
+          "stage_id": "J-02",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_real_sqlite_full_rolls_back_every_effect_then_accepts_same_request",
+              "kind": "real_storage",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+                }
+              ],
+              "fixture_description": "Real temporary SQLite DB; each ingest connection capped to current page_count; 100000-character allowed input triggers native SQLITE_FULL, then cap removed for same-key successful commit.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                }
+              ],
+              "assertions": [
+                "Observes native sqlite_errorcode == SQLITE_FULL before product error translation; public StorageFailure, no acknowledgement.",
+                "Fresh reader sees zero revision/facts/pages/operations/outbox; no receipt; raw tables including namespace and projection remain empty; integrity_check=ok.",
+                "After removing cap, same request commits fact/page/receipt/event; replay is idempotent and event delivery returns the fact."
+              ],
+              "evidence_limits": [
+                "Connection wrapper configures a real PRAGMA, not a mocked SQLite exception; host disk is not exhausted.",
+                "Empty temporary database only; no production filesystem or WAL qualification."
+              ]
+            }
+          ],
+          "additional_mapping_required": false
+        }
+      ]
+    },
+    {
+      "case_id": "J03",
+      "ticket": "J-01",
+      "scenario": "Live-holder exclusion and process-death release",
+      "required_assertion": "Old owner cannot remove successor ownership",
+      "required_in_tickets": [
+        "J-01"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-01",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_file_lock_regressions.py::test_aged_live_owner_kill_successor_and_third_owner",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_file_lock_regressions.py",
+                "sha256": "23302924a1771800e98c377a166297031a4a9d58d6da1abecd80cb912235359f"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_file_lock_regressions.py",
+                  "sha256": "23302924a1771800e98c377a166297031a4a9d58d6da1abecd80cb912235359f"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J04",
+      "ticket": "J-02",
+      "scenario": "Memory/page interrupted write",
+      "required_assertion": "Recovery yields a consistent memory/provenance pair",
+      "required_in_tickets": [
+        "J-02"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-02",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_durable_storage.py::test_fault_rolls_back_entire_pair[before_transaction]",
+              "kind": "injected_storage_fault",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_durable_storage.py::test_fault_rolls_back_entire_pair[after_page_insert]",
+              "kind": "injected_storage_fault",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_durable_storage.py::test_fault_rolls_back_entire_pair[after_fact_insert]",
+              "kind": "injected_storage_fault",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_durable_storage.py::test_fault_rolls_back_entire_pair[after_outbox_receipt]",
+              "kind": "injected_storage_fault",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_durable_storage.py::test_fault_rolls_back_entire_pair[before_commit]",
+              "kind": "injected_storage_fault",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[before_transaction-False]",
+              "kind": "real_storage",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Existing J02 spawned child calls os._exit(37) at before_transaction, after_page_insert, after_fact_insert, after_outbox_receipt, or after_commit; fresh SQLite process view and retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                }
+              ],
+              "assertions": [
+                "Child exits at requested boundary; reopened page/fact/receipt counts are all zero before commit or all one after commit.",
+                "Retry yields revision 1 and one page; child has bounded join, terminate and kill teardown."
+              ],
+              "evidence_limits": [
+                "Process exit is real; kill point selected by trusted fault hook. Does not emulate machine power loss.",
+                "Existing node asserts pair counts and idempotent recovery; no claim of a separately asserted byte-for-byte provenance comparison."
+              ]
+            },
+            {
+              "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_page_insert-False]",
+              "kind": "real_storage",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Existing J02 spawned child calls os._exit(37) at before_transaction, after_page_insert, after_fact_insert, after_outbox_receipt, or after_commit; fresh SQLite process view and retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                }
+              ],
+              "assertions": [
+                "Child exits at requested boundary; reopened page/fact/receipt counts are all zero before commit or all one after commit.",
+                "Retry yields revision 1 and one page; child has bounded join, terminate and kill teardown."
+              ],
+              "evidence_limits": [
+                "Process exit is real; kill point selected by trusted fault hook. Does not emulate machine power loss.",
+                "Existing node asserts pair counts and idempotent recovery; no claim of a separately asserted byte-for-byte provenance comparison."
+              ]
+            },
+            {
+              "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_fact_insert-False]",
+              "kind": "real_storage",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Existing J02 spawned child calls os._exit(37) at before_transaction, after_page_insert, after_fact_insert, after_outbox_receipt, or after_commit; fresh SQLite process view and retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                }
+              ],
+              "assertions": [
+                "Child exits at requested boundary; reopened page/fact/receipt counts are all zero before commit or all one after commit.",
+                "Retry yields revision 1 and one page; child has bounded join, terminate and kill teardown."
+              ],
+              "evidence_limits": [
+                "Process exit is real; kill point selected by trusted fault hook. Does not emulate machine power loss.",
+                "Existing node asserts pair counts and idempotent recovery; no claim of a separately asserted byte-for-byte provenance comparison."
+              ]
+            },
+            {
+              "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_outbox_receipt-False]",
+              "kind": "real_storage",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Existing J02 spawned child calls os._exit(37) at before_transaction, after_page_insert, after_fact_insert, after_outbox_receipt, or after_commit; fresh SQLite process view and retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                }
+              ],
+              "assertions": [
+                "Child exits at requested boundary; reopened page/fact/receipt counts are all zero before commit or all one after commit.",
+                "Retry yields revision 1 and one page; child has bounded join, terminate and kill teardown."
+              ],
+              "evidence_limits": [
+                "Process exit is real; kill point selected by trusted fault hook. Does not emulate machine power loss.",
+                "Existing node asserts pair counts and idempotent recovery; no claim of a separately asserted byte-for-byte provenance comparison."
+              ]
+            },
+            {
+              "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_commit-True]",
+              "kind": "real_storage",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Existing J02 spawned child calls os._exit(37) at before_transaction, after_page_insert, after_fact_insert, after_outbox_receipt, or after_commit; fresh SQLite process view and retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                }
+              ],
+              "assertions": [
+                "Child exits at requested boundary; reopened page/fact/receipt counts are all zero before commit or all one after commit.",
+                "Retry yields revision 1 and one page; child has bounded join, terminate and kill teardown."
+              ],
+              "evidence_limits": [
+                "Process exit is real; kill point selected by trusted fault hook. Does not emulate machine power loss.",
+                "Existing node asserts pair counts and idempotent recovery; no claim of a separately asserted byte-for-byte provenance comparison."
+              ]
+            }
+          ],
+          "additional_mapping_required": false
+        }
+      ]
+    },
+    {
+      "case_id": "J05",
+      "ticket": "J-02",
+      "scenario": "Duplicate ingest event",
+      "required_assertion": "One logical operation is committed for the idempotency key",
+      "required_in_tickets": [
+        "J-02"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-02",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_durable_storage.py::test_multiprocess_duplicate_keys_and_namespace_isolation",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_durable_storage.py::test_public_facade_lost_ack_restarts_without_provider_or_side_effects",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J06",
+      "ticket": "J-04",
+      "scenario": "Same-path source edit",
+      "required_assertion": "Hash-based freshness detects changed content",
+      "required_in_tickets": [
+        "J-04"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-04",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_code_context.py::test_same_size_edit_new_removed_and_old_generation",
+              "kind": "real_parser",
+              "source": {
+                "path": "tests/test_code_context.py",
+                "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_code_context.py",
+                  "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J07",
+      "ticket": "J-04",
+      "scenario": "New source file",
+      "required_assertion": "Coverage records the newly unindexed file",
+      "required_in_tickets": [
+        "J-04"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-04",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_code_context.py::test_same_size_edit_new_removed_and_old_generation",
+              "kind": "real_parser",
+              "source": {
+                "path": "tests/test_code_context.py",
+                "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_code_context.py",
+                  "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J08",
+      "ticket": "J-04",
+      "scenario": "Removed source file",
+      "required_assertion": "Removal is distinguished from unreadable/unavailable state",
+      "required_in_tickets": [
+        "J-04"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-04",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_code_context.py::test_same_size_edit_new_removed_and_old_generation",
+              "kind": "real_parser",
+              "source": {
+                "path": "tests/test_code_context.py",
+                "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_code_context.py",
+                  "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_code_context.py::test_unsupported_encoding_parse_and_unreadable_unknown",
+              "kind": "real_parser",
+              "source": {
+                "path": "tests/test_code_context.py",
+                "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_code_context.py",
+                  "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J09",
+      "ticket": "J-03",
+      "scenario": "Workspace path scope",
+      "required_assertion": "Results remain in the requested authorized repository/path scope",
+      "required_in_tickets": [
+        "J-03",
+        "J-04"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-03",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_scoped_research.py::test_repository_ids_same_basename_and_branch_snapshots_stay_distinct",
+              "kind": "public_api",
+              "source": {
+                "path": "tests/test_scoped_research.py",
+                "sha256": "428d4c17df53220a76f4e38c1be91f50d025418063613eac58dc59ec5bd17108"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_scoped_research.py",
+                  "sha256": "428d4c17df53220a76f4e38c1be91f50d025418063613eac58dc59ec5bd17108"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        },
+        {
+          "stage_id": "J-04",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_code_context.py::test_real_parser_cycle_scope_depth_workspace",
+              "kind": "real_parser",
+              "source": {
+                "path": "tests/test_code_context.py",
+                "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_code_context.py",
+                  "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J10",
+      "ticket": "J-04",
+      "scenario": "Workspace traversal depth",
+      "required_assertion": "Single-repo and workspace depth contracts agree",
+      "required_in_tickets": [
+        "J-04"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-04",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_code_context.py::test_real_parser_cycle_scope_depth_workspace",
+              "kind": "real_parser",
+              "source": {
+                "path": "tests/test_code_context.py",
+                "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_code_context.py",
+                  "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J11",
+      "ticket": "J-05",
+      "scenario": "Pure symbol rename",
+      "required_assertion": "An evidenced new binding preserves historical memory",
+      "required_in_tickets": [
+        "J-05"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-05",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_code_anchors.py::test_j11_samefile_rename_persists_fact_and_revision",
+              "kind": "real_parser",
+              "source": {
+                "path": "tests/test_code_anchors.py",
+                "sha256": "8255edab92b341ef41dd5556a68f3f2be8e52b0e940e7e9e98891f2f5cced3cb"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_code_anchors.py",
+                  "sha256": "8255edab92b341ef41dd5556a68f3f2be8e52b0e940e7e9e98891f2f5cced3cb"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J12",
+      "ticket": "J-05",
+      "scenario": "Pure file/symbol move",
+      "required_assertion": "Correct symbol binding follows the move with provenance",
+      "required_in_tickets": [
+        "J-05"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-05",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_code_anchors.py::test_j12_move_and_rename_move[False]",
+              "kind": "real_parser",
+              "source": {
+                "path": "tests/test_code_anchors.py",
+                "sha256": "8255edab92b341ef41dd5556a68f3f2be8e52b0e940e7e9e98891f2f5cced3cb"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_code_anchors.py",
+                  "sha256": "8255edab92b341ef41dd5556a68f3f2be8e52b0e940e7e9e98891f2f5cced3cb"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_code_anchors.py::test_j12_move_and_rename_move[True]",
+              "kind": "real_parser",
+              "source": {
+                "path": "tests/test_code_anchors.py",
+                "sha256": "8255edab92b341ef41dd5556a68f3f2be8e52b0e940e7e9e98891f2f5cced3cb"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_code_anchors.py",
+                  "sha256": "8255edab92b341ef41dd5556a68f3f2be8e52b0e940e7e9e98891f2f5cced3cb"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J13",
+      "ticket": "J-05",
+      "scenario": "Ambiguous similar symbols",
+      "required_assertion": "No arbitrary reassignment; state remains unknown",
+      "required_in_tickets": [
+        "J-05"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-05",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_code_anchors.py::test_j13_all_identical_getters_are_ambiguous_and_evidence_bounded",
+              "kind": "real_parser",
+              "source": {
+                "path": "tests/test_code_anchors.py",
+                "sha256": "8255edab92b341ef41dd5556a68f3f2be8e52b0e940e7e9e98891f2f5cced3cb"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_code_anchors.py",
+                  "sha256": "8255edab92b341ef41dd5556a68f3f2be8e52b0e940e7e9e98891f2f5cced3cb"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J14",
+      "ticket": "J-05",
+      "scenario": "Index behind worktree",
+      "required_assertion": "Stale graph absence does not prove fact deletion",
+      "required_in_tickets": [
+        "J-05"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-05",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_code_anchors.py::test_j14_stale_snapshot_and_shifted_lines_never_read_current_disk",
+              "kind": "real_parser",
+              "source": {
+                "path": "tests/test_code_anchors.py",
+                "sha256": "8255edab92b341ef41dd5556a68f3f2be8e52b0e940e7e9e98891f2f5cced3cb"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_code_anchors.py",
+                  "sha256": "8255edab92b341ef41dd5556a68f3f2be8e52b0e940e7e9e98891f2f5cced3cb"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J15",
+      "ticket": "J-05",
+      "scenario": "Unavailable worktree",
+      "required_assertion": "No mass expiry from inability to inspect the repository",
+      "required_in_tickets": [
+        "J-05"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-05",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_code_anchors.py::test_j15_missing_checkout_preserves_facts_and_history",
+              "kind": "real_parser",
+              "source": {
+                "path": "tests/test_code_anchors.py",
+                "sha256": "8255edab92b341ef41dd5556a68f3f2be8e52b0e940e7e9e98891f2f5cced3cb"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_code_anchors.py",
+                  "sha256": "8255edab92b341ef41dd5556a68f3f2be8e52b0e940e7e9e98891f2f5cced3cb"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J16",
+      "ticket": "J-06",
+      "scenario": "Unfinished work loses anchor",
+      "required_assertion": "Obligation remains open and can fall back to broader scope",
+      "required_in_tickets": [
+        "J-06"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-06",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_open_work_bindings.py::test_j16_j31_real_binding_move_disappearance_forget_keep_obligation[# code removed\\n-orphaned_confirmed]",
+              "kind": "real_parser",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_open_work_bindings.py",
+                "sha256": "78c0d4fc7465734165d2de960acd5a9815e624ae96856d024c2e65bf9e12a65d"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_open_work_bindings.py",
+                  "sha256": "78c0d4fc7465734165d2de960acd5a9815e624ae96856d024c2e65bf9e12a65d"
+                }
+              ],
+              "fixture_description": "Reviewed existing J06 test: temporary Git checkout parsed by actual J04 Node/tree-sitter, J02 fact, J05 logical binding, J06 obligation; file move then confirmed removal or malformed-source uncertainty.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/scope.py",
+                  "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a"
+                },
+                {
+                  "path": "jitmind/code_context/__init__.py",
+                  "sha256": "0bdda619ccabbb7f4894b106572885cf15b5c86232bfd6f333f6ca1b8b75f211"
+                },
+                {
+                  "path": "jitmind/code_context/models.py",
+                  "sha256": "84686d3cdb1f34e6111652956e65b90b01fd19487308a268022a66b14ea44878"
+                },
+                {
+                  "path": "jitmind/code_context/process.py",
+                  "sha256": "ef9baf49a5bbe761fbffa1f60ef172b8f53c587eaffc13c4e179f2700462f77a"
+                },
+                {
+                  "path": "jitmind/code_context/retriever.py",
+                  "sha256": "822dc84804992b8bd9fe7de62e535843585091350f8ff5a2311a05eaf51150f4"
+                },
+                {
+                  "path": "jitmind/code_context/service.py",
+                  "sha256": "16daa9b16b9a55f130ca61204c96d40e8abb279709dbd4c36b81e4c99afbe873"
+                },
+                {
+                  "path": "jitmind/code_context/snapshot.py",
+                  "sha256": "45a35d8a3455cde10816ff3e2feef3a7a21174bbec41326635d94394fec27272"
+                },
+                {
+                  "path": "jitmind/code_memory/anchors.py",
+                  "sha256": "98d9715ad0faba844638859e5f49d8ccb58cd9a7e67c56c7376b81b08c24e31a"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_models.py",
+                  "sha256": "39c9e9676f58314e4e3d9073efd19f0072023440cdb6fc61f9d802fc9a9f203c"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_storage.py",
+                  "sha256": "5684d3bf4269703f87f4232f0d3fd32482d90be704170f57e1cc6670ab539c1f"
+                },
+                {
+                  "path": "jitmind/code_memory/revalidation.py",
+                  "sha256": "ada66aa4f8d553d8930eb37aff00662544d7216bdfae941d643485ca8cdd92d5"
+                },
+                {
+                  "path": "jitmind/code_memory/open_work.py",
+                  "sha256": "330b670fa75dfc33bd0013a4af3293fed415c29ef4f1df8df2f3295642e3a23c"
+                },
+                {
+                  "path": "jitmind/code_memory/work_storage.py",
+                  "sha256": "f0a2775db9046f8b01007c946a586e9a4bd1ab3763fff5fef87df0d5555b8362"
+                },
+                {
+                  "path": "jitmind/code_memory/lesson_models.py",
+                  "sha256": "447721bf5d7c7b972a4d3b1bda171c674a107d3aba50c90fa0033403f4c5b787"
+                },
+                {
+                  "path": "jitmind/code_memory/preflight.py",
+                  "sha256": "7119d160107db1f0828fa31affc3aba18bcd716163df562a8c77c45cfebc6258"
+                }
+              ],
+              "assertions": [
+                "Binding starts at source.py, follows real move to moved.py, then becomes orphaned_confirmed or unknown.",
+                "OpenWorkService.binding_locations falls back to exact authorized repo; obligation stays open at revision 1 through primary forget.",
+                "Real lesson projection/preflight and binding history run in same chain."
+              ],
+              "evidence_limits": [
+                "Only the two exact collected parameters are reused; current tests and modules are the attested J10 snapshot.",
+                "Broader repository scope is a location fallback, not task completion or proof of code deletion in malformed input."
+              ]
+            },
+            {
+              "node_id": "tests/test_open_work_bindings.py::test_j16_j31_real_binding_move_disappearance_forget_keep_obligation[invalid syntax ???\\n-unknown]",
+              "kind": "real_parser",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_open_work_bindings.py",
+                "sha256": "78c0d4fc7465734165d2de960acd5a9815e624ae96856d024c2e65bf9e12a65d"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_open_work_bindings.py",
+                  "sha256": "78c0d4fc7465734165d2de960acd5a9815e624ae96856d024c2e65bf9e12a65d"
+                }
+              ],
+              "fixture_description": "Reviewed existing J06 test: temporary Git checkout parsed by actual J04 Node/tree-sitter, J02 fact, J05 logical binding, J06 obligation; file move then confirmed removal or malformed-source uncertainty.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/scope.py",
+                  "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a"
+                },
+                {
+                  "path": "jitmind/code_context/__init__.py",
+                  "sha256": "0bdda619ccabbb7f4894b106572885cf15b5c86232bfd6f333f6ca1b8b75f211"
+                },
+                {
+                  "path": "jitmind/code_context/models.py",
+                  "sha256": "84686d3cdb1f34e6111652956e65b90b01fd19487308a268022a66b14ea44878"
+                },
+                {
+                  "path": "jitmind/code_context/process.py",
+                  "sha256": "ef9baf49a5bbe761fbffa1f60ef172b8f53c587eaffc13c4e179f2700462f77a"
+                },
+                {
+                  "path": "jitmind/code_context/retriever.py",
+                  "sha256": "822dc84804992b8bd9fe7de62e535843585091350f8ff5a2311a05eaf51150f4"
+                },
+                {
+                  "path": "jitmind/code_context/service.py",
+                  "sha256": "16daa9b16b9a55f130ca61204c96d40e8abb279709dbd4c36b81e4c99afbe873"
+                },
+                {
+                  "path": "jitmind/code_context/snapshot.py",
+                  "sha256": "45a35d8a3455cde10816ff3e2feef3a7a21174bbec41326635d94394fec27272"
+                },
+                {
+                  "path": "jitmind/code_memory/anchors.py",
+                  "sha256": "98d9715ad0faba844638859e5f49d8ccb58cd9a7e67c56c7376b81b08c24e31a"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_models.py",
+                  "sha256": "39c9e9676f58314e4e3d9073efd19f0072023440cdb6fc61f9d802fc9a9f203c"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_storage.py",
+                  "sha256": "5684d3bf4269703f87f4232f0d3fd32482d90be704170f57e1cc6670ab539c1f"
+                },
+                {
+                  "path": "jitmind/code_memory/revalidation.py",
+                  "sha256": "ada66aa4f8d553d8930eb37aff00662544d7216bdfae941d643485ca8cdd92d5"
+                },
+                {
+                  "path": "jitmind/code_memory/open_work.py",
+                  "sha256": "330b670fa75dfc33bd0013a4af3293fed415c29ef4f1df8df2f3295642e3a23c"
+                },
+                {
+                  "path": "jitmind/code_memory/work_storage.py",
+                  "sha256": "f0a2775db9046f8b01007c946a586e9a4bd1ab3763fff5fef87df0d5555b8362"
+                },
+                {
+                  "path": "jitmind/code_memory/lesson_models.py",
+                  "sha256": "447721bf5d7c7b972a4d3b1bda171c674a107d3aba50c90fa0033403f4c5b787"
+                },
+                {
+                  "path": "jitmind/code_memory/preflight.py",
+                  "sha256": "7119d160107db1f0828fa31affc3aba18bcd716163df562a8c77c45cfebc6258"
+                }
+              ],
+              "assertions": [
+                "Binding starts at source.py, follows real move to moved.py, then becomes orphaned_confirmed or unknown.",
+                "OpenWorkService.binding_locations falls back to exact authorized repo; obligation stays open at revision 1 through primary forget.",
+                "Real lesson projection/preflight and binding history run in same chain."
+              ],
+              "evidence_limits": [
+                "Only the two exact collected parameters are reused; current tests and modules are the attested J10 snapshot.",
+                "Broader repository scope is a location fallback, not task completion or proof of code deletion in malformed input."
+              ]
+            }
+          ],
+          "additional_mapping_required": false
+        }
+      ]
+    },
+    {
+      "case_id": "J17",
+      "ticket": "J-06",
+      "scenario": "Explicit task resolution",
+      "required_assertion": "Resolver and supporting evidence are recorded exactly once",
+      "required_in_tickets": [
+        "J-06"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-06",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_open_work.py::test_durable_cas_replay_owner_history_and_explicit_reopen",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_open_work.py",
+                "sha256": "b0b192f5bd1ecfe39811346eb4ce912a85a15d00c446e31e8f2a01493e957597"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_open_work.py",
+                  "sha256": "b0b192f5bd1ecfe39811346eb4ce912a85a15d00c446e31e8f2a01493e957597"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_open_work.py::test_competing_resolution_accepts_one",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_open_work.py",
+                "sha256": "b0b192f5bd1ecfe39811346eb4ce912a85a15d00c446e31e8f2a01493e957597"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_open_work.py",
+                  "sha256": "b0b192f5bd1ecfe39811346eb4ce912a85a15d00c446e31e8f2a01493e957597"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J18",
+      "ticket": "J-06",
+      "scenario": "Preflight repeated edit",
+      "required_assertion": "Bounded once-per-symbol/session behavior avoids prompt flooding",
+      "required_in_tickets": [
+        "J-06"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-06",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_preflight.py::test_version_dedup_replay_two_lessons_and_wrapper_budget",
+              "kind": "public_api",
+              "source": {
+                "path": "tests/test_preflight.py",
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_preflight.py",
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J19",
+      "ticket": "J-06",
+      "scenario": "Poisoned imported law label",
+      "required_assertion": "Imported content cannot promote itself to trusted policy",
+      "required_in_tickets": [
+        "J-06"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-06",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_preflight.py::test_imported_law_untrusted_authored_positive_and_spoof_denied",
+              "kind": "public_api",
+              "source": {
+                "path": "tests/test_preflight.py",
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_preflight.py",
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J20",
+      "ticket": "J-06",
+      "scenario": "Preflight storage contention",
+      "required_assertion": "Bounded latency and explicit degraded behavior",
+      "required_in_tickets": [
+        "J-06"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-06",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_preflight.py::test_independent_process_lock_bounded_deferred_and_release[work-IMMEDIATE]",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_preflight.py",
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_preflight.py",
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_preflight.py::test_independent_process_lock_bounded_deferred_and_release[work-EXCLUSIVE]",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_preflight.py",
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_preflight.py",
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_preflight.py::test_independent_process_lock_bounded_deferred_and_release[facts-IMMEDIATE]",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_preflight.py",
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_preflight.py",
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_preflight.py::test_independent_process_lock_bounded_deferred_and_release[facts-EXCLUSIVE]",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_preflight.py",
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_preflight.py",
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_preflight.py::test_default_deadline_boundary_with_real_storage[before]",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_preflight.py",
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_preflight.py",
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+                }
+              ],
+              "fixture_description": "Actual SQLite and default 150 ms policy with only the monotonic deadline clock advanced to before the cutoff. Checks response content and receipt count; not a wall-clock benchmark.",
+              "status": "not_run"
+            },
+            {
+              "node_id": "tests/test_preflight.py::test_default_deadline_boundary_with_real_storage[at]",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_preflight.py",
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_preflight.py",
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+                }
+              ],
+              "fixture_description": "Actual SQLite and default 150 ms policy with only the monotonic deadline clock advanced to at the cutoff. Checks response content and receipt count; not a wall-clock benchmark.",
+              "status": "not_run"
+            },
+            {
+              "node_id": "tests/test_preflight.py::test_default_deadline_boundary_with_real_storage[after]",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_preflight.py",
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_preflight.py",
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+                }
+              ],
+              "fixture_description": "Actual SQLite and default 150 ms policy with only the monotonic deadline clock advanced to after the cutoff. Checks response content and receipt count; not a wall-clock benchmark.",
+              "status": "not_run"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J21",
+      "ticket": "J-07",
+      "scenario": "Checkpoint has event gap",
+      "required_assertion": "Incomplete event range cannot be published as closed",
+      "required_in_tickets": [
+        "J-07"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-07",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_checkpoint_ledger.py::test_missing_event_and_identity_conflicts",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_checkpoint_ledger.py",
+                "sha256": "a9ff3ffe41f0cba68e0e7b86ee425c69e9ee912c169fa2323dc510c5a40313b8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_checkpoint_ledger.py",
+                  "sha256": "a9ff3ffe41f0cba68e0e7b86ee425c69e9ee912c169fa2323dc510c5a40313b8"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J22",
+      "ticket": "J-07",
+      "scenario": "Checkpoint cuts tool interaction",
+      "required_assertion": "Unsafe boundary is rejected or postponed",
+      "required_in_tickets": [
+        "J-07"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-07",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_checkpoint_ledger.py::test_overlapping_calls_and_midrange_closed_call",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_checkpoint_ledger.py",
+                "sha256": "a9ff3ffe41f0cba68e0e7b86ee425c69e9ee912c169fa2323dc510c5a40313b8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_checkpoint_ledger.py",
+                  "sha256": "a9ff3ffe41f0cba68e0e7b86ee425c69e9ee912c169fa2323dc510c5a40313b8"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_checkpoint_ledger.py::test_tool_boundaries_and_explicit_terminals[tool_result]",
+              "kind": "real_storage",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_checkpoint_ledger.py",
+                "sha256": "a9ff3ffe41f0cba68e0e7b86ee425c69e9ee912c169fa2323dc510c5a40313b8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_checkpoint_ledger.py",
+                  "sha256": "a9ff3ffe41f0cba68e0e7b86ee425c69e9ee912c169fa2323dc510c5a40313b8"
+                }
+              ],
+              "fixture_description": "Existing real SQLiteCheckpointLedger stream: tool_start at 0, message at 1, terminal at 2; all three terminal kinds have exact collected parameters.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/scope.py",
+                  "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a"
+                },
+                {
+                  "path": "jitmind/checkpoints/__init__.py",
+                  "sha256": "4d54e3f91114b474c337fbd460653e46210c2c668fcb557c231560e8477c0017"
+                },
+                {
+                  "path": "jitmind/checkpoints/ledger.py",
+                  "sha256": "ba500b7dff478277252df4647e4c9ddd48656c1f58667357cf38a2d5639f88e4"
+                }
+              ],
+              "assertions": [
+                "Rejects range 0..1 before and after late terminal (end cut), and 1..2 / 2..2 / 1..1 (start cut or wholly inside interaction).",
+                "Complete 0..2 publishes revision 1; subsequent 3..3 allowed; repeated/unknown terminals rejected."
+              ],
+              "evidence_limits": [
+                "Both boundary directions are directly asserted by the existing node. No provider transcript or remote checkpoint store."
+              ]
+            },
+            {
+              "node_id": "tests/test_checkpoint_ledger.py::test_tool_boundaries_and_explicit_terminals[tool_cancel]",
+              "kind": "real_storage",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_checkpoint_ledger.py",
+                "sha256": "a9ff3ffe41f0cba68e0e7b86ee425c69e9ee912c169fa2323dc510c5a40313b8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_checkpoint_ledger.py",
+                  "sha256": "a9ff3ffe41f0cba68e0e7b86ee425c69e9ee912c169fa2323dc510c5a40313b8"
+                }
+              ],
+              "fixture_description": "Existing real SQLiteCheckpointLedger stream: tool_start at 0, message at 1, terminal at 2; all three terminal kinds have exact collected parameters.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/scope.py",
+                  "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a"
+                },
+                {
+                  "path": "jitmind/checkpoints/__init__.py",
+                  "sha256": "4d54e3f91114b474c337fbd460653e46210c2c668fcb557c231560e8477c0017"
+                },
+                {
+                  "path": "jitmind/checkpoints/ledger.py",
+                  "sha256": "ba500b7dff478277252df4647e4c9ddd48656c1f58667357cf38a2d5639f88e4"
+                }
+              ],
+              "assertions": [
+                "Rejects range 0..1 before and after late terminal (end cut), and 1..2 / 2..2 / 1..1 (start cut or wholly inside interaction).",
+                "Complete 0..2 publishes revision 1; subsequent 3..3 allowed; repeated/unknown terminals rejected."
+              ],
+              "evidence_limits": [
+                "Both boundary directions are directly asserted by the existing node. No provider transcript or remote checkpoint store."
+              ]
+            },
+            {
+              "node_id": "tests/test_checkpoint_ledger.py::test_tool_boundaries_and_explicit_terminals[tool_timeout]",
+              "kind": "real_storage",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_checkpoint_ledger.py",
+                "sha256": "a9ff3ffe41f0cba68e0e7b86ee425c69e9ee912c169fa2323dc510c5a40313b8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_checkpoint_ledger.py",
+                  "sha256": "a9ff3ffe41f0cba68e0e7b86ee425c69e9ee912c169fa2323dc510c5a40313b8"
+                }
+              ],
+              "fixture_description": "Existing real SQLiteCheckpointLedger stream: tool_start at 0, message at 1, terminal at 2; all three terminal kinds have exact collected parameters.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/scope.py",
+                  "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a"
+                },
+                {
+                  "path": "jitmind/checkpoints/__init__.py",
+                  "sha256": "4d54e3f91114b474c337fbd460653e46210c2c668fcb557c231560e8477c0017"
+                },
+                {
+                  "path": "jitmind/checkpoints/ledger.py",
+                  "sha256": "ba500b7dff478277252df4647e4c9ddd48656c1f58667357cf38a2d5639f88e4"
+                }
+              ],
+              "assertions": [
+                "Rejects range 0..1 before and after late terminal (end cut), and 1..2 / 2..2 / 1..1 (start cut or wholly inside interaction).",
+                "Complete 0..2 publishes revision 1; subsequent 3..3 allowed; repeated/unknown terminals rejected."
+              ],
+              "evidence_limits": [
+                "Both boundary directions are directly asserted by the existing node. No provider transcript or remote checkpoint store."
+              ]
+            }
+          ],
+          "additional_mapping_required": false
+        }
+      ]
+    },
+    {
+      "case_id": "J23",
+      "ticket": "J-03",
+      "scenario": "Cross-scope retrieval/cache",
+      "required_assertion": "Authorization filters candidates and caches before exposure",
+      "required_in_tickets": [
+        "J-03",
+        "J-04"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-03",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_scoped_research.py::test_real_stores_are_isolated_before_build_rerank_prompt_and_logs",
+              "kind": "public_api",
+              "source": {
+                "path": "tests/test_scoped_research.py",
+                "sha256": "428d4c17df53220a76f4e38c1be91f50d025418063613eac58dc59ec5bd17108"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_scoped_research.py",
+                  "sha256": "428d4c17df53220a76f4e38c1be91f50d025418063613eac58dc59ec5bd17108"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_scoped_research.py::test_cache_rechecks_snapshot_and_regrant_and_canonical_metadata",
+              "kind": "public_api",
+              "source": {
+                "path": "tests/test_scoped_research.py",
+                "sha256": "428d4c17df53220a76f4e38c1be91f50d025418063613eac58dc59ec5bd17108"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_scoped_research.py",
+                  "sha256": "428d4c17df53220a76f4e38c1be91f50d025418063613eac58dc59ec5bd17108"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        },
+        {
+          "stage_id": "J-04",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_code_context.py::test_denied_before_read_and_revoked_before_return",
+              "kind": "real_parser",
+              "source": {
+                "path": "tests/test_code_context.py",
+                "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_code_context.py",
+                  "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J24",
+      "ticket": "J-03",
+      "scenario": "Temporal boundary and timezone",
+      "required_assertion": "Valid/transaction-time answers respect normalized boundary semantics",
+      "required_in_tickets": [
+        "J-03"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-03",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_scoped_temporal.py::test_seven_query_reviewed_retry_limit_oracle",
+              "kind": "temporal_oracle",
+              "source": {
+                "path": "tests/test_scoped_temporal.py",
+                "sha256": "e335712d09b7ecdc5e466b63008fb717dab4b9b772623e6b51df840ec71eb66e"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_scoped_temporal.py",
+                  "sha256": "e335712d09b7ecdc5e466b63008fb717dab4b9b772623e6b51df840ec71eb66e"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_scoped_temporal.py::test_utc_offsets_and_exact_half_open_boundaries",
+              "kind": "temporal_oracle",
+              "source": {
+                "path": "tests/test_scoped_temporal.py",
+                "sha256": "e335712d09b7ecdc5e466b63008fb717dab4b9b772623e6b51df840ec71eb66e"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_scoped_temporal.py",
+                  "sha256": "e335712d09b7ecdc5e466b63008fb717dab4b9b772623e6b51df840ec71eb66e"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_scoped_temporal.py::test_declared_single_valued_overlap_fails_and_multiple_values_opt_in",
+              "kind": "temporal_oracle",
+              "source": {
+                "path": "tests/test_scoped_temporal.py",
+                "sha256": "e335712d09b7ecdc5e466b63008fb717dab4b9b772623e6b51df840ec71eb66e"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_scoped_temporal.py",
+                  "sha256": "e335712d09b7ecdc5e466b63008fb717dab4b9b772623e6b51df840ec71eb66e"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_scoped_temporal.py::test_legacy_naive_query_input_compatibility_is_unchanged",
+              "kind": "temporal_oracle",
+              "source": {
+                "path": "tests/test_scoped_temporal.py",
+                "sha256": "e335712d09b7ecdc5e466b63008fb717dab4b9b772623e6b51df840ec71eb66e"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_scoped_temporal.py",
+                  "sha256": "e335712d09b7ecdc5e466b63008fb717dab4b9b772623e6b51df840ec71eb66e"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J25",
+      "ticket": "J-02",
+      "scenario": "Corrupt store and interrupted staging",
+      "required_assertion": "Corruption is reported without silently manufacturing an empty successful migration; interrupted staged import does not replace authoritative source",
+      "required_in_tickets": [
+        "J-02"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-02",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_durable_migration.py::test_staging_requires_quiescence_and_detects_changed_source",
+              "kind": "migration",
+              "source": {
+                "path": "tests/test_durable_migration.py",
+                "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_migration.py",
+                  "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+                },
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_durable_migration.py::test_invalid_migration_refuses_without_changes[truncated]",
+              "kind": "migration",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_migration.py",
+                "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_migration.py",
+                  "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+                }
+              ],
+              "fixture_description": "Existing truncated/duplicate-key/NaN legacy-source rejection and three exception rollback nodes; new real child exit(73) after import pages or before import commit; source JSON byte snapshots and clean retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/storage/migration.py",
+                  "sha256": "26cf90e0911fe6bfae875ef31c50f0b8cbf94b05c2d5a694cd5408622533a15a"
+                },
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                }
+              ],
+              "assertions": [
+                "Corrupt source raises exact MigrationError without creating a candidate or changing original JSON.",
+                "Existing three injected exception nodes leave source and candidate empty and permit positive retry.",
+                "Real child exits roll back namespaces/pages/facts/operations/outbox/aliases/imports; original source bytes unchanged.",
+                "Restaging and retry preserve fact ID, page provenance and alias; duplicate import keeps revision 1."
+              ],
+              "evidence_limits": [
+                "Corrupt cases and exception nodes are reused unchanged; real process-exit supplement owns its own small fixture.",
+                "No concurrent legacy writer or machine-power-loss simulation; staging is explicitly quiesced."
+              ]
+            },
+            {
+              "node_id": "tests/test_durable_migration.py::test_invalid_migration_refuses_without_changes[duplicate_json_key]",
+              "kind": "migration",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_migration.py",
+                "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_migration.py",
+                  "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+                }
+              ],
+              "fixture_description": "Existing truncated/duplicate-key/NaN legacy-source rejection and three exception rollback nodes; new real child exit(73) after import pages or before import commit; source JSON byte snapshots and clean retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/storage/migration.py",
+                  "sha256": "26cf90e0911fe6bfae875ef31c50f0b8cbf94b05c2d5a694cd5408622533a15a"
+                },
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                }
+              ],
+              "assertions": [
+                "Corrupt source raises exact MigrationError without creating a candidate or changing original JSON.",
+                "Existing three injected exception nodes leave source and candidate empty and permit positive retry.",
+                "Real child exits roll back namespaces/pages/facts/operations/outbox/aliases/imports; original source bytes unchanged.",
+                "Restaging and retry preserve fact ID, page provenance and alias; duplicate import keeps revision 1."
+              ],
+              "evidence_limits": [
+                "Corrupt cases and exception nodes are reused unchanged; real process-exit supplement owns its own small fixture.",
+                "No concurrent legacy writer or machine-power-loss simulation; staging is explicitly quiesced."
+              ]
+            },
+            {
+              "node_id": "tests/test_durable_migration.py::test_invalid_migration_refuses_without_changes[nan]",
+              "kind": "migration",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_migration.py",
+                "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_migration.py",
+                  "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+                }
+              ],
+              "fixture_description": "Existing truncated/duplicate-key/NaN legacy-source rejection and three exception rollback nodes; new real child exit(73) after import pages or before import commit; source JSON byte snapshots and clean retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/storage/migration.py",
+                  "sha256": "26cf90e0911fe6bfae875ef31c50f0b8cbf94b05c2d5a694cd5408622533a15a"
+                },
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                }
+              ],
+              "assertions": [
+                "Corrupt source raises exact MigrationError without creating a candidate or changing original JSON.",
+                "Existing three injected exception nodes leave source and candidate empty and permit positive retry.",
+                "Real child exits roll back namespaces/pages/facts/operations/outbox/aliases/imports; original source bytes unchanged.",
+                "Restaging and retry preserve fact ID, page provenance and alias; duplicate import keeps revision 1."
+              ],
+              "evidence_limits": [
+                "Corrupt cases and exception nodes are reused unchanged; real process-exit supplement owns its own small fixture.",
+                "No concurrent legacy writer or machine-power-loss simulation; staging is explicitly quiesced."
+              ]
+            },
+            {
+              "node_id": "tests/test_durable_migration.py::test_staged_failure_leaves_legacy_and_candidate_unchanged[before_import]",
+              "kind": "migration",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_migration.py",
+                "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_migration.py",
+                  "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+                }
+              ],
+              "fixture_description": "Existing truncated/duplicate-key/NaN legacy-source rejection and three exception rollback nodes; new real child exit(73) after import pages or before import commit; source JSON byte snapshots and clean retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/storage/migration.py",
+                  "sha256": "26cf90e0911fe6bfae875ef31c50f0b8cbf94b05c2d5a694cd5408622533a15a"
+                },
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                }
+              ],
+              "assertions": [
+                "Corrupt source raises exact MigrationError without creating a candidate or changing original JSON.",
+                "Existing three injected exception nodes leave source and candidate empty and permit positive retry.",
+                "Real child exits roll back namespaces/pages/facts/operations/outbox/aliases/imports; original source bytes unchanged.",
+                "Restaging and retry preserve fact ID, page provenance and alias; duplicate import keeps revision 1."
+              ],
+              "evidence_limits": [
+                "Corrupt cases and exception nodes are reused unchanged; real process-exit supplement owns its own small fixture.",
+                "No concurrent legacy writer or machine-power-loss simulation; staging is explicitly quiesced."
+              ]
+            },
+            {
+              "node_id": "tests/test_durable_migration.py::test_staged_failure_leaves_legacy_and_candidate_unchanged[after_import_pages]",
+              "kind": "migration",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_migration.py",
+                "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_migration.py",
+                  "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+                }
+              ],
+              "fixture_description": "Existing truncated/duplicate-key/NaN legacy-source rejection and three exception rollback nodes; new real child exit(73) after import pages or before import commit; source JSON byte snapshots and clean retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/storage/migration.py",
+                  "sha256": "26cf90e0911fe6bfae875ef31c50f0b8cbf94b05c2d5a694cd5408622533a15a"
+                },
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                }
+              ],
+              "assertions": [
+                "Corrupt source raises exact MigrationError without creating a candidate or changing original JSON.",
+                "Existing three injected exception nodes leave source and candidate empty and permit positive retry.",
+                "Real child exits roll back namespaces/pages/facts/operations/outbox/aliases/imports; original source bytes unchanged.",
+                "Restaging and retry preserve fact ID, page provenance and alias; duplicate import keeps revision 1."
+              ],
+              "evidence_limits": [
+                "Corrupt cases and exception nodes are reused unchanged; real process-exit supplement owns its own small fixture.",
+                "No concurrent legacy writer or machine-power-loss simulation; staging is explicitly quiesced."
+              ]
+            },
+            {
+              "node_id": "tests/test_durable_migration.py::test_staged_failure_leaves_legacy_and_candidate_unchanged[before_import_commit]",
+              "kind": "migration",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_migration.py",
+                "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_migration.py",
+                  "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+                }
+              ],
+              "fixture_description": "Existing truncated/duplicate-key/NaN legacy-source rejection and three exception rollback nodes; new real child exit(73) after import pages or before import commit; source JSON byte snapshots and clean retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/storage/migration.py",
+                  "sha256": "26cf90e0911fe6bfae875ef31c50f0b8cbf94b05c2d5a694cd5408622533a15a"
+                },
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                }
+              ],
+              "assertions": [
+                "Corrupt source raises exact MigrationError without creating a candidate or changing original JSON.",
+                "Existing three injected exception nodes leave source and candidate empty and permit positive retry.",
+                "Real child exits roll back namespaces/pages/facts/operations/outbox/aliases/imports; original source bytes unchanged.",
+                "Restaging and retry preserve fact ID, page provenance and alias; duplicate import keeps revision 1."
+              ],
+              "evidence_limits": [
+                "Corrupt cases and exception nodes are reused unchanged; real process-exit supplement owns its own small fixture.",
+                "No concurrent legacy writer or machine-power-loss simulation; staging is explicitly quiesced."
+              ]
+            },
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_real_migration_exit_preserves_source_and_allows_retry[after_import_pages]",
+              "kind": "migration",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+                }
+              ],
+              "fixture_description": "Existing truncated/duplicate-key/NaN legacy-source rejection and three exception rollback nodes; new real child exit(73) after import pages or before import commit; source JSON byte snapshots and clean retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/storage/migration.py",
+                  "sha256": "26cf90e0911fe6bfae875ef31c50f0b8cbf94b05c2d5a694cd5408622533a15a"
+                },
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                }
+              ],
+              "assertions": [
+                "Corrupt source raises exact MigrationError without creating a candidate or changing original JSON.",
+                "Existing three injected exception nodes leave source and candidate empty and permit positive retry.",
+                "Real child exits roll back namespaces/pages/facts/operations/outbox/aliases/imports; original source bytes unchanged.",
+                "Restaging and retry preserve fact ID, page provenance and alias; duplicate import keeps revision 1."
+              ],
+              "evidence_limits": [
+                "Corrupt cases and exception nodes are reused unchanged; real process-exit supplement owns its own small fixture.",
+                "No concurrent legacy writer or machine-power-loss simulation; staging is explicitly quiesced."
+              ]
+            },
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_real_migration_exit_preserves_source_and_allows_retry[before_import_commit]",
+              "kind": "migration",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+                }
+              ],
+              "fixture_description": "Existing truncated/duplicate-key/NaN legacy-source rejection and three exception rollback nodes; new real child exit(73) after import pages or before import commit; source JSON byte snapshots and clean retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/storage/migration.py",
+                  "sha256": "26cf90e0911fe6bfae875ef31c50f0b8cbf94b05c2d5a694cd5408622533a15a"
+                },
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                }
+              ],
+              "assertions": [
+                "Corrupt source raises exact MigrationError without creating a candidate or changing original JSON.",
+                "Existing three injected exception nodes leave source and candidate empty and permit positive retry.",
+                "Real child exits roll back namespaces/pages/facts/operations/outbox/aliases/imports; original source bytes unchanged.",
+                "Restaging and retry preserve fact ID, page provenance and alias; duplicate import keeps revision 1."
+              ],
+              "evidence_limits": [
+                "Corrupt cases and exception nodes are reused unchanged; real process-exit supplement owns its own small fixture.",
+                "No concurrent legacy writer or machine-power-loss simulation; staging is explicitly quiesced."
+              ]
+            }
+          ],
+          "additional_mapping_required": false
+        }
+      ]
+    },
+    {
+      "case_id": "J26",
+      "ticket": "J-02",
+      "scenario": "Legacy migration and post-cutover rollback",
+      "required_assertion": "IDs, provenance, histories and queries preserved by explicit mapping; unknown custom stores not silently transactional",
+      "required_in_tickets": [
+        "J-02"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-02",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_durable_migration.py::test_migration_preserves_ids_metadata_temporal_history_aliases",
+              "kind": "migration",
+              "source": {
+                "path": "tests/test_durable_migration.py",
+                "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_migration.py",
+                  "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+                },
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_durable_migration.py::test_backup_reopen_restore_preserves_candidate_era_writes",
+              "kind": "migration",
+              "source": {
+                "path": "tests/test_durable_migration.py",
+                "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_migration.py",
+                  "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+                },
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J27",
+      "ticket": "J-04",
+      "scenario": "Traversal and context acquisition limits",
+      "required_assertion": "Work stops within declared bounds and preserves source identities and explicit coverage",
+      "required_in_tickets": [
+        "J-04"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-04",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_code_context.py::test_context_budget_and_retention",
+              "kind": "real_parser",
+              "source": {
+                "path": "tests/test_code_context.py",
+                "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_code_context.py",
+                  "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_code_context.py::test_coverage_limits_and_namespace_preflight",
+              "kind": "real_parser",
+              "source": {
+                "path": "tests/test_code_context.py",
+                "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_code_context.py",
+                  "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J28",
+      "ticket": "J-03",
+      "scenario": "Canonical path and scope validation",
+      "required_assertion": "Reject escapes without colliding distinct repositories/identities in caches or databases",
+      "required_in_tickets": [
+        "J-03",
+        "J-04"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-03",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_scoped_research.py::test_real_store_roots_with_same_basename_are_distinct_and_alias_is_rejected",
+              "kind": "public_api",
+              "source": {
+                "path": "tests/test_scoped_research.py",
+                "sha256": "428d4c17df53220a76f4e38c1be91f50d025418063613eac58dc59ec5bd17108"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_scoped_research.py",
+                  "sha256": "428d4c17df53220a76f4e38c1be91f50d025418063613eac58dc59ec5bd17108"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        },
+        {
+          "stage_id": "J-04",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_code_context.py::test_symlink_sentinel_never_opened_and_basename_identity",
+              "kind": "real_parser",
+              "source": {
+                "path": "tests/test_code_context.py",
+                "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_code_context.py",
+                  "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J29",
+      "ticket": "J-02",
+      "scenario": "Projection outbox redelivery",
+      "required_assertion": "Primary durability intact, replay idempotent, lag visible; no stale graph evidence declared current",
+      "required_in_tickets": [
+        "J-02",
+        "J-04",
+        "J-05"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-02",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_durable_storage.py::test_projection_duplicate_out_of_order_and_forget_filter",
+              "kind": "projection",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_durable_storage.py::test_projection_failure_does_not_rollback_authority",
+              "kind": "projection",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_durable_storage.py::test_process_crash_after_projection_is_idempotent",
+              "kind": "projection",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        },
+        {
+          "stage_id": "J-04",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_real_parser_binding_projection_redelivery_and_primary_forget[projected]",
+              "kind": "projection",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+                }
+              ],
+              "fixture_description": "Temporary unversioned checkout, actual J04 parser, J02 add/NOOP/delete, J05 binding and file move, J06 projected lesson/preflight/open task. Two schedules: primary projection already populated or original add event pending until after delete.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/scope.py",
+                  "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a"
+                },
+                {
+                  "path": "jitmind/code_context/__init__.py",
+                  "sha256": "0bdda619ccabbb7f4894b106572885cf15b5c86232bfd6f333f6ca1b8b75f211"
+                },
+                {
+                  "path": "jitmind/code_context/models.py",
+                  "sha256": "84686d3cdb1f34e6111652956e65b90b01fd19487308a268022a66b14ea44878"
+                },
+                {
+                  "path": "jitmind/code_context/process.py",
+                  "sha256": "ef9baf49a5bbe761fbffa1f60ef172b8f53c587eaffc13c4e179f2700462f77a"
+                },
+                {
+                  "path": "jitmind/code_context/retriever.py",
+                  "sha256": "822dc84804992b8bd9fe7de62e535843585091350f8ff5a2311a05eaf51150f4"
+                },
+                {
+                  "path": "jitmind/code_context/service.py",
+                  "sha256": "16daa9b16b9a55f130ca61204c96d40e8abb279709dbd4c36b81e4c99afbe873"
+                },
+                {
+                  "path": "jitmind/code_context/snapshot.py",
+                  "sha256": "45a35d8a3455cde10816ff3e2feef3a7a21174bbec41326635d94394fec27272"
+                },
+                {
+                  "path": "jitmind/code_memory/anchors.py",
+                  "sha256": "98d9715ad0faba844638859e5f49d8ccb58cd9a7e67c56c7376b81b08c24e31a"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_models.py",
+                  "sha256": "39c9e9676f58314e4e3d9073efd19f0072023440cdb6fc61f9d802fc9a9f203c"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_storage.py",
+                  "sha256": "5684d3bf4269703f87f4232f0d3fd32482d90be704170f57e1cc6670ab539c1f"
+                },
+                {
+                  "path": "jitmind/code_memory/revalidation.py",
+                  "sha256": "ada66aa4f8d553d8930eb37aff00662544d7216bdfae941d643485ca8cdd92d5"
+                },
+                {
+                  "path": "jitmind/code_memory/open_work.py",
+                  "sha256": "330b670fa75dfc33bd0013a4af3293fed415c29ef4f1df8df2f3295642e3a23c"
+                },
+                {
+                  "path": "jitmind/code_memory/work_storage.py",
+                  "sha256": "f0a2775db9046f8b01007c946a586e9a4bd1ab3763fff5fef87df0d5555b8362"
+                },
+                {
+                  "path": "jitmind/code_memory/lesson_models.py",
+                  "sha256": "447721bf5d7c7b972a4d3b1bda171c674a107d3aba50c90fa0033403f4c5b787"
+                },
+                {
+                  "path": "jitmind/code_memory/preflight.py",
+                  "sha256": "7119d160107db1f0828fa31affc3aba18bcd716163df562a8c77c45cfebc6258"
+                }
+              ],
+              "assertions": [
+                "Fact durable and lesson delivered while primary outbox lag remains visible; NOOP delivered twice ahead of original add leaves watermark 0.",
+                "Real source move makes prior code freshness nonfresh and binding unknown; new build/revalidation produces higher generation and moved verified binding.",
+                "Lesson version 2 replay is idempotent; version 1 rejected; fact metadata redelivery rejected.",
+                "Deletion metadata and event followed by old add cannot resurrect fact/binding/lesson; pending add schedule explicitly delivers delete before still-pending add.",
+                "Primary watermark reaches delete revision, pending count zero, current code generation remains correct."
+              ],
+              "evidence_limits": [
+                "J04 raw code index consumes captured source, not fact bodies. MEMORY_ONLY_SENTINEL_83f91c is deliberately absent from source.",
+                "Raw authorized source remains readable after memory forget; forgetting memory never promises deletion of user source files.",
+                "J02 primary administrative/include_inactive history and backups may retain bodies. Assertions concern ordinary derived retrieval, receipt reconstruction, and content-free binding/work/delivery histories; no physical erasure claim.",
+                "Source generation, binding observation and outbox revision are separate; no atomic transaction across checkout and three databases is claimed.",
+                "Uses supplied J10 snapshot. Owner modules may advance; final supervisor must assemble and retest, configuring newer authority adapters if required. No automatic listener or raw-code outbox consumer is invented."
+              ]
+            },
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_real_parser_binding_projection_redelivery_and_primary_forget[add_pending]",
+              "kind": "projection",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+                }
+              ],
+              "fixture_description": "Temporary unversioned checkout, actual J04 parser, J02 add/NOOP/delete, J05 binding and file move, J06 projected lesson/preflight/open task. Two schedules: primary projection already populated or original add event pending until after delete.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/scope.py",
+                  "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a"
+                },
+                {
+                  "path": "jitmind/code_context/__init__.py",
+                  "sha256": "0bdda619ccabbb7f4894b106572885cf15b5c86232bfd6f333f6ca1b8b75f211"
+                },
+                {
+                  "path": "jitmind/code_context/models.py",
+                  "sha256": "84686d3cdb1f34e6111652956e65b90b01fd19487308a268022a66b14ea44878"
+                },
+                {
+                  "path": "jitmind/code_context/process.py",
+                  "sha256": "ef9baf49a5bbe761fbffa1f60ef172b8f53c587eaffc13c4e179f2700462f77a"
+                },
+                {
+                  "path": "jitmind/code_context/retriever.py",
+                  "sha256": "822dc84804992b8bd9fe7de62e535843585091350f8ff5a2311a05eaf51150f4"
+                },
+                {
+                  "path": "jitmind/code_context/service.py",
+                  "sha256": "16daa9b16b9a55f130ca61204c96d40e8abb279709dbd4c36b81e4c99afbe873"
+                },
+                {
+                  "path": "jitmind/code_context/snapshot.py",
+                  "sha256": "45a35d8a3455cde10816ff3e2feef3a7a21174bbec41326635d94394fec27272"
+                },
+                {
+                  "path": "jitmind/code_memory/anchors.py",
+                  "sha256": "98d9715ad0faba844638859e5f49d8ccb58cd9a7e67c56c7376b81b08c24e31a"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_models.py",
+                  "sha256": "39c9e9676f58314e4e3d9073efd19f0072023440cdb6fc61f9d802fc9a9f203c"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_storage.py",
+                  "sha256": "5684d3bf4269703f87f4232f0d3fd32482d90be704170f57e1cc6670ab539c1f"
+                },
+                {
+                  "path": "jitmind/code_memory/revalidation.py",
+                  "sha256": "ada66aa4f8d553d8930eb37aff00662544d7216bdfae941d643485ca8cdd92d5"
+                },
+                {
+                  "path": "jitmind/code_memory/open_work.py",
+                  "sha256": "330b670fa75dfc33bd0013a4af3293fed415c29ef4f1df8df2f3295642e3a23c"
+                },
+                {
+                  "path": "jitmind/code_memory/work_storage.py",
+                  "sha256": "f0a2775db9046f8b01007c946a586e9a4bd1ab3763fff5fef87df0d5555b8362"
+                },
+                {
+                  "path": "jitmind/code_memory/lesson_models.py",
+                  "sha256": "447721bf5d7c7b972a4d3b1bda171c674a107d3aba50c90fa0033403f4c5b787"
+                },
+                {
+                  "path": "jitmind/code_memory/preflight.py",
+                  "sha256": "7119d160107db1f0828fa31affc3aba18bcd716163df562a8c77c45cfebc6258"
+                }
+              ],
+              "assertions": [
+                "Fact durable and lesson delivered while primary outbox lag remains visible; NOOP delivered twice ahead of original add leaves watermark 0.",
+                "Real source move makes prior code freshness nonfresh and binding unknown; new build/revalidation produces higher generation and moved verified binding.",
+                "Lesson version 2 replay is idempotent; version 1 rejected; fact metadata redelivery rejected.",
+                "Deletion metadata and event followed by old add cannot resurrect fact/binding/lesson; pending add schedule explicitly delivers delete before still-pending add.",
+                "Primary watermark reaches delete revision, pending count zero, current code generation remains correct."
+              ],
+              "evidence_limits": [
+                "J04 raw code index consumes captured source, not fact bodies. MEMORY_ONLY_SENTINEL_83f91c is deliberately absent from source.",
+                "Raw authorized source remains readable after memory forget; forgetting memory never promises deletion of user source files.",
+                "J02 primary administrative/include_inactive history and backups may retain bodies. Assertions concern ordinary derived retrieval, receipt reconstruction, and content-free binding/work/delivery histories; no physical erasure claim.",
+                "Source generation, binding observation and outbox revision are separate; no atomic transaction across checkout and three databases is claimed.",
+                "Uses supplied J10 snapshot. Owner modules may advance; final supervisor must assemble and retest, configuring newer authority adapters if required. No automatic listener or raw-code outbox consumer is invented."
+              ]
+            }
+          ],
+          "additional_mapping_required": false
+        },
+        {
+          "stage_id": "J-05",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_code_anchors.py::test_real_j02_projection_redelivery_and_terminal_tombstone",
+              "kind": "projection",
+              "source": {
+                "path": "tests/test_code_anchors.py",
+                "sha256": "8255edab92b341ef41dd5556a68f3f2be8e52b0e940e7e9e98891f2f5cced3cb"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_code_anchors.py",
+                  "sha256": "8255edab92b341ef41dd5556a68f3f2be8e52b0e940e7e9e98891f2f5cced3cb"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J30",
+      "ticket": "J-07",
+      "scenario": "Checkpoint identity collision",
+      "required_assertion": "Distinct identities cannot overwrite/delete each other; verify payload identity; ambiguous legacy mapping flagged",
+      "required_in_tickets": [
+        "J-07"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-07",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_checkpoint_manager.py::test_legacy_identity_collision_and_migration",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_checkpoint_manager.py",
+                "sha256": "a85fd91122e6dbde9ddf7b7e5422af622d828192540ef3241d87ef51923f9b65"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_checkpoint_manager.py",
+                  "sha256": "a85fd91122e6dbde9ddf7b7e5422af622d828192540ef3241d87ef51923f9b65"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            },
+            {
+              "node_id": "tests/test_checkpoint_manager.py::test_requested_identity_verified_even_in_v2_path",
+              "kind": "real_storage",
+              "source": {
+                "path": "tests/test_checkpoint_manager.py",
+                "sha256": "a85fd91122e6dbde9ddf7b7e5422af622d828192540ef3241d87ef51923f9b65"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_checkpoint_manager.py",
+                  "sha256": "a85fd91122e6dbde9ddf7b7e5422af622d828192540ef3241d87ef51923f9b65"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J31",
+      "ticket": "J-06",
+      "scenario": "Forget and derived retention",
+      "required_assertion": "Current retrieval excludes forgotten content; obligation remains; retained metadata does not leak body",
+      "required_in_tickets": [
+        "J-02",
+        "J-04",
+        "J-05",
+        "J-06"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-02",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_durable_storage.py::test_projection_duplicate_out_of_order_and_forget_filter",
+              "kind": "projection",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        },
+        {
+          "stage_id": "J-04",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_real_parser_binding_projection_redelivery_and_primary_forget[projected]",
+              "kind": "projection",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+                }
+              ],
+              "fixture_description": "Same two actual composed parser chains as J29; memory-only sentinel first positively delivered from bound lesson and memory, then primary forget with deletion projection delayed.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/scope.py",
+                  "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a"
+                },
+                {
+                  "path": "jitmind/code_context/__init__.py",
+                  "sha256": "0bdda619ccabbb7f4894b106572885cf15b5c86232bfd6f333f6ca1b8b75f211"
+                },
+                {
+                  "path": "jitmind/code_context/models.py",
+                  "sha256": "84686d3cdb1f34e6111652956e65b90b01fd19487308a268022a66b14ea44878"
+                },
+                {
+                  "path": "jitmind/code_context/process.py",
+                  "sha256": "ef9baf49a5bbe761fbffa1f60ef172b8f53c587eaffc13c4e179f2700462f77a"
+                },
+                {
+                  "path": "jitmind/code_context/retriever.py",
+                  "sha256": "822dc84804992b8bd9fe7de62e535843585091350f8ff5a2311a05eaf51150f4"
+                },
+                {
+                  "path": "jitmind/code_context/service.py",
+                  "sha256": "16daa9b16b9a55f130ca61204c96d40e8abb279709dbd4c36b81e4c99afbe873"
+                },
+                {
+                  "path": "jitmind/code_context/snapshot.py",
+                  "sha256": "45a35d8a3455cde10816ff3e2feef3a7a21174bbec41326635d94394fec27272"
+                },
+                {
+                  "path": "jitmind/code_memory/anchors.py",
+                  "sha256": "98d9715ad0faba844638859e5f49d8ccb58cd9a7e67c56c7376b81b08c24e31a"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_models.py",
+                  "sha256": "39c9e9676f58314e4e3d9073efd19f0072023440cdb6fc61f9d802fc9a9f203c"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_storage.py",
+                  "sha256": "5684d3bf4269703f87f4232f0d3fd32482d90be704170f57e1cc6670ab539c1f"
+                },
+                {
+                  "path": "jitmind/code_memory/revalidation.py",
+                  "sha256": "ada66aa4f8d553d8930eb37aff00662544d7216bdfae941d643485ca8cdd92d5"
+                },
+                {
+                  "path": "jitmind/code_memory/open_work.py",
+                  "sha256": "330b670fa75dfc33bd0013a4af3293fed415c29ef4f1df8df2f3295642e3a23c"
+                },
+                {
+                  "path": "jitmind/code_memory/work_storage.py",
+                  "sha256": "f0a2775db9046f8b01007c946a586e9a4bd1ab3763fff5fef87df0d5555b8362"
+                },
+                {
+                  "path": "jitmind/code_memory/lesson_models.py",
+                  "sha256": "447721bf5d7c7b972a4d3b1bda171c674a107d3aba50c90fa0033403f4c5b787"
+                },
+                {
+                  "path": "jitmind/code_memory/preflight.py",
+                  "sha256": "7119d160107db1f0828fa31affc3aba18bcd716163df562a8c77c45cfebc6258"
+                }
+              ],
+              "assertions": [
+                "After primary forget, ordinary fact/page/adapters/projected entries/receipt reconstruction exclude sentinel before any delete projection.",
+                "Both saved preflight receipts return empty payload; candidates empty; bound projection refused; deletion metadata then old events cannot revive content.",
+                "Purged lesson table empty; binding history, work history/receipts, delivery receipts and tombstones contain no sentinel.",
+                "Task remains open revision 1 with repo fallback. Raw authorized source remains exact and readable with original SHA-256, current generation and no memory sentinel."
+              ],
+              "evidence_limits": [
+                "J04 raw code index consumes captured source, not fact bodies. MEMORY_ONLY_SENTINEL_83f91c is deliberately absent from source.",
+                "Raw authorized source remains readable after memory forget; forgetting memory never promises deletion of user source files.",
+                "J02 primary administrative/include_inactive history and backups may retain bodies. Assertions concern ordinary derived retrieval, receipt reconstruction, and content-free binding/work/delivery histories; no physical erasure claim.",
+                "Source generation, binding observation and outbox revision are separate; no atomic transaction across checkout and three databases is claimed.",
+                "Uses supplied J10 snapshot. Owner modules may advance; final supervisor must assemble and retest, configuring newer authority adapters if required. No automatic listener or raw-code outbox consumer is invented."
+              ]
+            },
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_real_parser_binding_projection_redelivery_and_primary_forget[add_pending]",
+              "kind": "projection",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "266b393756709ea254eea591001880639c14f1a7e5a967e832db3ebd23f540d8"
+                }
+              ],
+              "fixture_description": "Same two actual composed parser chains as J29; memory-only sentinel first positively delivered from bound lesson and memory, then primary forget with deletion projection delayed.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/scope.py",
+                  "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a"
+                },
+                {
+                  "path": "jitmind/code_context/__init__.py",
+                  "sha256": "0bdda619ccabbb7f4894b106572885cf15b5c86232bfd6f333f6ca1b8b75f211"
+                },
+                {
+                  "path": "jitmind/code_context/models.py",
+                  "sha256": "84686d3cdb1f34e6111652956e65b90b01fd19487308a268022a66b14ea44878"
+                },
+                {
+                  "path": "jitmind/code_context/process.py",
+                  "sha256": "ef9baf49a5bbe761fbffa1f60ef172b8f53c587eaffc13c4e179f2700462f77a"
+                },
+                {
+                  "path": "jitmind/code_context/retriever.py",
+                  "sha256": "822dc84804992b8bd9fe7de62e535843585091350f8ff5a2311a05eaf51150f4"
+                },
+                {
+                  "path": "jitmind/code_context/service.py",
+                  "sha256": "16daa9b16b9a55f130ca61204c96d40e8abb279709dbd4c36b81e4c99afbe873"
+                },
+                {
+                  "path": "jitmind/code_context/snapshot.py",
+                  "sha256": "45a35d8a3455cde10816ff3e2feef3a7a21174bbec41326635d94394fec27272"
+                },
+                {
+                  "path": "jitmind/code_memory/anchors.py",
+                  "sha256": "98d9715ad0faba844638859e5f49d8ccb58cd9a7e67c56c7376b81b08c24e31a"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_models.py",
+                  "sha256": "39c9e9676f58314e4e3d9073efd19f0072023440cdb6fc61f9d802fc9a9f203c"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_storage.py",
+                  "sha256": "5684d3bf4269703f87f4232f0d3fd32482d90be704170f57e1cc6670ab539c1f"
+                },
+                {
+                  "path": "jitmind/code_memory/revalidation.py",
+                  "sha256": "ada66aa4f8d553d8930eb37aff00662544d7216bdfae941d643485ca8cdd92d5"
+                },
+                {
+                  "path": "jitmind/code_memory/open_work.py",
+                  "sha256": "330b670fa75dfc33bd0013a4af3293fed415c29ef4f1df8df2f3295642e3a23c"
+                },
+                {
+                  "path": "jitmind/code_memory/work_storage.py",
+                  "sha256": "f0a2775db9046f8b01007c946a586e9a4bd1ab3763fff5fef87df0d5555b8362"
+                },
+                {
+                  "path": "jitmind/code_memory/lesson_models.py",
+                  "sha256": "447721bf5d7c7b972a4d3b1bda171c674a107d3aba50c90fa0033403f4c5b787"
+                },
+                {
+                  "path": "jitmind/code_memory/preflight.py",
+                  "sha256": "7119d160107db1f0828fa31affc3aba18bcd716163df562a8c77c45cfebc6258"
+                }
+              ],
+              "assertions": [
+                "After primary forget, ordinary fact/page/adapters/projected entries/receipt reconstruction exclude sentinel before any delete projection.",
+                "Both saved preflight receipts return empty payload; candidates empty; bound projection refused; deletion metadata then old events cannot revive content.",
+                "Purged lesson table empty; binding history, work history/receipts, delivery receipts and tombstones contain no sentinel.",
+                "Task remains open revision 1 with repo fallback. Raw authorized source remains exact and readable with original SHA-256, current generation and no memory sentinel."
+              ],
+              "evidence_limits": [
+                "J04 raw code index consumes captured source, not fact bodies. MEMORY_ONLY_SENTINEL_83f91c is deliberately absent from source.",
+                "Raw authorized source remains readable after memory forget; forgetting memory never promises deletion of user source files.",
+                "J02 primary administrative/include_inactive history and backups may retain bodies. Assertions concern ordinary derived retrieval, receipt reconstruction, and content-free binding/work/delivery histories; no physical erasure claim.",
+                "Source generation, binding observation and outbox revision are separate; no atomic transaction across checkout and three databases is claimed.",
+                "Uses supplied J10 snapshot. Owner modules may advance; final supervisor must assemble and retest, configuring newer authority adapters if required. No automatic listener or raw-code outbox consumer is invented."
+              ]
+            }
+          ],
+          "additional_mapping_required": false
+        },
+        {
+          "stage_id": "J-05",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_code_anchors.py::test_deleted_authority_with_no_projection_cannot_return_verified",
+              "kind": "real_parser",
+              "source": {
+                "path": "tests/test_code_anchors.py",
+                "sha256": "8255edab92b341ef41dd5556a68f3f2be8e52b0e940e7e9e98891f2f5cced3cb"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_code_anchors.py",
+                  "sha256": "8255edab92b341ef41dd5556a68f3f2be8e52b0e940e7e9e98891f2f5cced3cb"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        },
+        {
+          "stage_id": "J-06",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_preflight.py::test_primary_forget_hides_delayed_projection_replay_and_keeps_work",
+              "kind": "public_api",
+              "source": {
+                "path": "tests/test_preflight.py",
+                "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_preflight.py",
+                  "sha256": "b468672ced29b13192e8ec6b03ff4c09ac1d0df6bc872b570a4ffd1d1424690c"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "J32",
+      "ticket": "J-08",
+      "scenario": "Standalone install qualification",
+      "required_assertion": "Core works independently; absent optional adapter gives capability error not failed import or remote fallback",
+      "required_in_tickets": [
+        "J-08"
+      ],
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-08",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_standalone_install.py::installed_smoke",
+              "kind": "installed_package",
+              "source": {
+                "path": "tests/test_standalone_install.py",
+                "sha256": "1617be508bd800a323058a8f5975bd54ca3ba6bccd9ca6a7df631586f0b75004"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_standalone_install.py",
+                  "sha256": "1617be508bd800a323058a8f5975bd54ca3ba6bccd9ca6a7df631586f0b75004"
+                }
+              ],
+              "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "derived_map_sha256": "752b9ed4b8b2571865a0369699bf0ea069f09f3b638f257c79ac498d97b8f5ba",
+  "mapping_notice": "Final owner-source mapping retains 32 cases and 41 required stages, original handoff/oracle digests, and every prior node. J10 supplies the eight previously incomplete stages. All statuses remain not_run; staged execution is separate from qualification. J10 evidence kinds are preserved exactly and currently block the unchanged runner schema; see final-map-review.md.",
+  "temporal_oracle": {
+    "source_sha256": "3a2bb77dab2790f10ad091d048987ab41064699b5bc4c05820d4b4aa83fe231e",
+    "year": 2026,
+    "timezone": "UTC",
+    "interval": "half-open",
+    "answers": [
+      [
+        "Jan20",
+        "Jan20",
+        3
+      ],
+      [
+        "Jan20",
+        "Feb15",
+        3
+      ],
+      [
+        "Jan20",
+        "Mar1",
+        4
+      ],
+      [
+        "Jan10",
+        "Mar2",
+        3
+      ],
+      [
+        "Jan15",
+        "Mar2",
+        4
+      ],
+      [
+        "Feb1",
+        "Mar2",
+        5
+      ],
+      [
+        "Feb10",
+        "Jan20",
+        3
+      ]
+    ],
+    "latest_Jan20": 4,
+    "conflicts": "error; never insertion order",
+    "legacy_naive_api": "unchanged"
+  }
+}

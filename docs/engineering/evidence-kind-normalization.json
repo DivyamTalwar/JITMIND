@@ -1,0 +1,453 @@
+{
+  "notice": "Metadata normalization to the existing fixed runner vocabulary; node identities, assertions, stage requirements and not_run statuses are unchanged. Specific execution descriptions remain attached to each node.",
+  "changes": [
+    {
+      "file": "acceptance-map.json",
+      "case": "J02",
+      "stage": "J-01",
+      "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[advanced]",
+      "original_kind": "injected_filesystem_publication_fault",
+      "canonical_kind": "injected_storage_fault"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J02",
+      "stage": "J-01",
+      "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[memory]",
+      "original_kind": "injected_filesystem_publication_fault",
+      "canonical_kind": "injected_storage_fault"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J02",
+      "stage": "J-01",
+      "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[ttl_memory]",
+      "original_kind": "injected_filesystem_publication_fault",
+      "canonical_kind": "injected_storage_fault"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J02",
+      "stage": "J-01",
+      "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[pages]",
+      "original_kind": "injected_filesystem_publication_fault",
+      "canonical_kind": "injected_storage_fault"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J02",
+      "stage": "J-01",
+      "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[ttl_pages]",
+      "original_kind": "injected_filesystem_publication_fault",
+      "canonical_kind": "injected_storage_fault"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J02",
+      "stage": "J-02",
+      "node_id": "tests/test_acceptance_edges.py::test_real_sqlite_full_rolls_back_every_effect_then_accepts_same_request",
+      "original_kind": "real_sqlite_capacity",
+      "canonical_kind": "real_storage"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J04",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[before_transaction-False]",
+      "original_kind": "real_process_exit",
+      "canonical_kind": "real_storage"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J04",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_page_insert-False]",
+      "original_kind": "real_process_exit",
+      "canonical_kind": "real_storage"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J04",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_fact_insert-False]",
+      "original_kind": "real_process_exit",
+      "canonical_kind": "real_storage"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J04",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_outbox_receipt-False]",
+      "original_kind": "real_process_exit",
+      "canonical_kind": "real_storage"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J04",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_commit-True]",
+      "original_kind": "real_process_exit",
+      "canonical_kind": "real_storage"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J16",
+      "stage": "J-06",
+      "node_id": "tests/test_open_work_bindings.py::test_j16_j31_real_binding_move_disappearance_forget_keep_obligation[# code removed\\n-orphaned_confirmed]",
+      "original_kind": "real_parser_binding_open_work",
+      "canonical_kind": "real_parser"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J16",
+      "stage": "J-06",
+      "node_id": "tests/test_open_work_bindings.py::test_j16_j31_real_binding_move_disappearance_forget_keep_obligation[invalid syntax ???\\n-unknown]",
+      "original_kind": "real_parser_binding_open_work",
+      "canonical_kind": "real_parser"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J22",
+      "stage": "J-07",
+      "node_id": "tests/test_checkpoint_ledger.py::test_tool_boundaries_and_explicit_terminals[tool_result]",
+      "original_kind": "real_checkpoint_ledger",
+      "canonical_kind": "real_storage"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J22",
+      "stage": "J-07",
+      "node_id": "tests/test_checkpoint_ledger.py::test_tool_boundaries_and_explicit_terminals[tool_cancel]",
+      "original_kind": "real_checkpoint_ledger",
+      "canonical_kind": "real_storage"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J22",
+      "stage": "J-07",
+      "node_id": "tests/test_checkpoint_ledger.py::test_tool_boundaries_and_explicit_terminals[tool_timeout]",
+      "original_kind": "real_checkpoint_ledger",
+      "canonical_kind": "real_storage"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J25",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_migration.py::test_invalid_migration_refuses_without_changes[truncated]",
+      "original_kind": "real_migration_with_fault_boundaries",
+      "canonical_kind": "migration"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J25",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_migration.py::test_invalid_migration_refuses_without_changes[duplicate_json_key]",
+      "original_kind": "real_migration_with_fault_boundaries",
+      "canonical_kind": "migration"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J25",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_migration.py::test_invalid_migration_refuses_without_changes[nan]",
+      "original_kind": "real_migration_with_fault_boundaries",
+      "canonical_kind": "migration"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J25",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_migration.py::test_staged_failure_leaves_legacy_and_candidate_unchanged[before_import]",
+      "original_kind": "real_migration_with_fault_boundaries",
+      "canonical_kind": "migration"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J25",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_migration.py::test_staged_failure_leaves_legacy_and_candidate_unchanged[after_import_pages]",
+      "original_kind": "real_migration_with_fault_boundaries",
+      "canonical_kind": "migration"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J25",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_migration.py::test_staged_failure_leaves_legacy_and_candidate_unchanged[before_import_commit]",
+      "original_kind": "real_migration_with_fault_boundaries",
+      "canonical_kind": "migration"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J25",
+      "stage": "J-02",
+      "node_id": "tests/test_acceptance_edges.py::test_real_migration_exit_preserves_source_and_allows_retry[after_import_pages]",
+      "original_kind": "real_migration_with_fault_boundaries",
+      "canonical_kind": "migration"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J25",
+      "stage": "J-02",
+      "node_id": "tests/test_acceptance_edges.py::test_real_migration_exit_preserves_source_and_allows_retry[before_import_commit]",
+      "original_kind": "real_migration_with_fault_boundaries",
+      "canonical_kind": "migration"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J29",
+      "stage": "J-04",
+      "node_id": "tests/test_acceptance_edges.py::test_real_parser_binding_projection_redelivery_and_primary_forget[projected]",
+      "original_kind": "real_parser_binding_projection_composition",
+      "canonical_kind": "projection"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J29",
+      "stage": "J-04",
+      "node_id": "tests/test_acceptance_edges.py::test_real_parser_binding_projection_redelivery_and_primary_forget[add_pending]",
+      "original_kind": "real_parser_binding_projection_composition",
+      "canonical_kind": "projection"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J31",
+      "stage": "J-04",
+      "node_id": "tests/test_acceptance_edges.py::test_real_parser_binding_projection_redelivery_and_primary_forget[projected]",
+      "original_kind": "real_parser_binding_preflight_forget_composition",
+      "canonical_kind": "projection"
+    },
+    {
+      "file": "acceptance-map.json",
+      "case": "J31",
+      "stage": "J-04",
+      "node_id": "tests/test_acceptance_edges.py::test_real_parser_binding_projection_redelivery_and_primary_forget[add_pending]",
+      "original_kind": "real_parser_binding_preflight_forget_composition",
+      "canonical_kind": "projection"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J02",
+      "stage": "J-01",
+      "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[advanced]",
+      "original_kind": "injected_filesystem_publication_fault",
+      "canonical_kind": "injected_storage_fault"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J02",
+      "stage": "J-01",
+      "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[memory]",
+      "original_kind": "injected_filesystem_publication_fault",
+      "canonical_kind": "injected_storage_fault"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J02",
+      "stage": "J-01",
+      "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[ttl_memory]",
+      "original_kind": "injected_filesystem_publication_fault",
+      "canonical_kind": "injected_storage_fault"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J02",
+      "stage": "J-01",
+      "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[pages]",
+      "original_kind": "injected_filesystem_publication_fault",
+      "canonical_kind": "injected_storage_fault"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J02",
+      "stage": "J-01",
+      "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[ttl_pages]",
+      "original_kind": "injected_filesystem_publication_fault",
+      "canonical_kind": "injected_storage_fault"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J02",
+      "stage": "J-02",
+      "node_id": "tests/test_acceptance_edges.py::test_real_sqlite_full_rolls_back_every_effect_then_accepts_same_request",
+      "original_kind": "real_sqlite_capacity",
+      "canonical_kind": "real_storage"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J04",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[before_transaction-False]",
+      "original_kind": "real_process_exit",
+      "canonical_kind": "real_storage"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J04",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_page_insert-False]",
+      "original_kind": "real_process_exit",
+      "canonical_kind": "real_storage"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J04",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_fact_insert-False]",
+      "original_kind": "real_process_exit",
+      "canonical_kind": "real_storage"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J04",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_outbox_receipt-False]",
+      "original_kind": "real_process_exit",
+      "canonical_kind": "real_storage"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J04",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_commit-True]",
+      "original_kind": "real_process_exit",
+      "canonical_kind": "real_storage"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J16",
+      "stage": "J-06",
+      "node_id": "tests/test_open_work_bindings.py::test_j16_j31_real_binding_move_disappearance_forget_keep_obligation[# code removed\\n-orphaned_confirmed]",
+      "original_kind": "real_parser_binding_open_work",
+      "canonical_kind": "real_parser"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J16",
+      "stage": "J-06",
+      "node_id": "tests/test_open_work_bindings.py::test_j16_j31_real_binding_move_disappearance_forget_keep_obligation[invalid syntax ???\\n-unknown]",
+      "original_kind": "real_parser_binding_open_work",
+      "canonical_kind": "real_parser"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J22",
+      "stage": "J-07",
+      "node_id": "tests/test_checkpoint_ledger.py::test_tool_boundaries_and_explicit_terminals[tool_result]",
+      "original_kind": "real_checkpoint_ledger",
+      "canonical_kind": "real_storage"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J22",
+      "stage": "J-07",
+      "node_id": "tests/test_checkpoint_ledger.py::test_tool_boundaries_and_explicit_terminals[tool_cancel]",
+      "original_kind": "real_checkpoint_ledger",
+      "canonical_kind": "real_storage"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J22",
+      "stage": "J-07",
+      "node_id": "tests/test_checkpoint_ledger.py::test_tool_boundaries_and_explicit_terminals[tool_timeout]",
+      "original_kind": "real_checkpoint_ledger",
+      "canonical_kind": "real_storage"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J25",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_migration.py::test_invalid_migration_refuses_without_changes[truncated]",
+      "original_kind": "real_migration_with_fault_boundaries",
+      "canonical_kind": "migration"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J25",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_migration.py::test_invalid_migration_refuses_without_changes[duplicate_json_key]",
+      "original_kind": "real_migration_with_fault_boundaries",
+      "canonical_kind": "migration"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J25",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_migration.py::test_invalid_migration_refuses_without_changes[nan]",
+      "original_kind": "real_migration_with_fault_boundaries",
+      "canonical_kind": "migration"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J25",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_migration.py::test_staged_failure_leaves_legacy_and_candidate_unchanged[before_import]",
+      "original_kind": "real_migration_with_fault_boundaries",
+      "canonical_kind": "migration"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J25",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_migration.py::test_staged_failure_leaves_legacy_and_candidate_unchanged[after_import_pages]",
+      "original_kind": "real_migration_with_fault_boundaries",
+      "canonical_kind": "migration"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J25",
+      "stage": "J-02",
+      "node_id": "tests/test_durable_migration.py::test_staged_failure_leaves_legacy_and_candidate_unchanged[before_import_commit]",
+      "original_kind": "real_migration_with_fault_boundaries",
+      "canonical_kind": "migration"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J25",
+      "stage": "J-02",
+      "node_id": "tests/test_acceptance_edges.py::test_real_migration_exit_preserves_source_and_allows_retry[after_import_pages]",
+      "original_kind": "real_migration_with_fault_boundaries",
+      "canonical_kind": "migration"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J25",
+      "stage": "J-02",
+      "node_id": "tests/test_acceptance_edges.py::test_real_migration_exit_preserves_source_and_allows_retry[before_import_commit]",
+      "original_kind": "real_migration_with_fault_boundaries",
+      "canonical_kind": "migration"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J29",
+      "stage": "J-04",
+      "node_id": "tests/test_acceptance_edges.py::test_real_parser_binding_projection_redelivery_and_primary_forget[projected]",
+      "original_kind": "real_parser_binding_projection_composition",
+      "canonical_kind": "projection"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J29",
+      "stage": "J-04",
+      "node_id": "tests/test_acceptance_edges.py::test_real_parser_binding_projection_redelivery_and_primary_forget[add_pending]",
+      "original_kind": "real_parser_binding_projection_composition",
+      "canonical_kind": "projection"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J31",
+      "stage": "J-04",
+      "node_id": "tests/test_acceptance_edges.py::test_real_parser_binding_projection_redelivery_and_primary_forget[projected]",
+      "original_kind": "real_parser_binding_preflight_forget_composition",
+      "canonical_kind": "projection"
+    },
+    {
+      "file": "acceptance-supplement.json",
+      "case": "J31",
+      "stage": "J-04",
+      "node_id": "tests/test_acceptance_edges.py::test_real_parser_binding_projection_redelivery_and_primary_forget[add_pending]",
+      "original_kind": "real_parser_binding_preflight_forget_composition",
+      "canonical_kind": "projection"
+    }
+  ]
+}
