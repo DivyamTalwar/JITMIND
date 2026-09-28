@@ -1,0 +1,2343 @@
+{
+  "schema": "jitmind.acceptance-supplement/v1",
+  "target": "JITMIND",
+  "status": "not_run",
+  "notice": "J10 exact-node supplement adapted in J08 to final owner APIs. All statuses remain not_run. Inputs and all_copied_dependencies retain historical J10 provenance; executable node source, fixture and composed-module hashes attest the final staged owner files. See acceptance-edge-notes.md and final-map-review.md.",
+  "inputs": [
+    {
+      "path": "handoff/acceptance-map.json",
+      "sha256": "752b9ed4b8b2571865a0369699bf0ea069f09f3b638f257c79ac498d97b8f5ba"
+    },
+    {
+      "path": "handoff/temporal-oracle.md",
+      "sha256": "3a2bb77dab2790f10ad091d048987ab41064699b5bc4c05820d4b4aa83fe231e"
+    },
+    {
+      "path": "worktrees/J08/docs/engineering/acceptance-map.json",
+      "sha256": "099be53bdf862e4c4ecafc850f218d3db59f7a2a8b1237cc901993ba932fae9a"
+    },
+    {
+      "path": "reports/J10-dependency-snapshot.json",
+      "sha256": "ad6e3927b1926f2bafc08c108e92cad54d98447096695b05fdba1aaf74d8cd58"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "J02",
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-01",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[advanced]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                }
+              ],
+              "fixture_description": "Five real legacy store classes in temporary directories; successful initial append, ENOSPC from os.replace after temporary bytes are fsynced, then successful append after fault removal.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/memory.py",
+                  "sha256": "68e5803e6523b41f09fb710656ddfb9c0f2a61bb9ba9335a8fa684173e59a7e9"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_memory.py",
+                  "sha256": "ff48ac01b5a5a1bacd41d671f48e7cee07a703dcf5b3017eb8b8ca14405e29ca"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_page.py",
+                  "sha256": "2889b4ec309cda92c8eeda1ec624f8a074ae00d791e9d5e7fd11a6e16d9816ca"
+                },
+                {
+                  "path": "jitmind/utils/atomic_io.py",
+                  "sha256": "aa58bbae5ca9f686ad020f7ebe74a27c082400964aebad3614fe46cd4466202d"
+                },
+                {
+                  "path": "jitmind/utils/file_lock.py",
+                  "sha256": "4498fbe42d1a9b8f7224f17d684a8a35fb15dbb815b49de83d1246be5ed6e398"
+                }
+              ],
+              "assertions": [
+                "Typed PersistenceError reaches public add caller with ENOSPC cause and outcome_uncertain=False.",
+                "Previous authoritative bytes unchanged; same-instance and fresh reader contain only prior content; temporary file removed.",
+                "Positive writes before and after fault prove usable fixture."
+              ],
+              "evidence_limits": [
+                "Injects only errno.ENOSPC at the actual pre-replacement boundary; does not fill disk or assert post-replacement failure semantics.",
+                "Covers the five public store add surfaces, not every MemoryAgent/provider path or every filesystem syscall."
+              ]
+            },
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[memory]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                }
+              ],
+              "fixture_description": "Five real legacy store classes in temporary directories; successful initial append, ENOSPC from os.replace after temporary bytes are fsynced, then successful append after fault removal.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/memory.py",
+                  "sha256": "68e5803e6523b41f09fb710656ddfb9c0f2a61bb9ba9335a8fa684173e59a7e9"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_memory.py",
+                  "sha256": "ff48ac01b5a5a1bacd41d671f48e7cee07a703dcf5b3017eb8b8ca14405e29ca"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_page.py",
+                  "sha256": "2889b4ec309cda92c8eeda1ec624f8a074ae00d791e9d5e7fd11a6e16d9816ca"
+                },
+                {
+                  "path": "jitmind/utils/atomic_io.py",
+                  "sha256": "aa58bbae5ca9f686ad020f7ebe74a27c082400964aebad3614fe46cd4466202d"
+                },
+                {
+                  "path": "jitmind/utils/file_lock.py",
+                  "sha256": "4498fbe42d1a9b8f7224f17d684a8a35fb15dbb815b49de83d1246be5ed6e398"
+                }
+              ],
+              "assertions": [
+                "Typed PersistenceError reaches public add caller with ENOSPC cause and outcome_uncertain=False.",
+                "Previous authoritative bytes unchanged; same-instance and fresh reader contain only prior content; temporary file removed.",
+                "Positive writes before and after fault prove usable fixture."
+              ],
+              "evidence_limits": [
+                "Injects only errno.ENOSPC at the actual pre-replacement boundary; does not fill disk or assert post-replacement failure semantics.",
+                "Covers the five public store add surfaces, not every MemoryAgent/provider path or every filesystem syscall."
+              ]
+            },
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[ttl_memory]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                }
+              ],
+              "fixture_description": "Five real legacy store classes in temporary directories; successful initial append, ENOSPC from os.replace after temporary bytes are fsynced, then successful append after fault removal.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/memory.py",
+                  "sha256": "68e5803e6523b41f09fb710656ddfb9c0f2a61bb9ba9335a8fa684173e59a7e9"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_memory.py",
+                  "sha256": "ff48ac01b5a5a1bacd41d671f48e7cee07a703dcf5b3017eb8b8ca14405e29ca"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_page.py",
+                  "sha256": "2889b4ec309cda92c8eeda1ec624f8a074ae00d791e9d5e7fd11a6e16d9816ca"
+                },
+                {
+                  "path": "jitmind/utils/atomic_io.py",
+                  "sha256": "aa58bbae5ca9f686ad020f7ebe74a27c082400964aebad3614fe46cd4466202d"
+                },
+                {
+                  "path": "jitmind/utils/file_lock.py",
+                  "sha256": "4498fbe42d1a9b8f7224f17d684a8a35fb15dbb815b49de83d1246be5ed6e398"
+                }
+              ],
+              "assertions": [
+                "Typed PersistenceError reaches public add caller with ENOSPC cause and outcome_uncertain=False.",
+                "Previous authoritative bytes unchanged; same-instance and fresh reader contain only prior content; temporary file removed.",
+                "Positive writes before and after fault prove usable fixture."
+              ],
+              "evidence_limits": [
+                "Injects only errno.ENOSPC at the actual pre-replacement boundary; does not fill disk or assert post-replacement failure semantics.",
+                "Covers the five public store add surfaces, not every MemoryAgent/provider path or every filesystem syscall."
+              ]
+            },
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[pages]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                }
+              ],
+              "fixture_description": "Five real legacy store classes in temporary directories; successful initial append, ENOSPC from os.replace after temporary bytes are fsynced, then successful append after fault removal.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/memory.py",
+                  "sha256": "68e5803e6523b41f09fb710656ddfb9c0f2a61bb9ba9335a8fa684173e59a7e9"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_memory.py",
+                  "sha256": "ff48ac01b5a5a1bacd41d671f48e7cee07a703dcf5b3017eb8b8ca14405e29ca"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_page.py",
+                  "sha256": "2889b4ec309cda92c8eeda1ec624f8a074ae00d791e9d5e7fd11a6e16d9816ca"
+                },
+                {
+                  "path": "jitmind/utils/atomic_io.py",
+                  "sha256": "aa58bbae5ca9f686ad020f7ebe74a27c082400964aebad3614fe46cd4466202d"
+                },
+                {
+                  "path": "jitmind/utils/file_lock.py",
+                  "sha256": "4498fbe42d1a9b8f7224f17d684a8a35fb15dbb815b49de83d1246be5ed6e398"
+                }
+              ],
+              "assertions": [
+                "Typed PersistenceError reaches public add caller with ENOSPC cause and outcome_uncertain=False.",
+                "Previous authoritative bytes unchanged; same-instance and fresh reader contain only prior content; temporary file removed.",
+                "Positive writes before and after fault prove usable fixture."
+              ],
+              "evidence_limits": [
+                "Injects only errno.ENOSPC at the actual pre-replacement boundary; does not fill disk or assert post-replacement failure semantics.",
+                "Covers the five public store add surfaces, not every MemoryAgent/provider path or every filesystem syscall."
+              ]
+            },
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[ttl_pages]",
+              "kind": "injected_storage_fault",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                }
+              ],
+              "fixture_description": "Five real legacy store classes in temporary directories; successful initial append, ENOSPC from os.replace after temporary bytes are fsynced, then successful append after fault removal.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/memory.py",
+                  "sha256": "68e5803e6523b41f09fb710656ddfb9c0f2a61bb9ba9335a8fa684173e59a7e9"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_memory.py",
+                  "sha256": "ff48ac01b5a5a1bacd41d671f48e7cee07a703dcf5b3017eb8b8ca14405e29ca"
+                },
+                {
+                  "path": "jitmind/schemas/ttl_page.py",
+                  "sha256": "2889b4ec309cda92c8eeda1ec624f8a074ae00d791e9d5e7fd11a6e16d9816ca"
+                },
+                {
+                  "path": "jitmind/utils/atomic_io.py",
+                  "sha256": "aa58bbae5ca9f686ad020f7ebe74a27c082400964aebad3614fe46cd4466202d"
+                },
+                {
+                  "path": "jitmind/utils/file_lock.py",
+                  "sha256": "4498fbe42d1a9b8f7224f17d684a8a35fb15dbb815b49de83d1246be5ed6e398"
+                }
+              ],
+              "assertions": [
+                "Typed PersistenceError reaches public add caller with ENOSPC cause and outcome_uncertain=False.",
+                "Previous authoritative bytes unchanged; same-instance and fresh reader contain only prior content; temporary file removed.",
+                "Positive writes before and after fault prove usable fixture."
+              ],
+              "evidence_limits": [
+                "Injects only errno.ENOSPC at the actual pre-replacement boundary; does not fill disk or assert post-replacement failure semantics.",
+                "Covers the five public store add surfaces, not every MemoryAgent/provider path or every filesystem syscall."
+              ]
+            }
+          ]
+        },
+        {
+          "stage_id": "J-02",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_real_sqlite_full_rolls_back_every_effect_then_accepts_same_request",
+              "kind": "real_storage",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                }
+              ],
+              "fixture_description": "Real temporary SQLite DB; each ingest connection capped to current page_count; 100000-character allowed input triggers native SQLITE_FULL, then cap removed for same-key successful commit.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                }
+              ],
+              "assertions": [
+                "Observes native sqlite_errorcode == SQLITE_FULL before product error translation; public StorageFailure, no acknowledgement.",
+                "Fresh reader sees zero revision/facts/pages/operations/outbox; no receipt; raw tables including namespace and projection remain empty; integrity_check=ok.",
+                "After removing cap, same request commits fact/page/receipt/event; replay is idempotent and event delivery returns the fact."
+              ],
+              "evidence_limits": [
+                "Connection wrapper configures a real PRAGMA, not a mocked SQLite exception; host disk is not exhausted.",
+                "Empty temporary database only; no production filesystem or WAL qualification."
+              ]
+            }
+          ]
+        }
+      ],
+      "scenario": "Disk-full write failure",
+      "required_assertion": "Durability failure reaches caller; no committed acknowledgement"
+    },
+    {
+      "case_id": "J04",
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-02",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[before_transaction-False]",
+              "kind": "real_storage",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Existing J02 spawned child calls os._exit(37) at before_transaction, after_page_insert, after_fact_insert, after_outbox_receipt, or after_commit; fresh SQLite process view and retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                }
+              ],
+              "assertions": [
+                "Child exits at requested boundary; reopened page/fact/receipt counts are all zero before commit or all one after commit.",
+                "Retry yields revision 1 and one page; child has bounded join, terminate and kill teardown."
+              ],
+              "evidence_limits": [
+                "Process exit is real; kill point selected by trusted fault hook. Does not emulate machine power loss.",
+                "Existing node asserts pair counts and idempotent recovery; no claim of a separately asserted byte-for-byte provenance comparison."
+              ]
+            },
+            {
+              "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_page_insert-False]",
+              "kind": "real_storage",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Existing J02 spawned child calls os._exit(37) at before_transaction, after_page_insert, after_fact_insert, after_outbox_receipt, or after_commit; fresh SQLite process view and retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                }
+              ],
+              "assertions": [
+                "Child exits at requested boundary; reopened page/fact/receipt counts are all zero before commit or all one after commit.",
+                "Retry yields revision 1 and one page; child has bounded join, terminate and kill teardown."
+              ],
+              "evidence_limits": [
+                "Process exit is real; kill point selected by trusted fault hook. Does not emulate machine power loss.",
+                "Existing node asserts pair counts and idempotent recovery; no claim of a separately asserted byte-for-byte provenance comparison."
+              ]
+            },
+            {
+              "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_fact_insert-False]",
+              "kind": "real_storage",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Existing J02 spawned child calls os._exit(37) at before_transaction, after_page_insert, after_fact_insert, after_outbox_receipt, or after_commit; fresh SQLite process view and retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                }
+              ],
+              "assertions": [
+                "Child exits at requested boundary; reopened page/fact/receipt counts are all zero before commit or all one after commit.",
+                "Retry yields revision 1 and one page; child has bounded join, terminate and kill teardown."
+              ],
+              "evidence_limits": [
+                "Process exit is real; kill point selected by trusted fault hook. Does not emulate machine power loss.",
+                "Existing node asserts pair counts and idempotent recovery; no claim of a separately asserted byte-for-byte provenance comparison."
+              ]
+            },
+            {
+              "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_outbox_receipt-False]",
+              "kind": "real_storage",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Existing J02 spawned child calls os._exit(37) at before_transaction, after_page_insert, after_fact_insert, after_outbox_receipt, or after_commit; fresh SQLite process view and retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                }
+              ],
+              "assertions": [
+                "Child exits at requested boundary; reopened page/fact/receipt counts are all zero before commit or all one after commit.",
+                "Retry yields revision 1 and one page; child has bounded join, terminate and kill teardown."
+              ],
+              "evidence_limits": [
+                "Process exit is real; kill point selected by trusted fault hook. Does not emulate machine power loss.",
+                "Existing node asserts pair counts and idempotent recovery; no claim of a separately asserted byte-for-byte provenance comparison."
+              ]
+            },
+            {
+              "node_id": "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_commit-True]",
+              "kind": "real_storage",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_storage.py",
+                "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_storage.py",
+                  "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00"
+                }
+              ],
+              "fixture_description": "Existing J02 spawned child calls os._exit(37) at before_transaction, after_page_insert, after_fact_insert, after_outbox_receipt, or after_commit; fresh SQLite process view and retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                }
+              ],
+              "assertions": [
+                "Child exits at requested boundary; reopened page/fact/receipt counts are all zero before commit or all one after commit.",
+                "Retry yields revision 1 and one page; child has bounded join, terminate and kill teardown."
+              ],
+              "evidence_limits": [
+                "Process exit is real; kill point selected by trusted fault hook. Does not emulate machine power loss.",
+                "Existing node asserts pair counts and idempotent recovery; no claim of a separately asserted byte-for-byte provenance comparison."
+              ]
+            }
+          ]
+        }
+      ],
+      "scenario": "Memory/page interrupted write",
+      "required_assertion": "Recovery yields a consistent memory/provenance pair"
+    },
+    {
+      "case_id": "J16",
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-06",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_open_work_bindings.py::test_j16_j31_real_binding_move_disappearance_forget_keep_obligation[# code removed\\n-orphaned_confirmed]",
+              "kind": "real_parser",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_open_work_bindings.py",
+                "sha256": "645628f66ceddab3ebc92c5260f3289aa4c7bea19a165c135d337417e9857f59"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_open_work_bindings.py",
+                  "sha256": "645628f66ceddab3ebc92c5260f3289aa4c7bea19a165c135d337417e9857f59"
+                }
+              ],
+              "fixture_description": "Reviewed existing J06 test: temporary Git checkout parsed by actual J04 Node/tree-sitter, J02 fact, J05 logical binding, J06 obligation; file move then confirmed removal or malformed-source uncertainty.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/scope.py",
+                  "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a"
+                },
+                {
+                  "path": "jitmind/code_context/__init__.py",
+                  "sha256": "0bdda619ccabbb7f4894b106572885cf15b5c86232bfd6f333f6ca1b8b75f211"
+                },
+                {
+                  "path": "jitmind/code_context/models.py",
+                  "sha256": "84686d3cdb1f34e6111652956e65b90b01fd19487308a268022a66b14ea44878"
+                },
+                {
+                  "path": "jitmind/code_context/process.py",
+                  "sha256": "ef9baf49a5bbe761fbffa1f60ef172b8f53c587eaffc13c4e179f2700462f77a"
+                },
+                {
+                  "path": "jitmind/code_context/retriever.py",
+                  "sha256": "822dc84804992b8bd9fe7de62e535843585091350f8ff5a2311a05eaf51150f4"
+                },
+                {
+                  "path": "jitmind/code_context/service.py",
+                  "sha256": "16daa9b16b9a55f130ca61204c96d40e8abb279709dbd4c36b81e4c99afbe873"
+                },
+                {
+                  "path": "jitmind/code_context/snapshot.py",
+                  "sha256": "45a35d8a3455cde10816ff3e2feef3a7a21174bbec41326635d94394fec27272"
+                },
+                {
+                  "path": "jitmind/code_memory/anchors.py",
+                  "sha256": "98d9715ad0faba844638859e5f49d8ccb58cd9a7e67c56c7376b81b08c24e31a"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_models.py",
+                  "sha256": "39c9e9676f58314e4e3d9073efd19f0072023440cdb6fc61f9d802fc9a9f203c"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_storage.py",
+                  "sha256": "5684d3bf4269703f87f4232f0d3fd32482d90be704170f57e1cc6670ab539c1f"
+                },
+                {
+                  "path": "jitmind/code_memory/revalidation.py",
+                  "sha256": "ada66aa4f8d553d8930eb37aff00662544d7216bdfae941d643485ca8cdd92d5"
+                },
+                {
+                  "path": "jitmind/code_memory/open_work.py",
+                  "sha256": "330b670fa75dfc33bd0013a4af3293fed415c29ef4f1df8df2f3295642e3a23c"
+                },
+                {
+                  "path": "jitmind/code_memory/work_storage.py",
+                  "sha256": "f0a2775db9046f8b01007c946a586e9a4bd1ab3763fff5fef87df0d5555b8362"
+                },
+                {
+                  "path": "jitmind/code_memory/lesson_models.py",
+                  "sha256": "447721bf5d7c7b972a4d3b1bda171c674a107d3aba50c90fa0033403f4c5b787"
+                },
+                {
+                  "path": "jitmind/code_memory/preflight.py",
+                  "sha256": "7119d160107db1f0828fa31affc3aba18bcd716163df562a8c77c45cfebc6258"
+                }
+              ],
+              "assertions": [
+                "Binding starts at source.py, follows real move to moved.py, then becomes orphaned_confirmed or unknown.",
+                "OpenWorkService.binding_locations falls back to exact authorized repo; obligation stays open at revision 1 through primary forget.",
+                "Real lesson projection/preflight and binding history run in same chain."
+              ],
+              "evidence_limits": [
+                "Only the two exact collected parameters are reused; current tests and modules are the attested J10 snapshot.",
+                "Broader repository scope is a location fallback, not task completion or proof of code deletion in malformed input."
+              ]
+            },
+            {
+              "node_id": "tests/test_open_work_bindings.py::test_j16_j31_real_binding_move_disappearance_forget_keep_obligation[invalid syntax ???\\n-unknown]",
+              "kind": "real_parser",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_open_work_bindings.py",
+                "sha256": "645628f66ceddab3ebc92c5260f3289aa4c7bea19a165c135d337417e9857f59"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_open_work_bindings.py",
+                  "sha256": "645628f66ceddab3ebc92c5260f3289aa4c7bea19a165c135d337417e9857f59"
+                }
+              ],
+              "fixture_description": "Reviewed existing J06 test: temporary Git checkout parsed by actual J04 Node/tree-sitter, J02 fact, J05 logical binding, J06 obligation; file move then confirmed removal or malformed-source uncertainty.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/scope.py",
+                  "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a"
+                },
+                {
+                  "path": "jitmind/code_context/__init__.py",
+                  "sha256": "0bdda619ccabbb7f4894b106572885cf15b5c86232bfd6f333f6ca1b8b75f211"
+                },
+                {
+                  "path": "jitmind/code_context/models.py",
+                  "sha256": "84686d3cdb1f34e6111652956e65b90b01fd19487308a268022a66b14ea44878"
+                },
+                {
+                  "path": "jitmind/code_context/process.py",
+                  "sha256": "ef9baf49a5bbe761fbffa1f60ef172b8f53c587eaffc13c4e179f2700462f77a"
+                },
+                {
+                  "path": "jitmind/code_context/retriever.py",
+                  "sha256": "822dc84804992b8bd9fe7de62e535843585091350f8ff5a2311a05eaf51150f4"
+                },
+                {
+                  "path": "jitmind/code_context/service.py",
+                  "sha256": "16daa9b16b9a55f130ca61204c96d40e8abb279709dbd4c36b81e4c99afbe873"
+                },
+                {
+                  "path": "jitmind/code_context/snapshot.py",
+                  "sha256": "45a35d8a3455cde10816ff3e2feef3a7a21174bbec41326635d94394fec27272"
+                },
+                {
+                  "path": "jitmind/code_memory/anchors.py",
+                  "sha256": "98d9715ad0faba844638859e5f49d8ccb58cd9a7e67c56c7376b81b08c24e31a"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_models.py",
+                  "sha256": "39c9e9676f58314e4e3d9073efd19f0072023440cdb6fc61f9d802fc9a9f203c"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_storage.py",
+                  "sha256": "5684d3bf4269703f87f4232f0d3fd32482d90be704170f57e1cc6670ab539c1f"
+                },
+                {
+                  "path": "jitmind/code_memory/revalidation.py",
+                  "sha256": "ada66aa4f8d553d8930eb37aff00662544d7216bdfae941d643485ca8cdd92d5"
+                },
+                {
+                  "path": "jitmind/code_memory/open_work.py",
+                  "sha256": "330b670fa75dfc33bd0013a4af3293fed415c29ef4f1df8df2f3295642e3a23c"
+                },
+                {
+                  "path": "jitmind/code_memory/work_storage.py",
+                  "sha256": "f0a2775db9046f8b01007c946a586e9a4bd1ab3763fff5fef87df0d5555b8362"
+                },
+                {
+                  "path": "jitmind/code_memory/lesson_models.py",
+                  "sha256": "447721bf5d7c7b972a4d3b1bda171c674a107d3aba50c90fa0033403f4c5b787"
+                },
+                {
+                  "path": "jitmind/code_memory/preflight.py",
+                  "sha256": "7119d160107db1f0828fa31affc3aba18bcd716163df562a8c77c45cfebc6258"
+                }
+              ],
+              "assertions": [
+                "Binding starts at source.py, follows real move to moved.py, then becomes orphaned_confirmed or unknown.",
+                "OpenWorkService.binding_locations falls back to exact authorized repo; obligation stays open at revision 1 through primary forget.",
+                "Real lesson projection/preflight and binding history run in same chain."
+              ],
+              "evidence_limits": [
+                "Only the two exact collected parameters are reused; current tests and modules are the attested J10 snapshot.",
+                "Broader repository scope is a location fallback, not task completion or proof of code deletion in malformed input."
+              ]
+            }
+          ]
+        }
+      ],
+      "scenario": "Unfinished work loses anchor",
+      "required_assertion": "Obligation remains open and can fall back to broader scope"
+    },
+    {
+      "case_id": "J22",
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-07",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_checkpoint_ledger.py::test_tool_boundaries_and_explicit_terminals[tool_result]",
+              "kind": "real_storage",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_checkpoint_ledger.py",
+                "sha256": "a9ff3ffe41f0cba68e0e7b86ee425c69e9ee912c169fa2323dc510c5a40313b8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_checkpoint_ledger.py",
+                  "sha256": "a9ff3ffe41f0cba68e0e7b86ee425c69e9ee912c169fa2323dc510c5a40313b8"
+                }
+              ],
+              "fixture_description": "Existing real SQLiteCheckpointLedger stream: tool_start at 0, message at 1, terminal at 2; all three terminal kinds have exact collected parameters.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/scope.py",
+                  "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a"
+                },
+                {
+                  "path": "jitmind/checkpoints/__init__.py",
+                  "sha256": "4d54e3f91114b474c337fbd460653e46210c2c668fcb557c231560e8477c0017"
+                },
+                {
+                  "path": "jitmind/checkpoints/ledger.py",
+                  "sha256": "ba500b7dff478277252df4647e4c9ddd48656c1f58667357cf38a2d5639f88e4"
+                }
+              ],
+              "assertions": [
+                "Rejects range 0..1 before and after late terminal (end cut), and 1..2 / 2..2 / 1..1 (start cut or wholly inside interaction).",
+                "Complete 0..2 publishes revision 1; subsequent 3..3 allowed; repeated/unknown terminals rejected."
+              ],
+              "evidence_limits": [
+                "Both boundary directions are directly asserted by the existing node. No provider transcript or remote checkpoint store."
+              ]
+            },
+            {
+              "node_id": "tests/test_checkpoint_ledger.py::test_tool_boundaries_and_explicit_terminals[tool_cancel]",
+              "kind": "real_storage",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_checkpoint_ledger.py",
+                "sha256": "a9ff3ffe41f0cba68e0e7b86ee425c69e9ee912c169fa2323dc510c5a40313b8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_checkpoint_ledger.py",
+                  "sha256": "a9ff3ffe41f0cba68e0e7b86ee425c69e9ee912c169fa2323dc510c5a40313b8"
+                }
+              ],
+              "fixture_description": "Existing real SQLiteCheckpointLedger stream: tool_start at 0, message at 1, terminal at 2; all three terminal kinds have exact collected parameters.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/scope.py",
+                  "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a"
+                },
+                {
+                  "path": "jitmind/checkpoints/__init__.py",
+                  "sha256": "4d54e3f91114b474c337fbd460653e46210c2c668fcb557c231560e8477c0017"
+                },
+                {
+                  "path": "jitmind/checkpoints/ledger.py",
+                  "sha256": "ba500b7dff478277252df4647e4c9ddd48656c1f58667357cf38a2d5639f88e4"
+                }
+              ],
+              "assertions": [
+                "Rejects range 0..1 before and after late terminal (end cut), and 1..2 / 2..2 / 1..1 (start cut or wholly inside interaction).",
+                "Complete 0..2 publishes revision 1; subsequent 3..3 allowed; repeated/unknown terminals rejected."
+              ],
+              "evidence_limits": [
+                "Both boundary directions are directly asserted by the existing node. No provider transcript or remote checkpoint store."
+              ]
+            },
+            {
+              "node_id": "tests/test_checkpoint_ledger.py::test_tool_boundaries_and_explicit_terminals[tool_timeout]",
+              "kind": "real_storage",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_checkpoint_ledger.py",
+                "sha256": "a9ff3ffe41f0cba68e0e7b86ee425c69e9ee912c169fa2323dc510c5a40313b8"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_checkpoint_ledger.py",
+                  "sha256": "a9ff3ffe41f0cba68e0e7b86ee425c69e9ee912c169fa2323dc510c5a40313b8"
+                }
+              ],
+              "fixture_description": "Existing real SQLiteCheckpointLedger stream: tool_start at 0, message at 1, terminal at 2; all three terminal kinds have exact collected parameters.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/scope.py",
+                  "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a"
+                },
+                {
+                  "path": "jitmind/checkpoints/__init__.py",
+                  "sha256": "4d54e3f91114b474c337fbd460653e46210c2c668fcb557c231560e8477c0017"
+                },
+                {
+                  "path": "jitmind/checkpoints/ledger.py",
+                  "sha256": "ba500b7dff478277252df4647e4c9ddd48656c1f58667357cf38a2d5639f88e4"
+                }
+              ],
+              "assertions": [
+                "Rejects range 0..1 before and after late terminal (end cut), and 1..2 / 2..2 / 1..1 (start cut or wholly inside interaction).",
+                "Complete 0..2 publishes revision 1; subsequent 3..3 allowed; repeated/unknown terminals rejected."
+              ],
+              "evidence_limits": [
+                "Both boundary directions are directly asserted by the existing node. No provider transcript or remote checkpoint store."
+              ]
+            }
+          ]
+        }
+      ],
+      "scenario": "Checkpoint cuts tool interaction",
+      "required_assertion": "Unsafe boundary is rejected or postponed"
+    },
+    {
+      "case_id": "J25",
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-02",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_durable_migration.py::test_invalid_migration_refuses_without_changes[truncated]",
+              "kind": "migration",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_migration.py",
+                "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_migration.py",
+                  "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+                }
+              ],
+              "fixture_description": "Existing truncated/duplicate-key/NaN legacy-source rejection and three exception rollback nodes; new real child exit(73) after import pages or before import commit; source JSON byte snapshots and clean retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/storage/migration.py",
+                  "sha256": "26cf90e0911fe6bfae875ef31c50f0b8cbf94b05c2d5a694cd5408622533a15a"
+                },
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                }
+              ],
+              "assertions": [
+                "Corrupt source raises exact MigrationError without creating a candidate or changing original JSON.",
+                "Existing three injected exception nodes leave source and candidate empty and permit positive retry.",
+                "Real child exits roll back namespaces/pages/facts/operations/outbox/aliases/imports; original source bytes unchanged.",
+                "Restaging and retry preserve fact ID, page provenance and alias; duplicate import keeps revision 1."
+              ],
+              "evidence_limits": [
+                "Corrupt cases and exception nodes are reused unchanged; real process-exit supplement owns its own small fixture.",
+                "No concurrent legacy writer or machine-power-loss simulation; staging is explicitly quiesced."
+              ]
+            },
+            {
+              "node_id": "tests/test_durable_migration.py::test_invalid_migration_refuses_without_changes[duplicate_json_key]",
+              "kind": "migration",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_migration.py",
+                "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_migration.py",
+                  "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+                }
+              ],
+              "fixture_description": "Existing truncated/duplicate-key/NaN legacy-source rejection and three exception rollback nodes; new real child exit(73) after import pages or before import commit; source JSON byte snapshots and clean retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/storage/migration.py",
+                  "sha256": "26cf90e0911fe6bfae875ef31c50f0b8cbf94b05c2d5a694cd5408622533a15a"
+                },
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                }
+              ],
+              "assertions": [
+                "Corrupt source raises exact MigrationError without creating a candidate or changing original JSON.",
+                "Existing three injected exception nodes leave source and candidate empty and permit positive retry.",
+                "Real child exits roll back namespaces/pages/facts/operations/outbox/aliases/imports; original source bytes unchanged.",
+                "Restaging and retry preserve fact ID, page provenance and alias; duplicate import keeps revision 1."
+              ],
+              "evidence_limits": [
+                "Corrupt cases and exception nodes are reused unchanged; real process-exit supplement owns its own small fixture.",
+                "No concurrent legacy writer or machine-power-loss simulation; staging is explicitly quiesced."
+              ]
+            },
+            {
+              "node_id": "tests/test_durable_migration.py::test_invalid_migration_refuses_without_changes[nan]",
+              "kind": "migration",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_migration.py",
+                "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_migration.py",
+                  "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+                }
+              ],
+              "fixture_description": "Existing truncated/duplicate-key/NaN legacy-source rejection and three exception rollback nodes; new real child exit(73) after import pages or before import commit; source JSON byte snapshots and clean retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/storage/migration.py",
+                  "sha256": "26cf90e0911fe6bfae875ef31c50f0b8cbf94b05c2d5a694cd5408622533a15a"
+                },
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                }
+              ],
+              "assertions": [
+                "Corrupt source raises exact MigrationError without creating a candidate or changing original JSON.",
+                "Existing three injected exception nodes leave source and candidate empty and permit positive retry.",
+                "Real child exits roll back namespaces/pages/facts/operations/outbox/aliases/imports; original source bytes unchanged.",
+                "Restaging and retry preserve fact ID, page provenance and alias; duplicate import keeps revision 1."
+              ],
+              "evidence_limits": [
+                "Corrupt cases and exception nodes are reused unchanged; real process-exit supplement owns its own small fixture.",
+                "No concurrent legacy writer or machine-power-loss simulation; staging is explicitly quiesced."
+              ]
+            },
+            {
+              "node_id": "tests/test_durable_migration.py::test_staged_failure_leaves_legacy_and_candidate_unchanged[before_import]",
+              "kind": "migration",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_migration.py",
+                "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_migration.py",
+                  "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+                }
+              ],
+              "fixture_description": "Existing truncated/duplicate-key/NaN legacy-source rejection and three exception rollback nodes; new real child exit(73) after import pages or before import commit; source JSON byte snapshots and clean retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/storage/migration.py",
+                  "sha256": "26cf90e0911fe6bfae875ef31c50f0b8cbf94b05c2d5a694cd5408622533a15a"
+                },
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                }
+              ],
+              "assertions": [
+                "Corrupt source raises exact MigrationError without creating a candidate or changing original JSON.",
+                "Existing three injected exception nodes leave source and candidate empty and permit positive retry.",
+                "Real child exits roll back namespaces/pages/facts/operations/outbox/aliases/imports; original source bytes unchanged.",
+                "Restaging and retry preserve fact ID, page provenance and alias; duplicate import keeps revision 1."
+              ],
+              "evidence_limits": [
+                "Corrupt cases and exception nodes are reused unchanged; real process-exit supplement owns its own small fixture.",
+                "No concurrent legacy writer or machine-power-loss simulation; staging is explicitly quiesced."
+              ]
+            },
+            {
+              "node_id": "tests/test_durable_migration.py::test_staged_failure_leaves_legacy_and_candidate_unchanged[after_import_pages]",
+              "kind": "migration",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_migration.py",
+                "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_migration.py",
+                  "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+                }
+              ],
+              "fixture_description": "Existing truncated/duplicate-key/NaN legacy-source rejection and three exception rollback nodes; new real child exit(73) after import pages or before import commit; source JSON byte snapshots and clean retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/storage/migration.py",
+                  "sha256": "26cf90e0911fe6bfae875ef31c50f0b8cbf94b05c2d5a694cd5408622533a15a"
+                },
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                }
+              ],
+              "assertions": [
+                "Corrupt source raises exact MigrationError without creating a candidate or changing original JSON.",
+                "Existing three injected exception nodes leave source and candidate empty and permit positive retry.",
+                "Real child exits roll back namespaces/pages/facts/operations/outbox/aliases/imports; original source bytes unchanged.",
+                "Restaging and retry preserve fact ID, page provenance and alias; duplicate import keeps revision 1."
+              ],
+              "evidence_limits": [
+                "Corrupt cases and exception nodes are reused unchanged; real process-exit supplement owns its own small fixture.",
+                "No concurrent legacy writer or machine-power-loss simulation; staging is explicitly quiesced."
+              ]
+            },
+            {
+              "node_id": "tests/test_durable_migration.py::test_staged_failure_leaves_legacy_and_candidate_unchanged[before_import_commit]",
+              "kind": "migration",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_durable_migration.py",
+                "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_durable_migration.py",
+                  "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60"
+                }
+              ],
+              "fixture_description": "Existing truncated/duplicate-key/NaN legacy-source rejection and three exception rollback nodes; new real child exit(73) after import pages or before import commit; source JSON byte snapshots and clean retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/storage/migration.py",
+                  "sha256": "26cf90e0911fe6bfae875ef31c50f0b8cbf94b05c2d5a694cd5408622533a15a"
+                },
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                }
+              ],
+              "assertions": [
+                "Corrupt source raises exact MigrationError without creating a candidate or changing original JSON.",
+                "Existing three injected exception nodes leave source and candidate empty and permit positive retry.",
+                "Real child exits roll back namespaces/pages/facts/operations/outbox/aliases/imports; original source bytes unchanged.",
+                "Restaging and retry preserve fact ID, page provenance and alias; duplicate import keeps revision 1."
+              ],
+              "evidence_limits": [
+                "Corrupt cases and exception nodes are reused unchanged; real process-exit supplement owns its own small fixture.",
+                "No concurrent legacy writer or machine-power-loss simulation; staging is explicitly quiesced."
+              ]
+            },
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_real_migration_exit_preserves_source_and_allows_retry[after_import_pages]",
+              "kind": "migration",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                }
+              ],
+              "fixture_description": "Existing truncated/duplicate-key/NaN legacy-source rejection and three exception rollback nodes; new real child exit(73) after import pages or before import commit; source JSON byte snapshots and clean retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/storage/migration.py",
+                  "sha256": "26cf90e0911fe6bfae875ef31c50f0b8cbf94b05c2d5a694cd5408622533a15a"
+                },
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                }
+              ],
+              "assertions": [
+                "Corrupt source raises exact MigrationError without creating a candidate or changing original JSON.",
+                "Existing three injected exception nodes leave source and candidate empty and permit positive retry.",
+                "Real child exits roll back namespaces/pages/facts/operations/outbox/aliases/imports; original source bytes unchanged.",
+                "Restaging and retry preserve fact ID, page provenance and alias; duplicate import keeps revision 1."
+              ],
+              "evidence_limits": [
+                "Corrupt cases and exception nodes are reused unchanged; real process-exit supplement owns its own small fixture.",
+                "No concurrent legacy writer or machine-power-loss simulation; staging is explicitly quiesced."
+              ]
+            },
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_real_migration_exit_preserves_source_and_allows_retry[before_import_commit]",
+              "kind": "migration",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                }
+              ],
+              "fixture_description": "Existing truncated/duplicate-key/NaN legacy-source rejection and three exception rollback nodes; new real child exit(73) after import pages or before import commit; source JSON byte snapshots and clean retry.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/storage/migration.py",
+                  "sha256": "26cf90e0911fe6bfae875ef31c50f0b8cbf94b05c2d5a694cd5408622533a15a"
+                },
+                {
+                  "path": "jitmind/schemas/advanced_memory.py",
+                  "sha256": "b56e5807477630000e1dc7c2166080343a1e5eceecdb643cf9d6240c98512633"
+                },
+                {
+                  "path": "jitmind/schemas/page.py",
+                  "sha256": "4f47392d633fd71f3a7f4b758ce16d5c65e2d1aa82809d410214196632b00d0e"
+                }
+              ],
+              "assertions": [
+                "Corrupt source raises exact MigrationError without creating a candidate or changing original JSON.",
+                "Existing three injected exception nodes leave source and candidate empty and permit positive retry.",
+                "Real child exits roll back namespaces/pages/facts/operations/outbox/aliases/imports; original source bytes unchanged.",
+                "Restaging and retry preserve fact ID, page provenance and alias; duplicate import keeps revision 1."
+              ],
+              "evidence_limits": [
+                "Corrupt cases and exception nodes are reused unchanged; real process-exit supplement owns its own small fixture.",
+                "No concurrent legacy writer or machine-power-loss simulation; staging is explicitly quiesced."
+              ]
+            }
+          ]
+        }
+      ],
+      "scenario": "Corrupt store and interrupted staging",
+      "required_assertion": "Corruption is reported without silently manufacturing an empty successful migration; interrupted staged import does not replace authoritative source"
+    },
+    {
+      "case_id": "J29",
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-04",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_real_parser_binding_projection_redelivery_and_primary_forget[projected]",
+              "kind": "projection",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                }
+              ],
+              "fixture_description": "Temporary unversioned checkout, actual J04 parser, J02 add/NOOP/delete, J05 binding and file move, J06 projected lesson/preflight/open task. Two schedules: primary projection already populated or original add event pending until after delete.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/scope.py",
+                  "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a"
+                },
+                {
+                  "path": "jitmind/code_context/__init__.py",
+                  "sha256": "0bdda619ccabbb7f4894b106572885cf15b5c86232bfd6f333f6ca1b8b75f211"
+                },
+                {
+                  "path": "jitmind/code_context/models.py",
+                  "sha256": "84686d3cdb1f34e6111652956e65b90b01fd19487308a268022a66b14ea44878"
+                },
+                {
+                  "path": "jitmind/code_context/process.py",
+                  "sha256": "ef9baf49a5bbe761fbffa1f60ef172b8f53c587eaffc13c4e179f2700462f77a"
+                },
+                {
+                  "path": "jitmind/code_context/retriever.py",
+                  "sha256": "822dc84804992b8bd9fe7de62e535843585091350f8ff5a2311a05eaf51150f4"
+                },
+                {
+                  "path": "jitmind/code_context/service.py",
+                  "sha256": "16daa9b16b9a55f130ca61204c96d40e8abb279709dbd4c36b81e4c99afbe873"
+                },
+                {
+                  "path": "jitmind/code_context/snapshot.py",
+                  "sha256": "45a35d8a3455cde10816ff3e2feef3a7a21174bbec41326635d94394fec27272"
+                },
+                {
+                  "path": "jitmind/code_memory/anchors.py",
+                  "sha256": "98d9715ad0faba844638859e5f49d8ccb58cd9a7e67c56c7376b81b08c24e31a"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_models.py",
+                  "sha256": "39c9e9676f58314e4e3d9073efd19f0072023440cdb6fc61f9d802fc9a9f203c"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_storage.py",
+                  "sha256": "5684d3bf4269703f87f4232f0d3fd32482d90be704170f57e1cc6670ab539c1f"
+                },
+                {
+                  "path": "jitmind/code_memory/revalidation.py",
+                  "sha256": "ada66aa4f8d553d8930eb37aff00662544d7216bdfae941d643485ca8cdd92d5"
+                },
+                {
+                  "path": "jitmind/code_memory/open_work.py",
+                  "sha256": "330b670fa75dfc33bd0013a4af3293fed415c29ef4f1df8df2f3295642e3a23c"
+                },
+                {
+                  "path": "jitmind/code_memory/work_storage.py",
+                  "sha256": "f0a2775db9046f8b01007c946a586e9a4bd1ab3763fff5fef87df0d5555b8362"
+                },
+                {
+                  "path": "jitmind/code_memory/lesson_models.py",
+                  "sha256": "447721bf5d7c7b972a4d3b1bda171c674a107d3aba50c90fa0033403f4c5b787"
+                },
+                {
+                  "path": "jitmind/code_memory/preflight.py",
+                  "sha256": "7119d160107db1f0828fa31affc3aba18bcd716163df562a8c77c45cfebc6258"
+                }
+              ],
+              "assertions": [
+                "Fact durable and lesson delivered while primary outbox lag remains visible; NOOP delivered twice ahead of original add leaves watermark 0.",
+                "Real source move makes prior code freshness nonfresh and binding unknown; new build/revalidation produces higher generation and moved verified binding.",
+                "Lesson version 2 replay is idempotent; version 1 rejected; fact metadata redelivery rejected.",
+                "Deletion metadata and event followed by old add cannot resurrect fact/binding/lesson; pending add schedule explicitly delivers delete before still-pending add.",
+                "Primary watermark reaches delete revision, pending count zero, current code generation remains correct."
+              ],
+              "evidence_limits": [
+                "J04 raw code index consumes captured source, not fact bodies. MEMORY_ONLY_SENTINEL_83f91c is deliberately absent from source.",
+                "Raw authorized source remains readable after memory forget; forgetting memory never promises deletion of user source files.",
+                "J02 primary administrative/include_inactive history and backups may retain bodies. Assertions concern ordinary derived retrieval, receipt reconstruction, and content-free binding/work/delivery histories; no physical erasure claim.",
+                "Source generation, binding observation and outbox revision are separate; no atomic transaction across checkout and three databases is claimed.",
+                "Uses supplied J10 snapshot. Owner modules may advance; final supervisor must assemble and retest, configuring newer authority adapters if required. No automatic listener or raw-code outbox consumer is invented."
+              ]
+            },
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_real_parser_binding_projection_redelivery_and_primary_forget[add_pending]",
+              "kind": "projection",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                }
+              ],
+              "fixture_description": "Temporary unversioned checkout, actual J04 parser, J02 add/NOOP/delete, J05 binding and file move, J06 projected lesson/preflight/open task. Two schedules: primary projection already populated or original add event pending until after delete.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/scope.py",
+                  "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a"
+                },
+                {
+                  "path": "jitmind/code_context/__init__.py",
+                  "sha256": "0bdda619ccabbb7f4894b106572885cf15b5c86232bfd6f333f6ca1b8b75f211"
+                },
+                {
+                  "path": "jitmind/code_context/models.py",
+                  "sha256": "84686d3cdb1f34e6111652956e65b90b01fd19487308a268022a66b14ea44878"
+                },
+                {
+                  "path": "jitmind/code_context/process.py",
+                  "sha256": "ef9baf49a5bbe761fbffa1f60ef172b8f53c587eaffc13c4e179f2700462f77a"
+                },
+                {
+                  "path": "jitmind/code_context/retriever.py",
+                  "sha256": "822dc84804992b8bd9fe7de62e535843585091350f8ff5a2311a05eaf51150f4"
+                },
+                {
+                  "path": "jitmind/code_context/service.py",
+                  "sha256": "16daa9b16b9a55f130ca61204c96d40e8abb279709dbd4c36b81e4c99afbe873"
+                },
+                {
+                  "path": "jitmind/code_context/snapshot.py",
+                  "sha256": "45a35d8a3455cde10816ff3e2feef3a7a21174bbec41326635d94394fec27272"
+                },
+                {
+                  "path": "jitmind/code_memory/anchors.py",
+                  "sha256": "98d9715ad0faba844638859e5f49d8ccb58cd9a7e67c56c7376b81b08c24e31a"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_models.py",
+                  "sha256": "39c9e9676f58314e4e3d9073efd19f0072023440cdb6fc61f9d802fc9a9f203c"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_storage.py",
+                  "sha256": "5684d3bf4269703f87f4232f0d3fd32482d90be704170f57e1cc6670ab539c1f"
+                },
+                {
+                  "path": "jitmind/code_memory/revalidation.py",
+                  "sha256": "ada66aa4f8d553d8930eb37aff00662544d7216bdfae941d643485ca8cdd92d5"
+                },
+                {
+                  "path": "jitmind/code_memory/open_work.py",
+                  "sha256": "330b670fa75dfc33bd0013a4af3293fed415c29ef4f1df8df2f3295642e3a23c"
+                },
+                {
+                  "path": "jitmind/code_memory/work_storage.py",
+                  "sha256": "f0a2775db9046f8b01007c946a586e9a4bd1ab3763fff5fef87df0d5555b8362"
+                },
+                {
+                  "path": "jitmind/code_memory/lesson_models.py",
+                  "sha256": "447721bf5d7c7b972a4d3b1bda171c674a107d3aba50c90fa0033403f4c5b787"
+                },
+                {
+                  "path": "jitmind/code_memory/preflight.py",
+                  "sha256": "7119d160107db1f0828fa31affc3aba18bcd716163df562a8c77c45cfebc6258"
+                }
+              ],
+              "assertions": [
+                "Fact durable and lesson delivered while primary outbox lag remains visible; NOOP delivered twice ahead of original add leaves watermark 0.",
+                "Real source move makes prior code freshness nonfresh and binding unknown; new build/revalidation produces higher generation and moved verified binding.",
+                "Lesson version 2 replay is idempotent; version 1 rejected; fact metadata redelivery rejected.",
+                "Deletion metadata and event followed by old add cannot resurrect fact/binding/lesson; pending add schedule explicitly delivers delete before still-pending add.",
+                "Primary watermark reaches delete revision, pending count zero, current code generation remains correct."
+              ],
+              "evidence_limits": [
+                "J04 raw code index consumes captured source, not fact bodies. MEMORY_ONLY_SENTINEL_83f91c is deliberately absent from source.",
+                "Raw authorized source remains readable after memory forget; forgetting memory never promises deletion of user source files.",
+                "J02 primary administrative/include_inactive history and backups may retain bodies. Assertions concern ordinary derived retrieval, receipt reconstruction, and content-free binding/work/delivery histories; no physical erasure claim.",
+                "Source generation, binding observation and outbox revision are separate; no atomic transaction across checkout and three databases is claimed.",
+                "Uses supplied J10 snapshot. Owner modules may advance; final supervisor must assemble and retest, configuring newer authority adapters if required. No automatic listener or raw-code outbox consumer is invented."
+              ]
+            }
+          ]
+        }
+      ],
+      "scenario": "Projection outbox redelivery",
+      "required_assertion": "Primary durability intact, replay idempotent, lag visible; no stale graph evidence declared current"
+    },
+    {
+      "case_id": "J31",
+      "status": "not_run",
+      "stages": [
+        {
+          "stage_id": "J-04",
+          "status": "not_run",
+          "nodes": [
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_real_parser_binding_projection_redelivery_and_primary_forget[projected]",
+              "kind": "projection",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                }
+              ],
+              "fixture_description": "Same two actual composed parser chains as J29; memory-only sentinel first positively delivered from bound lesson and memory, then primary forget with deletion projection delayed.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/scope.py",
+                  "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a"
+                },
+                {
+                  "path": "jitmind/code_context/__init__.py",
+                  "sha256": "0bdda619ccabbb7f4894b106572885cf15b5c86232bfd6f333f6ca1b8b75f211"
+                },
+                {
+                  "path": "jitmind/code_context/models.py",
+                  "sha256": "84686d3cdb1f34e6111652956e65b90b01fd19487308a268022a66b14ea44878"
+                },
+                {
+                  "path": "jitmind/code_context/process.py",
+                  "sha256": "ef9baf49a5bbe761fbffa1f60ef172b8f53c587eaffc13c4e179f2700462f77a"
+                },
+                {
+                  "path": "jitmind/code_context/retriever.py",
+                  "sha256": "822dc84804992b8bd9fe7de62e535843585091350f8ff5a2311a05eaf51150f4"
+                },
+                {
+                  "path": "jitmind/code_context/service.py",
+                  "sha256": "16daa9b16b9a55f130ca61204c96d40e8abb279709dbd4c36b81e4c99afbe873"
+                },
+                {
+                  "path": "jitmind/code_context/snapshot.py",
+                  "sha256": "45a35d8a3455cde10816ff3e2feef3a7a21174bbec41326635d94394fec27272"
+                },
+                {
+                  "path": "jitmind/code_memory/anchors.py",
+                  "sha256": "98d9715ad0faba844638859e5f49d8ccb58cd9a7e67c56c7376b81b08c24e31a"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_models.py",
+                  "sha256": "39c9e9676f58314e4e3d9073efd19f0072023440cdb6fc61f9d802fc9a9f203c"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_storage.py",
+                  "sha256": "5684d3bf4269703f87f4232f0d3fd32482d90be704170f57e1cc6670ab539c1f"
+                },
+                {
+                  "path": "jitmind/code_memory/revalidation.py",
+                  "sha256": "ada66aa4f8d553d8930eb37aff00662544d7216bdfae941d643485ca8cdd92d5"
+                },
+                {
+                  "path": "jitmind/code_memory/open_work.py",
+                  "sha256": "330b670fa75dfc33bd0013a4af3293fed415c29ef4f1df8df2f3295642e3a23c"
+                },
+                {
+                  "path": "jitmind/code_memory/work_storage.py",
+                  "sha256": "f0a2775db9046f8b01007c946a586e9a4bd1ab3763fff5fef87df0d5555b8362"
+                },
+                {
+                  "path": "jitmind/code_memory/lesson_models.py",
+                  "sha256": "447721bf5d7c7b972a4d3b1bda171c674a107d3aba50c90fa0033403f4c5b787"
+                },
+                {
+                  "path": "jitmind/code_memory/preflight.py",
+                  "sha256": "7119d160107db1f0828fa31affc3aba18bcd716163df562a8c77c45cfebc6258"
+                }
+              ],
+              "assertions": [
+                "After primary forget, ordinary fact/page/adapters/projected entries/receipt reconstruction exclude sentinel before any delete projection.",
+                "Both saved preflight receipts return empty payload; candidates empty; bound projection refused; deletion metadata then old events cannot revive content.",
+                "Purged lesson table empty; binding history, work history/receipts, delivery receipts and tombstones contain no sentinel.",
+                "Task remains open revision 1 with repo fallback. Raw authorized source remains exact and readable with original SHA-256, current generation and no memory sentinel."
+              ],
+              "evidence_limits": [
+                "J04 raw code index consumes captured source, not fact bodies. MEMORY_ONLY_SENTINEL_83f91c is deliberately absent from source.",
+                "Raw authorized source remains readable after memory forget; forgetting memory never promises deletion of user source files.",
+                "J02 primary administrative/include_inactive history and backups may retain bodies. Assertions concern ordinary derived retrieval, receipt reconstruction, and content-free binding/work/delivery histories; no physical erasure claim.",
+                "Source generation, binding observation and outbox revision are separate; no atomic transaction across checkout and three databases is claimed.",
+                "Uses supplied J10 snapshot. Owner modules may advance; final supervisor must assemble and retest, configuring newer authority adapters if required. No automatic listener or raw-code outbox consumer is invented."
+              ]
+            },
+            {
+              "node_id": "tests/test_acceptance_edges.py::test_real_parser_binding_projection_redelivery_and_primary_forget[add_pending]",
+              "kind": "projection",
+              "status": "not_run",
+              "source": {
+                "path": "tests/test_acceptance_edges.py",
+                "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+              },
+              "fixtures": [
+                {
+                  "path": "tests/test_acceptance_edges.py",
+                  "sha256": "56d9b088e205f017c9559f05e45f86d6cbbaeb732312cb453308ae327f62a344"
+                }
+              ],
+              "fixture_description": "Same two actual composed parser chains as J29; memory-only sentinel first positively delivered from bound lesson and memory, then primary forget with deletion projection delayed.",
+              "modules_composed": [
+                {
+                  "path": "jitmind/storage/__init__.py",
+                  "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e"
+                },
+                {
+                  "path": "jitmind/storage/models.py",
+                  "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354"
+                },
+                {
+                  "path": "jitmind/storage/sqlite.py",
+                  "sha256": "0fa4ca4acf0975184a8e3d40a9780e2671136e07a9ff5a9cc71030e792ee013c"
+                },
+                {
+                  "path": "jitmind/scope.py",
+                  "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a"
+                },
+                {
+                  "path": "jitmind/code_context/__init__.py",
+                  "sha256": "0bdda619ccabbb7f4894b106572885cf15b5c86232bfd6f333f6ca1b8b75f211"
+                },
+                {
+                  "path": "jitmind/code_context/models.py",
+                  "sha256": "84686d3cdb1f34e6111652956e65b90b01fd19487308a268022a66b14ea44878"
+                },
+                {
+                  "path": "jitmind/code_context/process.py",
+                  "sha256": "ef9baf49a5bbe761fbffa1f60ef172b8f53c587eaffc13c4e179f2700462f77a"
+                },
+                {
+                  "path": "jitmind/code_context/retriever.py",
+                  "sha256": "822dc84804992b8bd9fe7de62e535843585091350f8ff5a2311a05eaf51150f4"
+                },
+                {
+                  "path": "jitmind/code_context/service.py",
+                  "sha256": "16daa9b16b9a55f130ca61204c96d40e8abb279709dbd4c36b81e4c99afbe873"
+                },
+                {
+                  "path": "jitmind/code_context/snapshot.py",
+                  "sha256": "45a35d8a3455cde10816ff3e2feef3a7a21174bbec41326635d94394fec27272"
+                },
+                {
+                  "path": "jitmind/code_memory/anchors.py",
+                  "sha256": "98d9715ad0faba844638859e5f49d8ccb58cd9a7e67c56c7376b81b08c24e31a"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_models.py",
+                  "sha256": "39c9e9676f58314e4e3d9073efd19f0072023440cdb6fc61f9d802fc9a9f203c"
+                },
+                {
+                  "path": "jitmind/code_memory/binding_storage.py",
+                  "sha256": "5684d3bf4269703f87f4232f0d3fd32482d90be704170f57e1cc6670ab539c1f"
+                },
+                {
+                  "path": "jitmind/code_memory/revalidation.py",
+                  "sha256": "ada66aa4f8d553d8930eb37aff00662544d7216bdfae941d643485ca8cdd92d5"
+                },
+                {
+                  "path": "jitmind/code_memory/open_work.py",
+                  "sha256": "330b670fa75dfc33bd0013a4af3293fed415c29ef4f1df8df2f3295642e3a23c"
+                },
+                {
+                  "path": "jitmind/code_memory/work_storage.py",
+                  "sha256": "f0a2775db9046f8b01007c946a586e9a4bd1ab3763fff5fef87df0d5555b8362"
+                },
+                {
+                  "path": "jitmind/code_memory/lesson_models.py",
+                  "sha256": "447721bf5d7c7b972a4d3b1bda171c674a107d3aba50c90fa0033403f4c5b787"
+                },
+                {
+                  "path": "jitmind/code_memory/preflight.py",
+                  "sha256": "7119d160107db1f0828fa31affc3aba18bcd716163df562a8c77c45cfebc6258"
+                }
+              ],
+              "assertions": [
+                "After primary forget, ordinary fact/page/adapters/projected entries/receipt reconstruction exclude sentinel before any delete projection.",
+                "Both saved preflight receipts return empty payload; candidates empty; bound projection refused; deletion metadata then old events cannot revive content.",
+                "Purged lesson table empty; binding history, work history/receipts, delivery receipts and tombstones contain no sentinel.",
+                "Task remains open revision 1 with repo fallback. Raw authorized source remains exact and readable with original SHA-256, current generation and no memory sentinel."
+              ],
+              "evidence_limits": [
+                "J04 raw code index consumes captured source, not fact bodies. MEMORY_ONLY_SENTINEL_83f91c is deliberately absent from source.",
+                "Raw authorized source remains readable after memory forget; forgetting memory never promises deletion of user source files.",
+                "J02 primary administrative/include_inactive history and backups may retain bodies. Assertions concern ordinary derived retrieval, receipt reconstruction, and content-free binding/work/delivery histories; no physical erasure claim.",
+                "Source generation, binding observation and outbox revision are separate; no atomic transaction across checkout and three databases is claimed.",
+                "Uses supplied J10 snapshot. Owner modules may advance; final supervisor must assemble and retest, configuring newer authority adapters if required. No automatic listener or raw-code outbox consumer is invented."
+              ]
+            }
+          ]
+        }
+      ],
+      "scenario": "Forget and derived retention",
+      "required_assertion": "Current retrieval excludes forgotten content; obligation remains; retained metadata does not leak body"
+    }
+  ],
+  "collection": {
+    "status": "not_run",
+    "selectors": [
+      "tests/test_acceptance_edges.py",
+      "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair",
+      "tests/test_durable_migration.py::test_invalid_migration_refuses_without_changes[truncated]",
+      "tests/test_durable_migration.py::test_invalid_migration_refuses_without_changes[duplicate_json_key]",
+      "tests/test_durable_migration.py::test_invalid_migration_refuses_without_changes[nan]",
+      "tests/test_durable_migration.py::test_staged_failure_leaves_legacy_and_candidate_unchanged",
+      "tests/test_checkpoint_ledger.py::test_tool_boundaries_and_explicit_terminals",
+      "tests/test_open_work_bindings.py::test_j16_j31_real_binding_move_disappearance_forget_keep_obligation"
+    ],
+    "exact_node_ids": [
+      "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[advanced]",
+      "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[memory]",
+      "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[ttl_memory]",
+      "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[pages]",
+      "tests/test_acceptance_edges.py::test_enospc_at_legacy_publication_preserves_ack_and_bytes[ttl_pages]",
+      "tests/test_acceptance_edges.py::test_real_sqlite_full_rolls_back_every_effect_then_accepts_same_request",
+      "tests/test_acceptance_edges.py::test_real_migration_exit_preserves_source_and_allows_retry[after_import_pages]",
+      "tests/test_acceptance_edges.py::test_real_migration_exit_preserves_source_and_allows_retry[before_import_commit]",
+      "tests/test_acceptance_edges.py::test_real_parser_binding_projection_redelivery_and_primary_forget[projected]",
+      "tests/test_acceptance_edges.py::test_real_parser_binding_projection_redelivery_and_primary_forget[add_pending]",
+      "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[before_transaction-False]",
+      "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_page_insert-False]",
+      "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_fact_insert-False]",
+      "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_outbox_receipt-False]",
+      "tests/test_durable_storage.py::test_process_crash_fresh_reader_sees_zero_or_whole_pair[after_commit-True]",
+      "tests/test_durable_migration.py::test_invalid_migration_refuses_without_changes[truncated]",
+      "tests/test_durable_migration.py::test_invalid_migration_refuses_without_changes[duplicate_json_key]",
+      "tests/test_durable_migration.py::test_invalid_migration_refuses_without_changes[nan]",
+      "tests/test_durable_migration.py::test_staged_failure_leaves_legacy_and_candidate_unchanged[before_import]",
+      "tests/test_durable_migration.py::test_staged_failure_leaves_legacy_and_candidate_unchanged[after_import_pages]",
+      "tests/test_durable_migration.py::test_staged_failure_leaves_legacy_and_candidate_unchanged[before_import_commit]",
+      "tests/test_checkpoint_ledger.py::test_tool_boundaries_and_explicit_terminals[tool_result]",
+      "tests/test_checkpoint_ledger.py::test_tool_boundaries_and_explicit_terminals[tool_cancel]",
+      "tests/test_checkpoint_ledger.py::test_tool_boundaries_and_explicit_terminals[tool_timeout]",
+      "tests/test_open_work_bindings.py::test_j16_j31_real_binding_move_disappearance_forget_keep_obligation[# code removed\\n-orphaned_confirmed]",
+      "tests/test_open_work_bindings.py::test_j16_j31_real_binding_move_disappearance_forget_keep_obligation[invalid syntax ???\\n-unknown]"
+    ],
+    "unique_node_count": 26
+  },
+  "all_copied_dependencies": [
+    {
+      "owner": "J02",
+      "path": "jitmind/storage/__init__.py",
+      "snapshot_sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e",
+      "sha256": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "ff45e7aa0f7985ea7c11adc89e4889bd91b50358907372648fe1eb1766f0313e",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J02",
+      "path": "jitmind/storage/migration.py",
+      "snapshot_sha256": "966fa1107445aa332122ce9a49844cb61d76ebad85780e87d81ffb71e7ee9b23",
+      "sha256": "966fa1107445aa332122ce9a49844cb61d76ebad85780e87d81ffb71e7ee9b23",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "26cf90e0911fe6bfae875ef31c50f0b8cbf94b05c2d5a694cd5408622533a15a",
+      "owner_differs_at_review": true
+    },
+    {
+      "owner": "J02",
+      "path": "jitmind/storage/models.py",
+      "snapshot_sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354",
+      "sha256": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "db77d142af7c8d8a1c20307be9341b135f1e54e6b3c845e7c8a3da82f9588354",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J02",
+      "path": "jitmind/storage/sqlite.py",
+      "snapshot_sha256": "a5b890e4fff708c476b8c481437b6d8abbe281abbc5c12857806aa63ddce3514",
+      "sha256": "a5b890e4fff708c476b8c481437b6d8abbe281abbc5c12857806aa63ddce3514",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "1201fbe05afc29b6452216fb21482cb1b97bb54557f15e7780a639cddcfd55eb",
+      "owner_differs_at_review": true
+    },
+    {
+      "owner": "J02",
+      "path": "jitmind/agents/memory_agent.py",
+      "snapshot_sha256": "1c665b46b527c24e731850b66181c536e630bdc6cdf461523d32b5c5e6801cd2",
+      "sha256": "1c665b46b527c24e731850b66181c536e630bdc6cdf461523d32b5c5e6801cd2",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "1c665b46b527c24e731850b66181c536e630bdc6cdf461523d32b5c5e6801cd2",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J02",
+      "path": "tests/test_durable_migration.py",
+      "snapshot_sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60",
+      "sha256": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "fd8d059cf599243df5e081203dcab1a6b0eb15cec35c2b2cdfa583f00dfa7c60",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J02",
+      "path": "tests/test_durable_remediation.py",
+      "snapshot_sha256": "9d71f19f47da8d05775382fd89f1aed918e739b81adc09fac1575aae1e6d9383",
+      "sha256": "9d71f19f47da8d05775382fd89f1aed918e739b81adc09fac1575aae1e6d9383",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "1e8acdf24b9b98b02d07ee335e10d8e46403b0d52a134501d64b306afe409f47",
+      "owner_differs_at_review": true
+    },
+    {
+      "owner": "J02",
+      "path": "tests/test_durable_storage.py",
+      "snapshot_sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00",
+      "sha256": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "ea08af202b8806b8d96fd20a8e5508dca6ef76d3abef8ab37479e6e8f684cc00",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J03",
+      "path": "jitmind/scope.py",
+      "snapshot_sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a",
+      "sha256": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "2762e46016b2f4e1a6ea6d95208954724f1cfef8e4e59812a19fc06e97bdf34a",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J03",
+      "path": "jitmind/scoped_research.py",
+      "snapshot_sha256": "5e6428640b58dbd63fc11d69b8417331fc2e995699447699ff2e655ff1bf4d20",
+      "sha256": "5e6428640b58dbd63fc11d69b8417331fc2e995699447699ff2e655ff1bf4d20",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "5e6428640b58dbd63fc11d69b8417331fc2e995699447699ff2e655ff1bf4d20",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J03",
+      "path": "jitmind/scoped_temporal.py",
+      "snapshot_sha256": "cb463c776e743af32c55512a7cdb921f1134a9909e616af235c851d44db76326",
+      "sha256": "cb463c776e743af32c55512a7cdb921f1134a9909e616af235c851d44db76326",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "cb463c776e743af32c55512a7cdb921f1134a9909e616af235c851d44db76326",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J03",
+      "path": "tests/test_scoped_authority.py",
+      "snapshot_sha256": "c62b826e6c8b562187dc6f0af7ccfa1961a7c9343d5e1570629f65a1c77e23b2",
+      "sha256": "c62b826e6c8b562187dc6f0af7ccfa1961a7c9343d5e1570629f65a1c77e23b2",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "c62b826e6c8b562187dc6f0af7ccfa1961a7c9343d5e1570629f65a1c77e23b2",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J03",
+      "path": "tests/test_scoped_durable.py",
+      "snapshot_sha256": "03b01bf9b54bf379bb30b1ddabf9cddf62a619bb30f6086f48a2c7c864d64282",
+      "sha256": "03b01bf9b54bf379bb30b1ddabf9cddf62a619bb30f6086f48a2c7c864d64282",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "03b01bf9b54bf379bb30b1ddabf9cddf62a619bb30f6086f48a2c7c864d64282",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J03",
+      "path": "tests/test_scoped_research.py",
+      "snapshot_sha256": "428d4c17df53220a76f4e38c1be91f50d025418063613eac58dc59ec5bd17108",
+      "sha256": "428d4c17df53220a76f4e38c1be91f50d025418063613eac58dc59ec5bd17108",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "428d4c17df53220a76f4e38c1be91f50d025418063613eac58dc59ec5bd17108",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J03",
+      "path": "tests/test_scoped_temporal.py",
+      "snapshot_sha256": "e335712d09b7ecdc5e466b63008fb717dab4b9b772623e6b51df840ec71eb66e",
+      "sha256": "e335712d09b7ecdc5e466b63008fb717dab4b9b772623e6b51df840ec71eb66e",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "e335712d09b7ecdc5e466b63008fb717dab4b9b772623e6b51df840ec71eb66e",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J04",
+      "path": "jitmind/code_context/__init__.py",
+      "snapshot_sha256": "0bdda619ccabbb7f4894b106572885cf15b5c86232bfd6f333f6ca1b8b75f211",
+      "sha256": "0bdda619ccabbb7f4894b106572885cf15b5c86232bfd6f333f6ca1b8b75f211",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "0bdda619ccabbb7f4894b106572885cf15b5c86232bfd6f333f6ca1b8b75f211",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J04",
+      "path": "jitmind/code_context/models.py",
+      "snapshot_sha256": "84686d3cdb1f34e6111652956e65b90b01fd19487308a268022a66b14ea44878",
+      "sha256": "84686d3cdb1f34e6111652956e65b90b01fd19487308a268022a66b14ea44878",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "84686d3cdb1f34e6111652956e65b90b01fd19487308a268022a66b14ea44878",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J04",
+      "path": "jitmind/code_context/process.py",
+      "snapshot_sha256": "ef9baf49a5bbe761fbffa1f60ef172b8f53c587eaffc13c4e179f2700462f77a",
+      "sha256": "ef9baf49a5bbe761fbffa1f60ef172b8f53c587eaffc13c4e179f2700462f77a",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "ef9baf49a5bbe761fbffa1f60ef172b8f53c587eaffc13c4e179f2700462f77a",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J04",
+      "path": "jitmind/code_context/retriever.py",
+      "snapshot_sha256": "822dc84804992b8bd9fe7de62e535843585091350f8ff5a2311a05eaf51150f4",
+      "sha256": "822dc84804992b8bd9fe7de62e535843585091350f8ff5a2311a05eaf51150f4",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "822dc84804992b8bd9fe7de62e535843585091350f8ff5a2311a05eaf51150f4",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J04",
+      "path": "jitmind/code_context/service.py",
+      "snapshot_sha256": "16daa9b16b9a55f130ca61204c96d40e8abb279709dbd4c36b81e4c99afbe873",
+      "sha256": "16daa9b16b9a55f130ca61204c96d40e8abb279709dbd4c36b81e4c99afbe873",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "16daa9b16b9a55f130ca61204c96d40e8abb279709dbd4c36b81e4c99afbe873",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J04",
+      "path": "jitmind/code_context/snapshot.py",
+      "snapshot_sha256": "45a35d8a3455cde10816ff3e2feef3a7a21174bbec41326635d94394fec27272",
+      "sha256": "45a35d8a3455cde10816ff3e2feef3a7a21174bbec41326635d94394fec27272",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "45a35d8a3455cde10816ff3e2feef3a7a21174bbec41326635d94394fec27272",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J04",
+      "path": "tests/test_code_context.py",
+      "snapshot_sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09",
+      "sha256": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "ecf614237e36094ddfcdebe37ec45af1ce92d3df3e433d89703435590ac3fa09",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J04",
+      "path": "tests/test_code_context_process.py",
+      "snapshot_sha256": "67152ebf0b781d45feba30c232625d7bbb93ded937e2c87ea4811af5b06ffd81",
+      "sha256": "67152ebf0b781d45feba30c232625d7bbb93ded937e2c87ea4811af5b06ffd81",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "67152ebf0b781d45feba30c232625d7bbb93ded937e2c87ea4811af5b06ffd81",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J05",
+      "path": "jitmind/code_memory/__init__.py",
+      "snapshot_sha256": "79312b29319783d400b5ce459dabe487e7b7cd2f2fbe0d3594334e2a9b377563",
+      "sha256": "79312b29319783d400b5ce459dabe487e7b7cd2f2fbe0d3594334e2a9b377563",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "79312b29319783d400b5ce459dabe487e7b7cd2f2fbe0d3594334e2a9b377563",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J05",
+      "path": "jitmind/code_memory/anchors.py",
+      "snapshot_sha256": "60a778774b250ff761e4cef622ed8f45e5e358079a2c0646a3f718495fe5e2c6",
+      "sha256": "60a778774b250ff761e4cef622ed8f45e5e358079a2c0646a3f718495fe5e2c6",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "98d9715ad0faba844638859e5f49d8ccb58cd9a7e67c56c7376b81b08c24e31a",
+      "owner_differs_at_review": true
+    },
+    {
+      "owner": "J05",
+      "path": "jitmind/code_memory/binding_models.py",
+      "snapshot_sha256": "39c9e9676f58314e4e3d9073efd19f0072023440cdb6fc61f9d802fc9a9f203c",
+      "sha256": "39c9e9676f58314e4e3d9073efd19f0072023440cdb6fc61f9d802fc9a9f203c",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "39c9e9676f58314e4e3d9073efd19f0072023440cdb6fc61f9d802fc9a9f203c",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J05",
+      "path": "jitmind/code_memory/binding_storage.py",
+      "snapshot_sha256": "aacd73710c97f097f1c5934db142e20bd6ee8d6d6f8ae13d87ae3fbfdd17d9d7",
+      "sha256": "aacd73710c97f097f1c5934db142e20bd6ee8d6d6f8ae13d87ae3fbfdd17d9d7",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "5684d3bf4269703f87f4232f0d3fd32482d90be704170f57e1cc6670ab539c1f",
+      "owner_differs_at_review": true
+    },
+    {
+      "owner": "J05",
+      "path": "jitmind/code_memory/revalidation.py",
+      "snapshot_sha256": "ada66aa4f8d553d8930eb37aff00662544d7216bdfae941d643485ca8cdd92d5",
+      "sha256": "ada66aa4f8d553d8930eb37aff00662544d7216bdfae941d643485ca8cdd92d5",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "ada66aa4f8d553d8930eb37aff00662544d7216bdfae941d643485ca8cdd92d5",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J05",
+      "path": "tests/test_code_anchors.py",
+      "snapshot_sha256": "cc61bb85ed1b3e528941bfbde1241d0c720e674b1f47cafa4f89831b0eb670b1",
+      "sha256": "cc61bb85ed1b3e528941bfbde1241d0c720e674b1f47cafa4f89831b0eb670b1",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "8255edab92b341ef41dd5556a68f3f2be8e52b0e940e7e9e98891f2f5cced3cb",
+      "owner_differs_at_review": true
+    },
+    {
+      "owner": "J06",
+      "path": "jitmind/code_memory/open_work.py",
+      "snapshot_sha256": "330b670fa75dfc33bd0013a4af3293fed415c29ef4f1df8df2f3295642e3a23c",
+      "sha256": "330b670fa75dfc33bd0013a4af3293fed415c29ef4f1df8df2f3295642e3a23c",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "330b670fa75dfc33bd0013a4af3293fed415c29ef4f1df8df2f3295642e3a23c",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J06",
+      "path": "jitmind/code_memory/work_storage.py",
+      "snapshot_sha256": "2f06be2fbecfc979bc60d39d5cee6fc6a629d8a11940fd8d6f03d71595a28892",
+      "sha256": "2f06be2fbecfc979bc60d39d5cee6fc6a629d8a11940fd8d6f03d71595a28892",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "2f06be2fbecfc979bc60d39d5cee6fc6a629d8a11940fd8d6f03d71595a28892",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J06",
+      "path": "jitmind/code_memory/lesson_models.py",
+      "snapshot_sha256": "17c1547051fb5338fd357615d8c673fc2ccb62d2b23e94110af8b7bd201cf4ff",
+      "sha256": "17c1547051fb5338fd357615d8c673fc2ccb62d2b23e94110af8b7bd201cf4ff",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "01b070099067132dbb5b9269a2657dcf1f22141d67c4cef5c32717f049ea93c8",
+      "owner_differs_at_review": true
+    },
+    {
+      "owner": "J06",
+      "path": "jitmind/code_memory/preflight.py",
+      "snapshot_sha256": "dadb006f88ce520cfaf574259f1a577ca544b3d387486ff4e1b75e1c028c3bca",
+      "sha256": "dadb006f88ce520cfaf574259f1a577ca544b3d387486ff4e1b75e1c028c3bca",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "7119d160107db1f0828fa31affc3aba18bcd716163df562a8c77c45cfebc6258",
+      "owner_differs_at_review": true
+    },
+    {
+      "owner": "J06",
+      "path": "tests/test_open_work.py",
+      "snapshot_sha256": "b0b192f5bd1ecfe39811346eb4ce912a85a15d00c446e31e8f2a01493e957597",
+      "sha256": "b0b192f5bd1ecfe39811346eb4ce912a85a15d00c446e31e8f2a01493e957597",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "b0b192f5bd1ecfe39811346eb4ce912a85a15d00c446e31e8f2a01493e957597",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J06",
+      "path": "tests/test_open_work_bindings.py",
+      "snapshot_sha256": "96d38b318fe0e1dc8fa695c60ed4f2f2e50f6f60c2b02d168583845448cad405",
+      "sha256": "96d38b318fe0e1dc8fa695c60ed4f2f2e50f6f60c2b02d168583845448cad405",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "8c3f5e7c44588c7bbb4478e3c9b93fdedfbecbdf7496e4c1e4a41ec0fb4576e3",
+      "owner_differs_at_review": true
+    },
+    {
+      "owner": "J06",
+      "path": "tests/test_preflight.py",
+      "snapshot_sha256": "3b5251f8dcaba3de82112d7760e162263fea96c7a59af70d6a32759c41324f26",
+      "sha256": "3b5251f8dcaba3de82112d7760e162263fea96c7a59af70d6a32759c41324f26",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "3b5251f8dcaba3de82112d7760e162263fea96c7a59af70d6a32759c41324f26",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J07",
+      "path": ".gitignore",
+      "snapshot_sha256": "b5febaf8d92c40efc842d22cc481a0d3d9d732ca92891646e3e6b8a569261d68",
+      "sha256": "b5febaf8d92c40efc842d22cc481a0d3d9d732ca92891646e3e6b8a569261d68",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "b5febaf8d92c40efc842d22cc481a0d3d9d732ca92891646e3e6b8a569261d68",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J07",
+      "path": "jitmind/checkpoints/__init__.py",
+      "snapshot_sha256": "4d54e3f91114b474c337fbd460653e46210c2c668fcb557c231560e8477c0017",
+      "sha256": "4d54e3f91114b474c337fbd460653e46210c2c668fcb557c231560e8477c0017",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "4d54e3f91114b474c337fbd460653e46210c2c668fcb557c231560e8477c0017",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J07",
+      "path": "jitmind/checkpoints/ledger.py",
+      "snapshot_sha256": "c3c5b6805d6959a86ec242a6153818a1b4b2b95cd3789493d59f4ed23a790910",
+      "sha256": "c3c5b6805d6959a86ec242a6153818a1b4b2b95cd3789493d59f4ed23a790910",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "c3c5b6805d6959a86ec242a6153818a1b4b2b95cd3789493d59f4ed23a790910",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J07",
+      "path": "jitmind/utils/checkpoint.py",
+      "snapshot_sha256": "84e108f0d5c1b87061425f5218a83b4f47b9cd2b3f805022a326bd059773c3ba",
+      "sha256": "84e108f0d5c1b87061425f5218a83b4f47b9cd2b3f805022a326bd059773c3ba",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "84e108f0d5c1b87061425f5218a83b4f47b9cd2b3f805022a326bd059773c3ba",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J07",
+      "path": "tests/test_checkpoint_ledger.py",
+      "snapshot_sha256": "63d3df7dbc975322d1f201b497b70f7bef7829621dbe6fad2c71165a6f603a5c",
+      "sha256": "63d3df7dbc975322d1f201b497b70f7bef7829621dbe6fad2c71165a6f603a5c",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "63d3df7dbc975322d1f201b497b70f7bef7829621dbe6fad2c71165a6f603a5c",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J07",
+      "path": "tests/test_checkpoint_manager.py",
+      "snapshot_sha256": "a85fd91122e6dbde9ddf7b7e5422af622d828192540ef3241d87ef51923f9b65",
+      "sha256": "a85fd91122e6dbde9ddf7b7e5422af622d828192540ef3241d87ef51923f9b65",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "a85fd91122e6dbde9ddf7b7e5422af622d828192540ef3241d87ef51923f9b65",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J07",
+      "path": "tests/test_checkpoint_scope.py",
+      "snapshot_sha256": "5651f767a662c021f31022eef609cf2edbc39644c34d423c424a2d9e986f2fc8",
+      "sha256": "5651f767a662c021f31022eef609cf2edbc39644c34d423c424a2d9e986f2fc8",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "5651f767a662c021f31022eef609cf2edbc39644c34d423c424a2d9e986f2fc8",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J09",
+      "path": "jitmind/temporal_history.py",
+      "snapshot_sha256": "87b2cc854522cd59f40b90eca48470c07511fb0bc5058dd8ea5e5ffbe0c04e33",
+      "sha256": "87b2cc854522cd59f40b90eca48470c07511fb0bc5058dd8ea5e5ffbe0c04e33",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "87b2cc854522cd59f40b90eca48470c07511fb0bc5058dd8ea5e5ffbe0c04e33",
+      "owner_differs_at_review": false
+    },
+    {
+      "owner": "J09",
+      "path": "tests/test_temporal_history_sqlite.py",
+      "snapshot_sha256": "d70e74954ca0d86f2ee8400cf0e4e15efb08bc88b6230c9caaef75bc5c97ac23",
+      "sha256": "d70e74954ca0d86f2ee8400cf0e4e15efb08bc88b6230c9caaef75bc5c97ac23",
+      "contribution": false,
+      "refreshed_by_J10": false,
+      "owner_sha256_at_review": "d70e74954ca0d86f2ee8400cf0e4e15efb08bc88b6230c9caaef75bc5c97ac23",
+      "owner_differs_at_review": false
+    }
+  ],
+  "adapter": {
+    "owner": "J04",
+    "location": "delivery/J04/adapters/graft relative to orchestration ROOT; frozen copy used for J08 staged tests",
+    "copied": true,
+    "runtime_configuration": "JITMIND_TEST_GRAFT_ADAPTER; fallback to repository adapters/graft. JITMIND_TEST_NODE optional, otherwise PATH node.",
+    "source_digests": [
+      {
+        "path": "LICENSE",
+        "sha256": "d671f52607b002fad21b4a09cf3a7bd6c507e95abfd90040c775fdd4d83e3d7c"
+      },
+      {
+        "path": "PROVENANCE.md",
+        "sha256": "ecf27eddc3450bfdb9e447f3b7eef81ed55bc8eb231df50fa9ba4084e9e3f545"
+      },
+      {
+        "path": "THIRD_PARTY_NOTICES.txt",
+        "sha256": "baa6d2158b7af0ca465bdf91261f796f826fdc1fdf168cc19dca3870c78e9889"
+      },
+      {
+        "path": "adapter-requirements.json",
+        "sha256": "b56a819dd77bae14d2caa4a69f8236201d98d85e43de55ea55cafae3120a5115"
+      },
+      {
+        "path": "donor-audit.json",
+        "sha256": "7423fa884bd1fc8843b623fb1c980db9b0e50431f651d873f8a4ba9c3b7b88e7"
+      },
+      {
+        "path": "extract.mjs",
+        "sha256": "5eef6876d53933a7d54d2dae7ab99e793543fc2122573fbae1d53a20a9dc7914"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "87a7b5cca2ee883795063104eb4298aa8a0c841ac3d8a9b44ecc8d0adec3bef8"
+      },
+      {
+        "path": "package.json",
+        "sha256": "ae646f9eb985c24480383f2264322a341ba94e82c556f4c8318a1bb060293145"
+      },
+      {
+        "path": "runner.mjs",
+        "sha256": "f7f35fc019f64a169a0095a7c6f5013046cc7e79961b3a3696166b1c46bf6946"
+      }
+    ],
+    "installed_package_manifests": [
+      {
+        "path": "node_modules/tree-sitter/package.json",
+        "sha256": "8cca5044dd3381dbf958dea36ef6d9f81f379886d32ef845919cf07679c6e42c",
+        "version": "0.21.1"
+      },
+      {
+        "path": "node_modules/tree-sitter-python/package.json",
+        "sha256": "7743dc38552ccb2309f8ee7b5d56b0292ba7b8760ce35509d3d729f4f70a50d7",
+        "version": "0.21.0"
+      }
+    ]
+  },
+  "remaining_limits": [
+    "The frozen temporal oracle was read; this supplement adds no temporal acceptance claims.",
+    "No product modules, copied tests or dependency manifests are J10 contributions.",
+    "Static type checker not installed; no installs performed."
+  ],
+  "integration_review": {
+    "contribution": "J10 fixtures and mappings; J08 binding-authority configuration and final source attestation",
+    "historical_dependency_inventory": "all_copied_dependencies describes the original J10 run, not the final composite",
+    "source_owners": {
+      "J01": "commit b3fe1d51a4cb98ea2ddce7e94fd3f732010b623d",
+      "J02": "delivery/J02",
+      "J03": "delivery/J03",
+      "J04": "delivery/J04",
+      "J05": "delivery/J05",
+      "J06": "worktrees/J06",
+      "J07": "worktrees/J07",
+      "J09": "worktrees/J09"
+    },
+    "release_qualified": false
+  }
+}
