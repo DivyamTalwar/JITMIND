@@ -438,6 +438,13 @@ class SQLiteCheckpointLedger:
         try:
             if type(observed_time) is not str or len(observed_time) > 128:
                 raise ValueError()
+            # Reject repeated/misplaced UTC designators before Python 3.10's
+            # permissive parser can accept a leftover character in the time.
+            if "Z" in observed_time[:-1] or (
+                observed_time.endswith("Z")
+                and any(sign in observed_time[10:-1] for sign in "+-")
+            ):
+                raise ValueError()
             # Python 3.10 does not accept the terminal UTC designator.
             parsed = datetime.fromisoformat(
                 observed_time[:-1] + "+00:00" if observed_time.endswith("Z") else observed_time
