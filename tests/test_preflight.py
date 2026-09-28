@@ -386,8 +386,14 @@ def test_independent_process_lock_bounded_deferred_and_release(setup, mode, whic
         assert service.deliver(scope, session, target).state == "delivered"
 
 
-def test_session_expiry_cleanup_quota_and_end(setup):
+def test_session_expiry_cleanup_quota_and_end(setup, monkeypatch):
+    from types import SimpleNamespace
+    import jitmind.code_memory.preflight as module
+
     _, scope, _, database, _, service, session, target = setup
+    now = [time.time()]
+    monkeypatch.setattr(module, "time", SimpleNamespace(time=lambda: now[0]))
+    service.policy = replace(service.policy, deadline_seconds=3.0)
     add(setup)
     service.deliver(scope, session, target)
     service.end_session(scope, session)
@@ -396,8 +402,10 @@ def test_session_expiry_cleanup_quota_and_end(setup):
     with database.connect(Budget(1)) as db:
         assert db.execute("SELECT count(*) FROM deliveries").fetchone()[0] == 0
         assert db.execute("SELECT count(*) FROM delivery_receipts").fetchone()[0] == 0
-    expiring = service.start_session(scope, REPO, ttl_seconds=0.01)
-    time.sleep(0.02)
+    expiring = service.start_session(scope, REPO, ttl_seconds=10)
+    now[0] = expiring.expires - 0.001
+    assert service.deliver(scope, expiring, target).state == "delivered"
+    now[0] = expiring.expires  # half-open expiry boundary, without scheduler sleep
     with pytest.raises(ScopeDenied):
         service.deliver(scope, expiring, target)
     assert service.cleanup(scope) == 1
