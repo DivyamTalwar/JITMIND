@@ -755,3 +755,25 @@ def test_oversized_stored_event_replay_not_fetched(tmp_path):
     with pytest.raises(CapacityExceeded, match="Event replay acquisition"):
         append(ledger, scope, 0)
     assert not payload_reads(statements, "jitmind_cp_events")
+
+
+@pytest.mark.parametrize("stamp", [
+    "2026-09-28T00:00:00ZZ", "2026-09-28T00:00:00Z+00:00",
+    "2026-09-28T00:00:00+00:00Z", "2026-09-28T00:00:00-05:30Z",
+])
+def test_utc_marker_rejected_before_permissive_runtime_parser(tmp_path, monkeypatch, stamp):
+    import jitmind.checkpoints.ledger as module
+    from datetime import datetime as RealDatetime, timezone
+    ledger, scope = setup_ledger(tmp_path / "ledger.db")
+    calls = []
+    class PermissiveParser:
+        @staticmethod
+        def fromisoformat(text):
+            calls.append(text)
+            return RealDatetime(2026, 9, 28, tzinfo=timezone.utc)
+    monkeypatch.setattr(module, "datetime", PermissiveParser)
+    original = (tmp_path / "ledger.db").read_bytes()
+    with pytest.raises(InvalidInput):
+        ledger.append(scope, "main", 0, event_id="e0", payload={}, observed_time=stamp)
+    assert calls == []
+    assert (tmp_path / "ledger.db").read_bytes() == original
