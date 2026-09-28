@@ -585,3 +585,9 @@ indefinitely. The production preflight deadline remains 150 ms. Temporal-only
 and post-contention recovery assertions use an explicit three-second test policy
 to separate eligibility/recovery from shared-runner fsync speed; the original
 blocked-call elapsed-time and deadline tests keep their original limits.
+
+Session expiry tests advance only the preflight wall clock explicitly and check
+both just-before and exactly-at expiry, avoiding a scheduler-dependent 10 ms
+session setup. Binding-invalidation fixtures likewise use a separate functional
+three-second policy; production and explicit deadline/blocked-call tests retain
+the original 150 ms deadline. No runtime behavior is relaxed by these fixtures.
