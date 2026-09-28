@@ -103,3 +103,8 @@ node_modules/
 .next/
 out/
 
+
+# The optional checkpoint implementation is source, not runtime state.
+!jitmind/checkpoints/
+jitmind/checkpoints/*
+!jitmind/checkpoints/*.py

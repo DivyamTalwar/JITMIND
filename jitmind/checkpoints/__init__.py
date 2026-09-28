@@ -1,0 +1,43 @@
+"""Opt-in checkpoints; importing jitmind does not initialize this extension."""
+
+from .ledger import (
+    CapacityExceeded,
+    Checkpoint,
+    CheckpointError,
+    CommitUncertain,
+    Draft,
+    Event,
+    EventConflict,
+    HistoryIncomplete,
+    HistoryPage,
+    IdempotencyConflict,
+    InvalidInput,
+    RevisionConflict,
+    SchemaMismatch,
+    Snapshot,
+    SourceChanged,
+    SQLiteCheckpointLedger,
+    StorageError,
+    UnsafeRange,
+)
+
+__all__ = [
+    "CapacityExceeded",
+    "Checkpoint",
+    "CheckpointError",
+    "CommitUncertain",
+    "Draft",
+    "Event",
+    "EventConflict",
+    "HistoryIncomplete",
+    "HistoryPage",
+    "IdempotencyConflict",
+    "InvalidInput",
+    "RevisionConflict",
+    "SQLiteCheckpointLedger",
+    "SchemaMismatch",
+    "Snapshot",
+    "SourceChanged",
+    "StorageError",
+    "UnsafeRange",
+]

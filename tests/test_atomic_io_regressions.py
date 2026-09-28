@@ -1,5 +1,8 @@
+import json
 import os
 import threading
+from contextlib import contextmanager
+from pathlib import Path
 
 import pytest
 
@@ -142,7 +145,7 @@ def test_other_legacy_stores_errors_and_corruption(tmp_path, monkeypatch, kind, 
         )
 
     save("old")
-    path = tmp_path / "user.json"
+    path = store._path("user")
     cause = OSError("private secret")
 
     def fail(*args):
@@ -165,7 +168,6 @@ def test_other_legacy_stores_errors_and_corruption(tmp_path, monkeypatch, kind, 
 
 
 def test_checkpoint_public_delete_between_exists_and_open(tmp_path, monkeypatch):
-    import builtins
     import jitmind.utils.checkpoint as module
 
     store = CheckpointManager(str(tmp_path))
@@ -173,41 +175,185 @@ def test_checkpoint_public_delete_between_exists_and_open(tmp_path, monkeypatch)
     assert store.delete_checkpoint("user") is False
     assert store.save_checkpoint("user", {"old": True}) is None
     assert store.load_checkpoint("user") == {"old": True}
-    path = tmp_path / "user.json"
-    opening, resume = threading.Event(), threading.Event()
-    results = []
+    path = store._path("user")
+    opening, resume, waiting = threading.Event(), threading.Event(), threading.Event()
+    reads, deletes = [], []
+    original_open, original_lock = Path.open, module.file_lock
 
     def open_file(name, *args, **kwargs):
         if name == path and threading.current_thread() is reader:
             opening.set()
             assert resume.wait(5)
-        return builtins.open(name, *args, **kwargs)
+        return original_open(name, *args, **kwargs)
+
+    @contextmanager
+    def observed_lock(lock_path):
+        assert lock_path == tmp_path / ".checkpoints.lock"
+        if threading.current_thread() is deleter:
+            # A real zero-timeout attempt proves contention without a sleep oracle.
+            with pytest.raises(TimeoutError):
+                with original_lock(lock_path, timeout_s=0):
+                    pytest.fail("Deletion acquired the paused reader's lock")
+            waiting.set()
+        with original_lock(lock_path, timeout_s=5):
+            yield
 
     def load():
         try:
-            results.append(store.load_checkpoint("user"))
+            reads.append(store.load_checkpoint("user"))
         except BaseException as exc:
-            results.append(exc)
+            reads.append(exc)
 
-    monkeypatch.setattr(module, "open", open_file, raising=False)
+    def delete():
+        try:
+            deletes.append(store.delete_checkpoint("user"))
+        except BaseException as exc:
+            deletes.append(exc)
+
+    monkeypatch.setattr(Path, "open", open_file)
+    monkeypatch.setattr(module, "file_lock", observed_lock)
     reader = threading.Thread(target=load)
+    deleter = threading.Thread(target=delete)
     try:
         reader.start()
         assert opening.wait(5)
-        assert store.delete_checkpoint("user") is True
+        deleter.start()
+        assert waiting.wait(5)
+        assert deleter.is_alive()
+        assert deletes == []
+        assert path.exists()
     finally:
+        # The deleter needs this lock: release the reader before joining either.
         resume.set()
         reader.join(5)
-    assert not reader.is_alive()
-    assert results == [None]
+        if deleter.ident is not None:
+            deleter.join(5)
+    assert not reader.is_alive() and not deleter.is_alive()
+    assert reads == [{"old": True}]
+    assert deletes == [True]
     assert store.load_checkpoint("user") is None
     assert store.delete_checkpoint("user") is False
-    # Absence and corrupt data retain distinct public results after the race.
-    for invalid in ("{broken", '{"state": []}'):
-        path.write_text(invalid)
-        with pytest.raises(io.CorruptStoreError):
-            store.load_checkpoint("user")
-        assert path.read_text() == invalid
+
+
+@pytest.fixture
+def genuine_v1_checkpoint(tmp_path):
+    # Deliberately use the historical filename/envelope, never the v2 writer.
+    path = tmp_path / "user.json"
+    path.write_text(json.dumps({
+        "thread_id": "user",
+        "timestamp": "2026-09-28T00:00:00Z",
+        "state": {"legacy": True},
+    }))
+    return path
+
+
+def test_checkpoint_genuine_v1_compatibility(tmp_path, genuine_v1_checkpoint):
+    store = CheckpointManager(str(tmp_path))
+    original = genuine_v1_checkpoint.read_bytes()
+    assert store.load_checkpoint("user") == {"legacy": True}
+    assert store.save_checkpoint("user", {"v2": True}) is None
+    assert store._path("user") != genuine_v1_checkpoint
+    assert genuine_v1_checkpoint.read_bytes() == original
+    assert store.load_checkpoint("user") == {"v2": True}
+    assert store.delete_checkpoint("user") is True
+    assert not genuine_v1_checkpoint.exists()
+    assert not store._path("user").exists()
+
+
+@pytest.mark.parametrize("layout", ["v1", "v2"])
+@pytest.mark.parametrize("invalid", [
+    b"{broken", b'{"state": []}', b"\xff",
+    b'{"thread_id":"","timestamp":"x","state":{}}',
+    b'{"thread_id":"user","timestamp":"x","state":{},"namespace":[]}',
+])
+def test_checkpoint_public_corruption_preserves_bytes(
+    tmp_path, genuine_v1_checkpoint, layout, invalid
+):
+    from jitmind.utils.checkpoint import CheckpointCorrupt, CheckpointIOError
+
+    store = CheckpointManager(str(tmp_path))
+    path = genuine_v1_checkpoint
+    if layout == "v2":
+        store.save_checkpoint("user", {"old": True})
+        path = store._path("user")
+    path.write_bytes(invalid)
+    for operation in (
+        lambda: store.load_checkpoint("user"),
+        lambda: store.save_checkpoint("user", {"overwrite": True}),
+        lambda: store.delete_checkpoint("user"),
+        store.list_checkpoints,
+    ):
+        with pytest.raises(io.CorruptStoreError) as raised:
+            operation()
+        assert isinstance(raised.value, CheckpointCorrupt)
+        assert isinstance(raised.value, io.StorageError)
+        assert not isinstance(raised.value, CheckpointIOError)
+        assert path.read_bytes() == invalid
+    if layout == "v1":
+        assert not store._path("user").exists()
+
+
+@pytest.mark.parametrize("operation", ["load", "save", "delete", "list"])
+def test_checkpoint_io_keeps_generic_error_catch_and_cause(
+    tmp_path, monkeypatch, operation
+):
+    from jitmind.utils.checkpoint import CheckpointIOError
+
+    store = CheckpointManager(str(tmp_path))
+    store.save_checkpoint("user", {"old": True})
+    path = store._path("user")
+    original = path.read_bytes()
+    cause = PermissionError("private read failure")
+    original_open = Path.open
+
+    def denied(candidate, *args, **kwargs):
+        if candidate == path:
+            raise cause
+        return original_open(candidate, *args, **kwargs)
+
+    actions = {
+        "load": lambda: store.load_checkpoint("user"),
+        "save": lambda: store.save_checkpoint("user", {"new": True}),
+        "delete": lambda: store.delete_checkpoint("user"),
+        "list": store.list_checkpoints,
+    }
+    with monkeypatch.context() as patch:
+        patch.setattr(Path, "open", denied)
+        with pytest.raises(io.StorageError) as raised:
+            actions[operation]()
+    assert isinstance(raised.value, CheckpointIOError)
+    assert raised.value.__cause__ is cause
+    assert "private" not in str(raised.value)
+    assert path.read_bytes() == original
+
+
+@pytest.mark.parametrize("legacy", [False, True])
+def test_checkpoint_noncooperating_disappearance_before_open(
+    tmp_path, monkeypatch, legacy
+):
+    store = CheckpointManager(str(tmp_path))
+    store.save_checkpoint("user", {"old": True})
+    path = store._path("user")
+    old = tmp_path / "user.json"
+    if legacy:
+        old.write_text(json.dumps({
+            "thread_id": "user", "timestamp": "2026-09-28T00:00:00Z",
+            "state": {"legacy": True},
+        }))
+    original_open = Path.open
+    opened = []
+
+    def disappear(candidate, *args, **kwargs):
+        opened.append(candidate)
+        if candidate == path or (legacy and candidate == old):
+            candidate.unlink()
+        # Exercise the actual open's FileNotFoundError, not a synthetic return.
+        return original_open(candidate, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", disappear)
+    assert store.load_checkpoint("user") is None
+    assert opened == [path, old]  # Default namespace permits legacy fallback.
+    assert not path.exists() and not old.exists()
 
 
 @pytest.mark.parametrize("stage", ["unlink", "directory_sync", "corrupt"])
@@ -216,7 +362,7 @@ def test_checkpoint_delete_failure_preserves_acknowledgement(
 ):
     store = CheckpointManager(str(tmp_path))
     store.save_checkpoint("user", {"old": True})
-    path = tmp_path / "user.json"
+    path = store._path("user")
     cause = OSError("private deletion failure")
 
     def fail(*args):
@@ -228,7 +374,9 @@ def test_checkpoint_delete_failure_preserves_acknowledgement(
     if stage == "unlink":
         monkeypatch.setattr(type(path), "unlink", fail)
     elif stage == "directory_sync":
-        monkeypatch.setattr(io, "_sync_directory", fail)
+        import jitmind.utils.checkpoint as module
+
+        monkeypatch.setattr(module, "_sync_directory", fail)
     if stage == "corrupt":
         with pytest.raises(io.CorruptStoreError):
             store.delete_checkpoint("user")
@@ -242,4 +390,4 @@ def test_checkpoint_delete_failure_preserves_acknowledgement(
         assert store.load_checkpoint("user") is None
     else:
         assert path.read_bytes() == original
-    assert (tmp_path / "user.json.lock").exists()
+    assert (tmp_path / ".checkpoints.lock").exists()
