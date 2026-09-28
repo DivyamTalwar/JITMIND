@@ -1,0 +1,31 @@
+jitmind/README.md:574:`cleanup_expired()` purges non-active records to prevent state bloat.
+jitmind/agents/memory_agent.py:34:class MemoryAgent:
+jitmind/agents/memory_agent.py:99:    def memorize(self, message: str, meta: Optional[Dict[str, Any]] = None, user_id: Optional[str] = None) -> MemoryUpdate:
+jitmind/agents/research_agent.py:54:class ResearchAgent:
+jitmind/agents/research_agent.py:399:        self.checkpoint_manager.save_checkpoint(checkpoint_id, state)
+jitmind/profile/profile_store.py:67:        with file_lock(lock_path):
+jitmind/schemas/advanced_memory.py:63:class AdvancedMemoryStore:
+jitmind/schemas/advanced_memory.py:108:                    self.cleanup_expired()
+jitmind/schemas/advanced_memory.py:144:        return file_lock(Path(str(self._memory_file) + ".lock"))
+jitmind/schemas/advanced_memory.py:193:                self.cleanup_expired()
+jitmind/schemas/advanced_memory.py:288:    def cleanup_expired(self) -> int:
+jitmind/schemas/memory.py:64:                with file_lock(lock_path):
+jitmind/schemas/page.py:21:class PageStore(Protocol):
+jitmind/schemas/page.py:26:class InMemoryPageStore:
+jitmind/schemas/page.py:70:                with file_lock(lock_path):
+jitmind/schemas/search.py:22:class Hit(BaseModel):
+jitmind/schemas/search.py:29:class Retriever(Protocol):
+jitmind/schemas/ttl_memory.py:108:                    self.cleanup_expired()
+jitmind/schemas/ttl_memory.py:179:                with file_lock(lock_path):
+jitmind/schemas/ttl_memory.py:214:                self.cleanup_expired()
+jitmind/schemas/ttl_memory.py:220:    def cleanup_expired(self) -> int:
+jitmind/schemas/ttl_memory.py:232:                with file_lock(lock_path):
+jitmind/schemas/ttl_page.py:93:                    self.cleanup_expired()
+jitmind/schemas/ttl_page.py:159:                with file_lock(lock_path):
+jitmind/schemas/ttl_page.py:188:                self.cleanup_expired()
+jitmind/schemas/ttl_page.py:192:    def cleanup_expired(self) -> int:
+jitmind/schemas/ttl_page.py:204:                with file_lock(lock_path):
+jitmind/utils/checkpoint.py:12:class CheckpointManager:
+jitmind/utils/checkpoint.py:21:    def save_checkpoint(self, thread_id: str, state: Dict[str, Any]) -> None:
+jitmind/utils/checkpoint.py:29:        with file_lock(lock_path):
+jitmind/utils/file_lock.py:11:def file_lock(
