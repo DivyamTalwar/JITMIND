@@ -204,6 +204,9 @@ def test_twenty_plus_rows_cannot_starve_repository_instruction(setup, prefix):
             valid_until=time.time() - 1 if prefix == "expired" else None,
         )
     assert author(projection, scope, ProposedAction(REPO, "*"), fact, "z-policy")
+    from jitmind.code_memory.preflight import PreflightPolicy
+
+    service.policy = PreflightPolicy()  # preserve the candidate-selection timing oracle
     started = time.monotonic()
     result = service.deliver(scope, session, target)
     elapsed = time.monotonic() - started
