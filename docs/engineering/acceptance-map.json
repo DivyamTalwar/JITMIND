@@ -1399,12 +1399,12 @@
               "status": "not_run",
               "source": {
                 "path": "tests/test_open_work_bindings.py",
-                "sha256": "80f876c3cb1f671b41ecbd68c4f969da5f820c6189d4b1b22d6ac4f164fe87e7"
+                "sha256": "78c0d4fc7465734165d2de960acd5a9815e624ae96856d024c2e65bf9e12a65d"
               },
               "fixtures": [
                 {
                   "path": "tests/test_open_work_bindings.py",
-                  "sha256": "80f876c3cb1f671b41ecbd68c4f969da5f820c6189d4b1b22d6ac4f164fe87e7"
+                  "sha256": "78c0d4fc7465734165d2de960acd5a9815e624ae96856d024c2e65bf9e12a65d"
                 }
               ],
               "fixture_description": "Reviewed existing J06 test: temporary Git checkout parsed by actual J04 Node/tree-sitter, J02 fact, J05 logical binding, J06 obligation; file move then confirmed removal or malformed-source uncertainty.",
@@ -1498,12 +1498,12 @@
               "status": "not_run",
               "source": {
                 "path": "tests/test_open_work_bindings.py",
-                "sha256": "80f876c3cb1f671b41ecbd68c4f969da5f820c6189d4b1b22d6ac4f164fe87e7"
+                "sha256": "78c0d4fc7465734165d2de960acd5a9815e624ae96856d024c2e65bf9e12a65d"
               },
               "fixtures": [
                 {
                   "path": "tests/test_open_work_bindings.py",
-                  "sha256": "80f876c3cb1f671b41ecbd68c4f969da5f820c6189d4b1b22d6ac4f164fe87e7"
+                  "sha256": "78c0d4fc7465734165d2de960acd5a9815e624ae96856d024c2e65bf9e12a65d"
                 }
               ],
               "fixture_description": "Reviewed existing J06 test: temporary Git checkout parsed by actual J04 Node/tree-sitter, J02 fact, J05 logical binding, J06 obligation; file move then confirmed removal or malformed-source uncertainty.",
@@ -1663,12 +1663,12 @@
               "kind": "public_api",
               "source": {
                 "path": "tests/test_preflight.py",
-                "sha256": "6ab4269f8cad06c546006b3a40de3cf5b3f85753c2f3d455a5ea423f5ca3f394"
+                "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
               },
               "fixtures": [
                 {
                   "path": "tests/test_preflight.py",
-                  "sha256": "6ab4269f8cad06c546006b3a40de3cf5b3f85753c2f3d455a5ea423f5ca3f394"
+                  "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
                 }
               ],
               "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
@@ -1696,12 +1696,12 @@
               "kind": "public_api",
               "source": {
                 "path": "tests/test_preflight.py",
-                "sha256": "6ab4269f8cad06c546006b3a40de3cf5b3f85753c2f3d455a5ea423f5ca3f394"
+                "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
               },
               "fixtures": [
                 {
                   "path": "tests/test_preflight.py",
-                  "sha256": "6ab4269f8cad06c546006b3a40de3cf5b3f85753c2f3d455a5ea423f5ca3f394"
+                  "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
                 }
               ],
               "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
@@ -1729,12 +1729,12 @@
               "kind": "real_storage",
               "source": {
                 "path": "tests/test_preflight.py",
-                "sha256": "6ab4269f8cad06c546006b3a40de3cf5b3f85753c2f3d455a5ea423f5ca3f394"
+                "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
               },
               "fixtures": [
                 {
                   "path": "tests/test_preflight.py",
-                  "sha256": "6ab4269f8cad06c546006b3a40de3cf5b3f85753c2f3d455a5ea423f5ca3f394"
+                  "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
                 }
               ],
               "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
@@ -1744,12 +1744,12 @@
               "kind": "real_storage",
               "source": {
                 "path": "tests/test_preflight.py",
-                "sha256": "6ab4269f8cad06c546006b3a40de3cf5b3f85753c2f3d455a5ea423f5ca3f394"
+                "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
               },
               "fixtures": [
                 {
                   "path": "tests/test_preflight.py",
-                  "sha256": "6ab4269f8cad06c546006b3a40de3cf5b3f85753c2f3d455a5ea423f5ca3f394"
+                  "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
                 }
               ],
               "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
@@ -1759,12 +1759,12 @@
               "kind": "real_storage",
               "source": {
                 "path": "tests/test_preflight.py",
-                "sha256": "6ab4269f8cad06c546006b3a40de3cf5b3f85753c2f3d455a5ea423f5ca3f394"
+                "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
               },
               "fixtures": [
                 {
                   "path": "tests/test_preflight.py",
-                  "sha256": "6ab4269f8cad06c546006b3a40de3cf5b3f85753c2f3d455a5ea423f5ca3f394"
+                  "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
                 }
               ],
               "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
@@ -1774,12 +1774,12 @@
               "kind": "real_storage",
               "source": {
                 "path": "tests/test_preflight.py",
-                "sha256": "6ab4269f8cad06c546006b3a40de3cf5b3f85753c2f3d455a5ea423f5ca3f394"
+                "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
               },
               "fixtures": [
                 {
                   "path": "tests/test_preflight.py",
-                  "sha256": "6ab4269f8cad06c546006b3a40de3cf5b3f85753c2f3d455a5ea423f5ca3f394"
+                  "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
                 }
               ],
               "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."
@@ -3353,12 +3353,12 @@
               "kind": "public_api",
               "source": {
                 "path": "tests/test_preflight.py",
-                "sha256": "6ab4269f8cad06c546006b3a40de3cf5b3f85753c2f3d455a5ea423f5ca3f394"
+                "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
               },
               "fixtures": [
                 {
                   "path": "tests/test_preflight.py",
-                  "sha256": "6ab4269f8cad06c546006b3a40de3cf5b3f85753c2f3d455a5ea423f5ca3f394"
+                  "sha256": "2bd9f76c201f5417ed9855b6947b7c92a959688e556502e299dc354933328937"
                 }
               ],
               "fixture_description": "Deterministic fixture constructed in this test source; not full original handoff fixtures."

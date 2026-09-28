@@ -34,3 +34,14 @@ metadata when exposed and otherwise requires the exact native OperationalError
 message. Both paths still require a real SQLite capacity limit, zero committed
 effects, a clean integrity check, and successful same-request retry after raising
 the limit. No error injection substitutes for the real engine capacity failure.
+
+## Reviewed CI fixture corrections
+
+The quota fixture seeds 256 receipt rows in one bounded transaction instead of
+256 autocommit fsyncs. The binding IMMEDIATE-lock compatibility control uses a
+functional deadline but retains its delivered result and 300 ms assertion. The
+EXCLUSIVE control retains the production deadline and deferred-result assertion.
+No production source or existing assertion was changed. The acceptance map
+refreshes only the two affected fixture file identities; all 32 cases, 41 stages,
+node identities and not-run specification statuses remain unchanged. New
+qualification evidence must be generated against this committed snapshot.
