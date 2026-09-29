@@ -214,6 +214,8 @@ class MemoryAgent:
 
         Graph/profile updates are not executed here. Durable projections consume
         the committed outbox; this path acknowledges only the SQLite authority.
+        Schema-v2 stores record immutable history in this same transaction,
+        including NOOP/DELETE; use store.snapshot_at() from a trusted host.
         Receipt identity survives retirement. Use store.receipt_content(receipt)
         for typed current availability; administrative NOOP/DELETE pages are not
         ordinary payloads. memorize() retains MemoryUpdate with a redacted page.

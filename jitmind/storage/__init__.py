@@ -5,11 +5,14 @@ from .models import (
     CapacityExceeded,
     DurableError,
     DurableReceipt,
+    HistoricalFact,
+    HistoricalSnapshot,
     IdempotencyConflict,
     IngestRequest,
     InvalidRequest,
     MigrationError,
     NamespaceSnapshot,
+    ProjectionEvent,
     Proposal,
     ProposalFailure,
     ReceiptContent,
@@ -19,6 +22,7 @@ from .models import (
     StorageFailure,
     TargetNotFound,
     UnsafeJournal,
+    ValidityCorrection,
 )
 from .sqlite import DurableMemoryAdapter, DurablePageAdapter, SQLiteDurableStore
 
@@ -49,3 +53,10 @@ __all__ = [
 from .migration import StagedLegacy, stage_legacy
 
 __all__ += ["StagedLegacy", "stage_legacy"]
+
+__all__ += [
+    "HistoricalFact",
+    "HistoricalSnapshot",
+    "ProjectionEvent",
+    "ValidityCorrection",
+]
