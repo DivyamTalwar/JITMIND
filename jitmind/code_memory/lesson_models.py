@@ -19,6 +19,7 @@ from typing import Protocol
 
 from jitmind.scope import ScopeAuthority, ScopeContext, ScopeDenied
 
+from .telemetry import _measured
 from .work_storage import (
     Budget,
     Conflict,
@@ -562,6 +563,7 @@ class LessonProjection:
             self.authority.require(scope, repo)
         self.authority.require(scope, repo)
 
+    @_measured("eligibility")
     def current_authority(self, scope, repo, lesson, budget):
         if self.facts.is_active(scope, lesson.fact_id, budget) is not True:
             return False
@@ -575,6 +577,7 @@ class LessonProjection:
             return result
         return True
 
+    @_measured("lookup")
     def candidates(self, scope, target, budget, *, policy=None) -> list[Lesson]:
         from .preflight import PreflightPolicy
 
