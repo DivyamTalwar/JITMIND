@@ -126,7 +126,16 @@ def alive(pid):
     except ProcessLookupError:
         return False
     stat = Path(f"/proc/{pid}/stat")
-    return not (stat.exists() and stat.read_text().split()[2] == "Z")
+    try:
+        if not stat.exists():
+            return True  # No procfs on non-Linux hosts; kill(pid, 0) succeeded.
+        record = stat.read_text()
+    except (FileNotFoundError, ProcessLookupError):
+        return False  # The inspected process exited during the procfs read.
+    _, closing, fields = record.rpartition(")")
+    if not closing or not fields.split():
+        raise ValueError("Malformed process status fixture")
+    return fields.split()[0] != "Z"
 
 
 @pytest.mark.parametrize("sig", [signal.SIGINT, signal.SIGTERM])
@@ -491,3 +500,63 @@ def test_normal_completion_closes_both_pipes(tmp_path, monkeypatch):
         assert children[0].stdout.closed and children[0].stderr.closed
     finally:
         signal.signal(signal.SIGTERM, previous)
+
+
+@pytest.mark.parametrize("error", [FileNotFoundError, ProcessLookupError])
+def test_alive_handles_process_disappearance_during_status_read(monkeypatch, error):
+    class Status:
+        def exists(self):
+            return True
+
+        def read_text(self):
+            raise error("fixture process exited")
+
+    monkeypatch.setattr(os, "kill", lambda pid, sig: None)
+    monkeypatch.setitem(alive.__globals__, "Path", lambda path: Status())
+    assert alive(12345) is False
+
+
+@pytest.mark.parametrize(
+    "record, expected",
+    [("123 (worker) S 1 2", True), ("123 (worker) Z 1 2", False),
+     ("123 (worker name) Z 1 2", False)],
+)
+def test_alive_preserves_live_and_zombie_controls(monkeypatch, record, expected):
+    class Status:
+        def exists(self):
+            return True
+
+        def read_text(self):
+            return record
+
+    monkeypatch.setattr(os, "kill", lambda pid, sig: None)
+    monkeypatch.setitem(alive.__globals__, "Path", lambda path: Status())
+    assert alive(12345) is expected
+
+
+def test_alive_does_not_hide_status_permission_failure(monkeypatch):
+    class Status:
+        def exists(self):
+            return True
+
+        def read_text(self):
+            raise PermissionError("fixture permission")
+
+    monkeypatch.setattr(os, "kill", lambda pid, sig: None)
+    monkeypatch.setitem(alive.__globals__, "Path", lambda path: Status())
+    with pytest.raises(PermissionError):
+        alive(12345)
+
+
+def test_alive_does_not_call_malformed_status_dead(monkeypatch):
+    class Status:
+        def exists(self):
+            return True
+
+        def read_text(self):
+            return "malformed"
+
+    monkeypatch.setattr(os, "kill", lambda pid, sig: None)
+    monkeypatch.setitem(alive.__globals__, "Path", lambda path: Status())
+    with pytest.raises(ValueError, match="Malformed"):
+        alive(12345)
