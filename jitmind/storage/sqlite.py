@@ -16,6 +16,8 @@ from pydantic import ValidationError
 
 from jitmind.schemas import MemoryEntry, MemoryState, MemoryUpdate, Page
 
+from .history import HISTORY_SCHEMA, HistoryMixin, processing_bound
+from .history import timestamp as history_timestamp
 from .models import (
     AcknowledgementUncertain,
     CapacityExceeded,
@@ -26,6 +28,7 @@ from .models import (
     InvalidRequest,
     MigrationError,
     NamespaceSnapshot,
+    ProjectionEvent,
     Proposal,
     ProposalFailure,
     ReceiptContent,
@@ -39,7 +42,7 @@ from .models import (
     validate_identifier,
 )
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 APPLICATION_ID = 0x4A49544D
 MAX_SQLITE_INTEGER = 2**63 - 1
 # Positive authority is required even for pages with no fact relationship.
@@ -57,6 +60,9 @@ SCHEMA = [
     "CREATE INDEX facts_revision ON facts(namespace_id,revision,memory_id)",
     "CREATE INDEX outbox_pending ON outbox(namespace_id,state,revision)",
 ]
+
+
+SCHEMAS = {1: SCHEMA, 2: SCHEMA + HISTORY_SCHEMA}
 
 
 def _db_error(exc: sqlite3.Error) -> DurableError:
@@ -151,7 +157,7 @@ def _page(payload: str) -> Page:
     )
 
 
-class SQLiteDurableStore:
+class SQLiteDurableStore(HistoryMixin):
     """Connections are operation-local, making instances safe across threads.
 
     Defaults: DELETE/FULL, 250ms SQLite busy timeout, two COMMIT retries.
@@ -198,11 +204,14 @@ class SQLiteDurableStore:
                     raise UnsafeJournal()
                 with self._transaction(conn):
                     if conn.execute("PRAGMA user_version").fetchone()[0] == 0:
-                        for statement in SCHEMA:
+                        for statement in SCHEMAS[SCHEMA_VERSION]:
                             conn.execute(statement)
                         conn.execute(f"PRAGMA application_id={APPLICATION_ID}")
                         conn.execute(f"PRAGMA user_version={SCHEMA_VERSION}")
                     self._check_schema(conn)
+                    self.schema_version = conn.execute(
+                        "PRAGMA user_version"
+                    ).fetchone()[0]
         except OSError:
             raise StorageFailure() from None
 
@@ -216,7 +225,9 @@ class SQLiteDurableStore:
             raise UnsafeJournal()
 
     @staticmethod
-    def _check_schema(conn: sqlite3.Connection, *, allow_empty: bool = False) -> None:
+    def _check_schema(
+        conn: sqlite3.Connection, *, allow_empty: bool = False, integrity: bool = True
+    ) -> None:
         version = conn.execute("PRAGMA user_version").fetchone()[0]
         app_id = conn.execute("PRAGMA application_id").fetchone()[0]
         statements = {
@@ -226,11 +237,13 @@ class SQLiteDurableStore:
         if allow_empty and version == 0 and app_id == 0 and not statements:
             return
         if (
-            version != SCHEMA_VERSION
+            version not in SCHEMAS
             or app_id != APPLICATION_ID
-            or statements != set(SCHEMA)
+            or statements != set(SCHEMAS.get(version, ()))
         ):
             raise SchemaMismatch()
+        if not integrity:
+            return
         if conn.execute("PRAGMA quick_check").fetchone()[0] != "ok":
             raise StorageFailure()
         if conn.execute("PRAGMA foreign_key_check").fetchone() is not None:
@@ -262,7 +275,8 @@ class SQLiteDurableStore:
             self._configure(conn)
             if not initialize:
                 if (
-                    conn.execute("PRAGMA user_version").fetchone()[0] != SCHEMA_VERSION
+                    conn.execute("PRAGMA user_version").fetchone()[0]
+                    != self.schema_version
                     or conn.execute("PRAGMA application_id").fetchone()[0]
                     != APPLICATION_ID
                 ):
@@ -285,6 +299,12 @@ class SQLiteDurableStore:
     def _transaction(self, conn: sqlite3.Connection) -> Iterator[None]:
         conn.execute("BEGIN IMMEDIATE")
         try:
+            if (
+                hasattr(self, "schema_version")
+                and conn.execute("PRAGMA user_version").fetchone()[0]
+                != self.schema_version
+            ):
+                raise SchemaMismatch()
             yield
             for attempt in range(self.commit_retries + 1):
                 try:
@@ -400,6 +420,16 @@ class SQLiteDurableStore:
     def commit_proposal(
         self, request: IngestRequest, expected_revision: int, proposal: Proposal
     ) -> DurableReceipt:
+        return self._commit_proposal(request, expected_revision, proposal)
+
+    def _commit_proposal(
+        self,
+        request: IngestRequest,
+        expected_revision: int,
+        proposal: Proposal,
+        *,
+        corrections=(),
+    ) -> DurableReceipt:
         request.validated()
         _revision_bound(expected_revision)
         try:
@@ -470,7 +500,23 @@ class SQLiteDurableStore:
             memory_id = (
                 str(uuid.uuid4()) if decision.operation in ("add", "update") else None
             )
-            meta = json.loads(request.metadata_json)
+            fact_meta = json.loads(request.metadata_json)
+            if target and decision.operation == "update" and self.schema_version == 2:
+                key, repo, snapshot, single = self._history_identity(
+                    conn, namespace, target.id
+                )
+                inherited = {
+                    "fact_key": key,
+                    "repo_id": repo,
+                    "snapshot_id": snapshot,
+                    "single_valued": single,
+                }
+                for field, value in inherited.items():
+                    if field in fact_meta and fact_meta[field] != value:
+                        raise InvalidRequest()
+                    if value is not None:
+                        fact_meta[field] = value
+            meta = dict(fact_meta)
             meta.update(
                 page_id=page_id,
                 memory_id=memory_id,
@@ -492,6 +538,11 @@ class SQLiteDurableStore:
                     revision,
                 ),
             )
+            if self.schema_version == 2:
+                conn.execute(
+                    "INSERT INTO history_pages SELECT * FROM pages WHERE namespace_id=? AND page_id=?",
+                    (namespace, page_id),
+                )
             self._fault("after_page_insert")
             changed = []
             if target:
@@ -520,7 +571,7 @@ class SQLiteDurableStore:
                     version_of=decision.target_id
                     if decision.operation == "update"
                     else None,
-                    meta=json.loads(request.metadata_json),
+                    meta=fact_meta,
                 )
                 conn.execute(
                     "INSERT INTO facts VALUES (?,?,?,?,?,?)",
@@ -534,6 +585,9 @@ class SQLiteDurableStore:
                     ),
                 )
                 changed.append(entry.id)
+            self._history_correct(
+                conn, namespace, revision, corrections, changed, fact_meta
+            )
             self._fault("after_fact_insert")
             receipt = DurableReceipt(
                 namespace_id=namespace,
@@ -559,6 +613,7 @@ class SQLiteDurableStore:
                     receipt.model_dump_json(),
                 ),
             )
+            self._history_record(conn, namespace, revision, now, event_id, changed)
             self._fault("after_outbox_receipt")
             self._fault("before_commit")
         try:
@@ -720,6 +775,70 @@ class SQLiteDurableStore:
                     (namespace_id, after_revision, limit),
                 )
             ]
+
+    def outbox_events(
+        self, namespace_id: str, *, after_revision: int = 0, limit: int = 100
+    ) -> tuple[ProjectionEvent, ...]:
+        """All committed events, independent of reference-consumer delivery state."""
+        validate_identifier(namespace_id)
+        _revision_bound(after_revision)
+        _bound(limit)
+        with self._connection(read_only=True) as conn:
+            conn.execute("BEGIN")
+            size = conn.execute(
+                "SELECT COALESCE(SUM(n),0) FROM (SELECT length(CAST(memory_ids AS BLOB)) n FROM outbox WHERE namespace_id=? AND revision>? ORDER BY revision LIMIT ?)",
+                (namespace_id, after_revision, limit),
+            ).fetchone()[0]
+            if size > 8 * 1024 * 1024:
+                raise CapacityExceeded()
+            return tuple(
+                self._projection_event(row)
+                for row in conn.execute(
+                    "SELECT namespace_id,event_id,revision,memory_ids FROM outbox WHERE namespace_id=? AND revision>? ORDER BY revision LIMIT ?",
+                    (namespace_id, after_revision, limit),
+                )
+            )
+
+    def get_event(self, namespace_id: str, event_id: str) -> ProjectionEvent | None:
+        validate_identifier(namespace_id)
+        validate_identifier(event_id)
+        with self._connection(read_only=True) as conn, processing_bound(conn):
+            conn.execute("BEGIN")
+            self._check_schema(conn, integrity=False)
+            size = conn.execute(
+                "SELECT length(CAST(memory_ids AS BLOB)) FROM outbox WHERE namespace_id=? AND event_id=?",
+                (namespace_id, event_id),
+            ).fetchone()
+            if size is None:
+                return None
+            if type(size[0]) is not int or not 0 < size[0] <= 262144:
+                raise StorageFailure()
+            row = conn.execute(
+                "SELECT namespace_id,event_id,revision,memory_ids FROM outbox WHERE namespace_id=? AND event_id=?",
+                (namespace_id, event_id),
+            ).fetchone()
+            return self._projection_event(row) if row is not None else None
+
+    @staticmethod
+    def _projection_event(row) -> ProjectionEvent:
+        if len(row["memory_ids"].encode("utf-8")) > 262144:
+            raise StorageFailure()
+        try:
+            _revision_bound(row["revision"])
+            validate_identifier(row["namespace_id"])
+            validate_identifier(row["event_id"])
+        except InvalidRequest:
+            raise StorageFailure() from None
+        ids = json.loads(row["memory_ids"])
+        if type(ids) is not list or len(ids) > 1000:
+            raise StorageFailure()
+        try:
+            ids = tuple(validate_identifier(value) for value in ids)
+        except InvalidRequest:
+            raise StorageFailure() from None
+        return ProjectionEvent(
+            row["namespace_id"], row["event_id"], row["revision"], ids
+        )
 
     def deliver_event(self, namespace_id: str, event_id: str) -> None:
         """Idempotent reference projection, atomically delivered with its receipt.
@@ -888,6 +1007,19 @@ class SQLiteDurableStore:
                     canonical_json([e.id for e in entries]),
                 ),
             )
+            if self.schema_version == 2:
+                recorded = self._now()
+                self._history_baseline(
+                    conn, namespace_id, 1, history_timestamp(recorded)
+                )
+                conn.execute(
+                    "INSERT INTO history_pages SELECT * FROM pages WHERE namespace_id=?",
+                    (namespace_id,),
+                )
+                for entry in entries:
+                    self._history_version(conn, namespace_id, 1, entry, strict=False)
+                with processing_bound(conn):
+                    self._history_validate_baseline(conn, namespace_id, 1)
             self._fault("before_import_commit")
         return report
 
@@ -942,6 +1074,7 @@ class SQLiteDurableStore:
                 if journal == "WAL":
                     cls._check_wal(source)
                 cls._check_schema(source)
+                source_version = source.execute("PRAGMA user_version").fetchone()[0]
             finally:
                 source.close()
         except sqlite3.Error:
@@ -949,6 +1082,7 @@ class SQLiteDurableStore:
         # Use the same bounded backup API without opening the source for mutation.
         holder = object.__new__(cls)
         holder.path = source_path
+        holder.schema_version = source_version
         holder.journal_mode = journal
         holder.busy_timeout_ms = 250
         holder.backup(destination)

@@ -248,3 +248,49 @@ class NamespaceSnapshot:
     revision: int
     entries: tuple[MemoryEntry, ...]
     truncated: bool
+
+
+@dataclass(frozen=True)
+class ProjectionEvent:
+    namespace_id: str
+    event_id: str
+    revision: int
+    memory_ids: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class ValidityCorrection:
+    memory_id: str
+    valid_from: str | None
+    valid_to: str | None
+
+
+@dataclass(frozen=True)
+class HistoricalFact:
+    entry: MemoryEntry
+    revision: int
+    fact_key: str
+    repo_id: str | None
+    snapshot_id: str | None
+    single_valued: bool
+    page_id: str
+
+
+@dataclass(frozen=True)
+class HistoricalSnapshot:
+    namespace_id: str
+    revision: int | None
+    recorded_at: str | None
+    baseline_revision: int | None
+    baseline_recorded_at: str | None
+    coverage: Literal["available", "unavailable"]
+    complete: bool
+    truncated: bool
+    unknown_validity: bool
+    facts: tuple[HistoricalFact, ...]
+    unknown_scope: bool = False
+    unknown_eligibility: bool = False
+
+    @property
+    def entries(self) -> tuple[MemoryEntry, ...]:
+        return tuple(fact.entry for fact in self.facts)
