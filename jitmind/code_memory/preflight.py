@@ -9,13 +9,22 @@ from __future__ import annotations
 
 import json
 import time
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field, replace
 from threading import RLock
 from uuid import uuid4
 
 from jitmind.scope import ScopeContext, ScopeDenied
 
 from .lesson_models import Lesson, LessonProjection, ProposedAction, safe_quote
+from .telemetry import (
+    BoundedTraceSink,
+    PreflightMetrics,
+    _finish,
+    _measured,
+    _Recorder,
+    _recorder,
+    _stage,
+)
 from .work_storage import (
     Budget,
     Conflict,
@@ -77,6 +86,7 @@ class PreflightResult:
     token_count_method: str = "utf8_byte_upper_bound"
     candidate_count: int = 0
     selection_complete: bool = True
+    metrics: PreflightMetrics | None = field(default=None, compare=False)
 
 
 class PreflightService:
@@ -98,7 +108,15 @@ class PreflightService:
         *,
         policy: PreflightPolicy | None = None,
         approved_repo=None,
+        measure: bool = True,
+        metrics_sink: BoundedTraceSink | None = None,
     ):
+        if type(measure) is not bool or (
+            metrics_sink is not None and type(metrics_sink) is not BoundedTraceSink
+        ):
+            raise WorkError("invalid_metrics_configuration")
+        self.measure = measure
+        self.metrics_sink = metrics_sink
         self.projection = projection
         self.database = projection.database
         self.authority = projection.authority
@@ -118,6 +136,7 @@ class PreflightService:
             session.expires,
         )
 
+    @_measured("eligibility")
     def _require_session(self, scope, session, repo):
         self.authority.require(scope, repo)
         if not self._lock.acquire(blocking=False):
@@ -193,6 +212,7 @@ class PreflightService:
             db.execute("DELETE FROM sessions WHERE id=?", (session.id,))
             self.authority.require(scope, session.repo)
 
+    @_measured("eligibility")
     def _eligible(self, lesson: Lesson) -> bool:
         policy = self.policy
         return (
@@ -204,6 +224,7 @@ class PreflightService:
             and lesson.kind in ("instruction", "observation", "hypothesis")
         )
 
+    @_measured("ranking")
     def _rank(self, lessons, target):
         return sorted(
             (
@@ -226,6 +247,7 @@ class PreflightService:
             ),
         )
 
+    @_measured("rendering")
     def _render(self, lessons):
         # Bytes are a conservative token upper bound for UTF-8 byte tokenizers;
         # no tokenizer download/cache initialization occurs on this path.
@@ -265,6 +287,7 @@ class PreflightService:
             rendered.append(label + ": " + body)
         return header + "\n".join(rendered)
 
+    @_measured("eligibility")
     def _current(self, db, scope, target, lesson, budget):
         budget.remaining()
         self.authority.require(scope, target.repo_id)
@@ -287,8 +310,45 @@ class PreflightService:
         *,
         delivery_key: str | None = None,
     ) -> PreflightResult:
+        recorder = _Recorder() if self.measure else None
+        token = _recorder.set(recorder)
+        try:
+            try:
+                result = self._deliver(scope, session, target, delivery_key=delivery_key)
+            except BaseException as exc:
+                if recorder is not None:
+                    outcome = (
+                        "denied"
+                        if isinstance(exc, ScopeDenied)
+                        else "conflict"
+                        if isinstance(exc, Conflict)
+                        else "invalid"
+                        if isinstance(exc, WorkError)
+                        else "error"
+                        if isinstance(exc, Exception)
+                        else "cancelled"
+                    )
+                    _finish(recorder, outcome, self.metrics_sink)
+                raise
+            if recorder is not None:
+                result = replace(
+                    result, metrics=_finish(recorder, result.state, self.metrics_sink)
+                )
+            return result
+        finally:
+            _recorder.reset(token)
+
+    def _deliver(
+        self,
+        scope: ScopeContext,
+        session: Session,
+        target: ProposedAction,
+        *,
+        delivery_key: str | None = None,
+    ) -> PreflightResult:
         # These checks precede all disk reads and selection, including replay.
-        self.authority.require(scope, target.repo_id)
+        with _stage("eligibility"):
+            self.authority.require(scope, target.repo_id)
         try:
             self._require_session(scope, session, target.repo_id)
         except Deferred:
@@ -302,18 +362,23 @@ class PreflightService:
         code = digest([target.repo_id, target.file_path, target.symbol, target.action])
         try:
             if self.approved_repo is not None:
-                if (
-                    self.approved_repo(scope, target.repo_id, target.file_path, budget)
-                    is not True
-                ):
-                    raise ScopeDenied()
-                budget.remaining()
+                with _stage("eligibility"):
+                    if (
+                        self.approved_repo(scope, target.repo_id, target.file_path, budget)
+                        is not True
+                    ):
+                        raise ScopeDenied()
+                    budget.remaining()
             lessons = self.projection.candidates(
                 scope, target, budget, policy=self.policy
             )
             ranked = self._rank(lessons, target)
             # An empty ranked list is authoritative: no alternate/broader query.
-            with self.database.connect(budget) as db, self.database.transaction(db):
+            with (
+                _stage("dedup"),
+                self.database.connect(budget) as db,
+                self.database.transaction(db),
+            ):
                 receipt = db.execute(
                     "SELECT digest,refs FROM delivery_receipts WHERE session=? AND key=?",
                     (session.id, key),
@@ -425,7 +490,7 @@ class PreflightService:
                 self._require_session(scope, session, target.repo_id)
                 budget.remaining()
             # No cached body survives a forget between commit and final response.
-            with self.database.connect(budget) as db:
+            with _stage("eligibility"), self.database.connect(budget) as db:
                 if not all(
                     self._current(db, scope, target, lesson, budget)
                     for lesson in chosen
